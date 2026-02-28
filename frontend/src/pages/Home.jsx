@@ -7,6 +7,7 @@ import Skills from '../components/Skills';
 import Projects from '../components/Projects';
 import Contact from '../components/Contact';
 import Footer from '../components/Footer';
+import CursorGlow from '../components/CursorGlow';
 
 const Home = () => {
     const [about, setAbout] = useState(null);
@@ -50,6 +51,7 @@ const Home = () => {
 
     return (
         <div className="min-h-screen bg-dark-900">
+            <CursorGlow />
             <Navbar />
             <Hero about={about} />
             <About about={about} />
