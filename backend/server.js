@@ -10,6 +10,7 @@ import aboutRoutes from './routes/about.js';
 import projectRoutes from './routes/projects.js';
 import skillRoutes from './routes/skills.js';
 import socialLinkRoutes from './routes/socialLinks.js';
+import blogRoutes from './routes/blogs.js';
 
 dotenv.config();
 
@@ -29,6 +30,7 @@ app.use('/api/about', aboutRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/skills', skillRoutes);
 app.use('/api/social-links', socialLinkRoutes);
+app.use('/api/blogs', blogRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

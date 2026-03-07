@@ -6,6 +6,7 @@ import {
     FiFolder,
     FiCpu,
     FiLink,
+    FiEdit,
     FiLogOut,
     FiMenu,
     FiX,
@@ -18,6 +19,7 @@ const sidebarLinks = [
     { to: '/admin/projects', label: 'Projects', icon: FiFolder },
     { to: '/admin/skills', label: 'Skills', icon: FiCpu },
     { to: '/admin/socials', label: 'Socials', icon: FiLink },
+    { to: '/admin/blogs', label: 'Blog', icon: FiEdit },
 ];
 
 const AdminLayout = () => {

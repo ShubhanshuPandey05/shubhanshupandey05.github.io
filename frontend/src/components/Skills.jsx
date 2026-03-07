@@ -1,46 +1,11 @@
 import { motion, useInView } from 'framer-motion';
 import { useRef, useState } from 'react';
 
-const categoryColors = {
-    Backend: 'from-cyan-400 to-blue-500',
-    Database: 'from-emerald-400 to-teal-500',
-    DevOps: 'from-orange-400 to-red-500',
-    Tools: 'from-violet-400 to-purple-500',
-    Frontend: 'from-pink-400 to-rose-500',
-    Other: 'from-gray-400 to-gray-500',
-};
-
-const SkillBar = ({ skill, delay, isInView }) => (
-    <motion.div
-        initial={{ opacity: 0, x: -20 }}
-        animate={isInView ? { opacity: 1, x: 0 } : {}}
-        transition={{ delay, duration: 0.4 }}
-        className="group"
-    >
-        <div className="flex justify-between items-center mb-2">
-            <span className="text-sm font-medium text-text-primary group-hover:text-primary transition-colors">
-                {skill.name}
-            </span>
-            <span className="text-xs font-mono text-text-muted">{skill.proficiency}%</span>
-        </div>
-        <div className="h-2 bg-dark-600 rounded-full overflow-hidden">
-            <motion.div
-                initial={{ width: 0 }}
-                animate={isInView ? { width: `${skill.proficiency}%` } : { width: 0 }}
-                transition={{ delay: delay + 0.2, duration: 0.8, ease: 'easeOut' }}
-                className={`h-full rounded-full bg-gradient-to-r ${categoryColors[skill.category] || categoryColors.Other
-                    }`}
-            />
-        </div>
-    </motion.div>
-);
-
 const Skills = ({ skills }) => {
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true, margin: '-100px' });
     const [activeCategory, setActiveCategory] = useState('All');
 
-    // Group skills by category
     const categories = ['All', ...new Set(skills.map((s) => s.category))];
     const filtered =
         activeCategory === 'All'
@@ -48,36 +13,47 @@ const Skills = ({ skills }) => {
             : skills.filter((s) => s.category === activeCategory);
 
     return (
-        <section id="skills" className="py-24 px-6 relative bg-dark-800/50">
-            <div className="max-w-6xl mx-auto">
-                {/* Section Header */}
+        <section id="skills" className="py-24 md:py-40 px-6 md:px-12 relative overflow-hidden">
+            {/* Section number watermark */}
+            <div className="section-number right-0 md:right-12 top-12">02</div>
+
+            <div className="max-w-7xl mx-auto relative" ref={ref}>
+                {/* Section label */}
                 <motion.div
-                    ref={ref}
                     initial={{ opacity: 0, y: 20 }}
                     animate={isInView ? { opacity: 1, y: 0 } : {}}
                     transition={{ duration: 0.6 }}
-                    className="text-center mb-12"
+                    className="mb-16"
                 >
-                    <span className="text-primary font-mono text-sm">// skills</span>
-                    <h2 className="text-4xl font-bold mt-2 text-text-primary">
-                        Tech <span className="gradient-text">Stack</span>
-                    </h2>
+                    <span className="text-caption text-accent">Expertise</span>
+                    <div className="editorial-divider-accent mt-4" />
                 </motion.div>
 
-                {/* Category Tabs */}
+                {/* Headline */}
+                <motion.h2
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={isInView ? { opacity: 1, y: 0 } : {}}
+                    transition={{ duration: 0.7, delay: 0.1 }}
+                    className="text-headline mb-16"
+                >
+                    Technologies <br className="hidden md:block" />
+                    <span className="italic text-text-muted">& Tools</span>
+                </motion.h2>
+
+                {/* Category filters */}
                 <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={isInView ? { opacity: 1, y: 0 } : {}}
-                    transition={{ delay: 0.2 }}
-                    className="flex flex-wrap gap-3 justify-center mb-12"
+                    transition={{ delay: 0.3 }}
+                    className="flex flex-wrap gap-4 mb-16"
                 >
                     {categories.map((cat) => (
                         <button
                             key={cat}
                             onClick={() => setActiveCategory(cat)}
-                            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${activeCategory === cat
-                                    ? 'bg-gradient-to-r from-primary to-accent text-dark-900'
-                                    : 'glass text-text-secondary hover:text-text-primary'
+                            className={`text-caption pb-2 transition-all duration-300 ${activeCategory === cat
+                                    ? 'text-text-primary border-b-2 border-accent'
+                                    : 'text-text-muted hover:text-text-secondary border-b border-transparent'
                                 }`}
                         >
                             {cat}
@@ -85,17 +61,63 @@ const Skills = ({ skills }) => {
                     ))}
                 </motion.div>
 
-                {/* Skills Grid */}
-                <div className="grid md:grid-cols-2 gap-x-12 gap-y-5 max-w-4xl mx-auto">
+                {/* Skills list — typographic rows */}
+                <div className="space-y-0">
                     {filtered.map((skill, i) => (
-                        <SkillBar
+                        <motion.div
                             key={skill._id || skill.name}
-                            skill={skill}
-                            delay={0.3 + i * 0.08}
-                            isInView={isInView}
-                        />
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={isInView ? { opacity: 1, x: 0 } : {}}
+                            transition={{ delay: 0.4 + i * 0.05, duration: 0.5 }}
+                            className="group border-b border-border py-5 flex items-center justify-between hover:pl-4 transition-all duration-500"
+                        >
+                            <div className="flex items-center gap-6">
+                                <span className="text-caption text-text-muted w-8 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    {String(i + 1).padStart(2, '0')}
+                                </span>
+                                <h3 className="font-serif text-xl md:text-2xl font-medium text-text-primary group-hover:text-accent transition-colors duration-300">
+                                    {skill.name}
+                                </h3>
+                            </div>
+                            <div className="flex items-center gap-6">
+                                <span className="text-caption text-text-muted hidden sm:block">
+                                    {skill.category}
+                                </span>
+                                <span className="font-mono text-sm text-text-muted">
+                                    {skill.proficiency}%
+                                </span>
+                                {/* Minimal progress indicator */}
+                                <div className="w-20 h-px bg-border relative hidden md:block">
+                                    <motion.div
+                                        initial={{ width: 0 }}
+                                        animate={isInView ? { width: `${skill.proficiency}%` } : {}}
+                                        transition={{ delay: 0.5 + i * 0.05, duration: 0.8 }}
+                                        className="absolute top-0 left-0 h-full bg-accent"
+                                    />
+                                </div>
+                            </div>
+                        </motion.div>
                     ))}
                 </div>
+
+                {/* Marquee ticker */}
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={isInView ? { opacity: 1 } : {}}
+                    transition={{ delay: 0.8 }}
+                    className="mt-20 overflow-hidden"
+                >
+                    <div className="flex animate-marquee whitespace-nowrap">
+                        {[...skills, ...skills].map((skill, i) => (
+                            <span
+                                key={i}
+                                className="font-serif text-6xl md:text-8xl font-bold text-text-primary opacity-[0.03] mx-8 select-none"
+                            >
+                                {skill.name}
+                            </span>
+                        ))}
+                    </div>
+                </motion.div>
             </div>
         </section>
     );

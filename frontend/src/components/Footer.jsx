@@ -1,19 +1,12 @@
-import { FiHeart } from 'react-icons/fi';
-
 const Footer = () => {
     return (
-        <footer className="py-8 px-6 border-t border-glass-border">
-            <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div className="text-text-muted text-sm font-mono">
-                    <span className="text-primary">&lt;</span>
-                    Dev
-                    <span className="text-primary">/&gt;</span>
-                    <span className="mx-2">•</span>
-                    © {new Date().getFullYear()}
+        <footer className="py-12 px-6 md:px-12 border-t border-border">
+            <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="font-mono text-xs text-text-muted tracking-wider">
+                    © {new Date().getFullYear()} — All rights reserved
                 </div>
-                <div className="flex items-center gap-1 text-text-muted text-sm">
-                    Built with <FiHeart className="text-red-500 mx-1" /> and a lot of
-                    <span className="text-primary font-mono ml-1">console.log()</span>
+                <div className="font-serif text-sm text-text-muted italic">
+                    Designed with intention
                 </div>
             </div>
         </footer>
