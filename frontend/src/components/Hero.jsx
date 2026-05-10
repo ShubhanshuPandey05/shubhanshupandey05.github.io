@@ -44,9 +44,10 @@ const Hero = ({ about }) => {
                             initial={{ opacity: 0, y: 20 }}
                             animate={isInView ? { opacity: 1, y: 0 } : {}}
                             transition={{ duration: 0.6, delay: 0.2 }}
-                            className="text-caption text-text-muted mb-6"
+                            className="text-caption-hero text-text-muted mb-6"
                         >
-                            Portfolio — {new Date().getFullYear()}
+                            {/* Portfolio — {new Date().getFullYear()} */}
+                            “thinking human”
                         </motion.p>
 
                         {/* Name — Display size */}

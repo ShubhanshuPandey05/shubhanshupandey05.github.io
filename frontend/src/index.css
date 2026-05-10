@@ -134,6 +134,14 @@ body {
   font-weight: 400;
 }
 
+.text-caption-hero {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  /* text-transform: uppercase; */
+  font-weight: 400;
+}
+
 /* Section numbers — large watermark style */
 .section-number {
   font-family: var(--font-serif);
