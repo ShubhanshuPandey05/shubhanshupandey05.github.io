@@ -50,7 +50,7 @@ const WorkPage = () => {
             {/* Page header */}
             <div className="pt-32 pb-8 px-6 md:px-12 max-w-7xl mx-auto">
                 <motion.a
-                    href="/#/"
+                    href="/"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     className="inline-flex items-center gap-2 text-caption text-text-muted hover:text-text-primary transition-colors mb-12"

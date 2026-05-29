@@ -188,7 +188,7 @@ const BlogPost = () => {
                 <Navbar />
                 <div className="pt-32 pb-24 px-6 md:px-12 max-w-4xl mx-auto text-center">
                     <h1 className="font-serif text-3xl text-text-primary mb-4">Article not found</h1>
-                    <a href="/#/blog" className="text-caption text-accent hover:text-accent-light transition-colors">
+                    <a href="/blog" className="text-caption text-accent hover:text-accent-light transition-colors">
                         ← Back to Blog
                     </a>
                 </div>
@@ -211,7 +211,7 @@ const BlogPost = () => {
                 {/* Header */}
                 <div className="px-6 md:px-12 max-w-4xl mx-auto">
                     <motion.a
-                        href="/#/blog"
+                        href="/blog"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         className="inline-flex items-center gap-2 text-caption text-text-muted hover:text-text-primary transition-colors mb-12"
@@ -288,7 +288,7 @@ const BlogPost = () => {
                 <div className="max-w-3xl mx-auto px-6 md:px-12 mt-16">
                     <div className="editorial-line-full mb-8" />
                     <a
-                        href="/#/blog"
+                        href="/blog"
                         className="inline-flex items-center gap-2 text-caption text-text-muted hover:text-accent transition-colors"
                     >
                         <FiArrowLeft size={14} /> All Articles

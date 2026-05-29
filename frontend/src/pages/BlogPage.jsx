@@ -42,7 +42,7 @@ const BlogPage = () => {
                 <div className="max-w-7xl mx-auto">
                     {/* Back link */}
                     <motion.a
-                        href="/#/"
+                        href="/"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         className="inline-flex items-center gap-2 text-caption text-text-muted hover:text-text-primary transition-colors mb-12"
@@ -87,7 +87,7 @@ const BlogPage = () => {
                                 return (
                                     <motion.a
                                         key={post._id || i}
-                                        href={`/#/blog/${post.slug}`}
+                                        href={`/blog/${post.slug}`}
                                         initial={{ opacity: 0, y: 20 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ delay: i * 0.08, duration: 0.5 }}

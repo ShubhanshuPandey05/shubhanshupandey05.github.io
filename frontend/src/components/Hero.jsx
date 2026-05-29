@@ -119,7 +119,7 @@ const Hero = ({ about }) => {
                                 </a>
                             ) : null}
                             <a
-                                href="/#/work"
+                                href="/work"
                                 className="inline-flex items-center gap-3 text-caption text-text-muted hover:text-text-primary transition-colors group"
                             >
                                 <span className="w-10 h-px bg-text-muted group-hover:bg-text-primary group-hover:w-16 transition-all duration-300" />

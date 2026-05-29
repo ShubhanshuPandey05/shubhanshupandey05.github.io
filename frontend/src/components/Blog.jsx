@@ -11,7 +11,7 @@ const BlogCard = ({ post, index, isInView }) => {
 
     return (
         <motion.a
-            href={`/#/blog/${post.slug}`}
+            href={`/blog/${post.slug}`}
             initial={{ opacity: 0, y: 30 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ delay: 0.3 + index * 0.1, duration: 0.6 }}
@@ -92,7 +92,7 @@ const Blog = ({ blogs = [] }) => {
                         <span className="italic text-text-muted">& Learnings</span>
                     </h2>
                     <a
-                        href="/#/blog"
+                        href="/blog"
                         className="hidden md:inline-flex items-center gap-2 text-caption text-text-muted hover:text-accent transition-colors group"
                     >
                         All Articles
@@ -120,7 +120,7 @@ const Blog = ({ blogs = [] }) => {
                     className="mt-12 md:hidden"
                 >
                     <a
-                        href="/#/blog"
+                        href="/blog"
                         className="inline-flex items-center gap-2 text-caption text-text-muted hover:text-accent transition-colors"
                     >
                         View All Articles <FiArrowUpRight size={12} />

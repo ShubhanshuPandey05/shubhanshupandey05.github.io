@@ -1,16 +1,19 @@
 import { useState, useEffect } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiMenu, FiX, FiSun, FiMoon } from 'react-icons/fi';
 import { useTheme } from '../context/ThemeContext';
 
 const navLinks = [
     { label: 'About', href: 'about', type: 'scroll' },
-    { label: 'Work', href: '/#/work', type: 'route' },
-    { label: 'Blog', href: '/#/blog', type: 'route' },
+    { label: 'Work', href: '/work', type: 'route' },
+    { label: 'Blog', href: '/blog', type: 'route' },
     { label: 'Contact', href: 'contact', type: 'scroll' },
 ];
 
 const Navbar = () => {
+    const navigate = useNavigate();
+    const location = useLocation();
     const [scrolled, setScrolled] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
     const { theme, toggleTheme } = useTheme();
@@ -21,20 +24,27 @@ const Navbar = () => {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
+    const scrollToSection = (sectionId, attempts = 0) => {
+        const el = document.getElementById(sectionId);
+        if (el) {
+            el.scrollIntoView({ behavior: 'smooth' });
+            return;
+        }
+        if (attempts < 25) {
+            setTimeout(() => scrollToSection(sectionId, attempts + 1), 100);
+        }
+    };
+
     const handleNavClick = (link) => {
         if (link.type === 'route') {
-            window.location.href = link.href;
-        } else {
-            const el = document.getElementById(link.href);
-            if (el) {
-                el.scrollIntoView({ behavior: 'smooth' });
-            } else {
-                window.location.href = `/#/`;
-                setTimeout(() => {
-                    document.getElementById(link.href)?.scrollIntoView({ behavior: 'smooth' });
-                }, 300);
-            }
+            navigate(link.href);
+            return;
         }
+
+        if (location.pathname !== '/') {
+            navigate('/');
+        }
+        scrollToSection(link.href);
     };
 
     return (
@@ -49,12 +59,12 @@ const Navbar = () => {
         >
             <div className="max-w-7xl mx-auto px-6 md:px-12 py-5 flex items-center justify-between">
                 {/* Logo */}
-                <a
-                    href="/#/"
+                <Link
+                    to="/"
                     className="font-serif text-xl md:text-2xl font-bold tracking-tight text-text-primary hover:text-accent transition-colors duration-300"
                 >
                     SP<span className="text-accent">.</span>
-                </a>
+                </Link>
 
                 {/* Desktop Links */}
                 <div className="hidden md:flex items-center gap-10">
