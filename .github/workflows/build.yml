@@ -46,3 +46,6 @@ jobs:
           
           git branch -M build
           git push -f origin build
+
+
+# delete the nodemodule file after the build 
