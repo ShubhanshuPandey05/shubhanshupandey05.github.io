@@ -1,14 +1,4 @@
 {
-    "experimentalServices": {
-        "frontend": {
-            "routePrefix": "/",
-            "framework": "jekyll"
-        },
-        "backend": {
-            "root": "backend",
-            "routePrefix": "/_/backend"
-        }
-    },
     "rewrites": [
         {
             "source": "/(.*)",
