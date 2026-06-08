@@ -2,12 +2,14 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FiPlus, FiEdit2, FiTrash2, FiEye, FiEyeOff, FiX, FiSave } from 'react-icons/fi';
 import api from '../../utils/api';
+import uploadMedia from '../../utils/uploadMedia';
 
 const ManageBlogs = () => {
     const [blogs, setBlogs] = useState([]);
     const [editing, setEditing] = useState(null);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
+    const [uploadingCover, setUploadingCover] = useState(false);
     const [form, setForm] = useState({
         title: '',
         slug: '',
@@ -49,6 +51,29 @@ const ManageBlogs = () => {
             title,
             slug: editing ? prev.slug : generateSlug(title),
         }));
+    };
+
+    const handleCoverImageChange = async (e) => {
+        const file = e.target.files?.[0];
+
+        if (!file) {
+            return;
+        }
+
+        setUploadingCover(true);
+
+        try {
+            const url = await uploadMedia(file, {
+                folder: 'portfolio/blogs',
+                resourceType: 'image',
+            });
+
+            setForm((prev) => ({ ...prev, coverImage: url }));
+        } catch (error) {
+            alert('Error uploading cover image: ' + (error.response?.data?.message || error.message));
+        } finally {
+            setUploadingCover(false);
+        }
     };
 
     const openNewForm = () => {
@@ -299,15 +324,21 @@ const ManageBlogs = () => {
                             {/* Cover Image */}
                             <div>
                                 <label className="block text-xs font-medium text-text-muted mb-2 uppercase tracking-wider">
-                                    Cover Image URL
+                                    Cover Image
                                 </label>
                                 <input
-                                    type="text"
-                                    value={form.coverImage}
-                                    onChange={(e) => setForm((f) => ({ ...f, coverImage: e.target.value }))}
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleCoverImageChange}
                                     className="w-full bg-bg-tertiary border border-border rounded-lg px-4 py-3 text-text-primary text-sm focus:outline-none focus:border-accent transition-colors"
-                                    placeholder="https://example.com/image.jpg"
                                 />
+                                <p className="text-[11px] text-text-muted mt-1">
+                                    {uploadingCover
+                                        ? 'Uploading image...'
+                                        : form.coverImage
+                                            ? 'Image uploaded to Cloudinary.'
+                                            : 'Choose an image to upload.'}
+                                </p>
                             </div>
 
                             {/* Tags */}

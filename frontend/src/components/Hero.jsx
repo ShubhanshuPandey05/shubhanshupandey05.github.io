@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { FiArrowDown, FiDownload } from 'react-icons/fi';
+import { Link } from 'react-router-dom';
+import { FiArrowDown, FiExternalLink } from 'react-icons/fi';
 
 const Hero = ({ about }) => {
     const ref = useRef(null);
@@ -74,7 +75,7 @@ const Hero = ({ about }) => {
                             initial={{ width: 0 }}
                             animate={isInView ? { width: 60 } : {}}
                             transition={{ duration: 0.8, delay: 0.8 }}
-                            className="h-[2px] bg-accent mt-8 mb-6"
+                            className="h-0.5 bg-accent mt-8 mb-6"
                         />
 
                         {/* Title */}
@@ -106,17 +107,14 @@ const Hero = ({ about }) => {
                             className="flex flex-col gap-4"
                         >
                             {about?.resumeUrl ? (
-                                <a
-                                    href={about.resumeUrl}
-                                    download
-                                    target="_blank"
-                                    rel="noreferrer"
+                                <Link
+                                    to="/resume"
                                     className="inline-flex items-center gap-3 text-caption text-text-primary hover:text-accent transition-colors group"
                                 >
                                     <span className="w-10 h-px bg-text-primary group-hover:bg-accent group-hover:w-16 transition-all duration-300" />
-                                    <FiDownload size={14} />
-                                    Download Resume
-                                </a>
+                                    <FiExternalLink size={14} />
+                                    View Resume
+                                </Link>
                             ) : null}
                             <a
                                 href="/work"

@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import WorkPage from './pages/WorkPage';
 import BlogPage from './pages/BlogPage';
 import BlogPost from './pages/BlogPost';
+import ResumeViewer from './pages/ResumeViewer';
 import Login from './pages/admin/Login';
 import Dashboard from './pages/admin/Dashboard';
 import ManageAbout from './pages/admin/ManageAbout';
@@ -25,6 +26,7 @@ function App() {
             <Route path="/work" element={<WorkPage />} />
             <Route path="/blog" element={<BlogPage />} />
             <Route path="/blog/:slug" element={<BlogPost />} />
+            <Route path="/resume" element={<ResumeViewer />} />
 
             {/* Admin Routes */}
             <Route path="/admin/login" element={<Login />} />

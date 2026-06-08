@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '../../utils/api';
+import uploadMedia from '../../utils/uploadMedia';
 import { FiPlus, FiEdit2, FiTrash2, FiX, FiSave } from 'react-icons/fi';
 
 const emptyProject = {
@@ -21,6 +22,7 @@ const ManageProjects = () => {
     const [form, setForm] = useState({ ...emptyProject });
     const [techInput, setTechInput] = useState('');
     const [saving, setSaving] = useState(false);
+    const [uploadingImage, setUploadingImage] = useState(false);
 
     const fetchProjects = async () => {
         const { data } = await api.get('/projects');
@@ -54,6 +56,29 @@ const ManageProjects = () => {
             ...prev,
             [name]: type === 'checkbox' ? checked : value,
         }));
+    };
+
+    const handleImageUpload = async (e) => {
+        const file = e.target.files?.[0];
+
+        if (!file) {
+            return;
+        }
+
+        setUploadingImage(true);
+
+        try {
+            const url = await uploadMedia(file, {
+                folder: 'portfolio/projects',
+                resourceType: 'image',
+            });
+
+            setForm((prev) => ({ ...prev, imageUrl: url }));
+        } catch (error) {
+            alert('Error uploading image: ' + (error.response?.data?.message || error.message));
+        } finally {
+            setUploadingImage(false);
+        }
     };
 
     const addTech = () => {
@@ -112,7 +137,7 @@ const ManageProjects = () => {
                 </div>
                 <button
                     onClick={openNew}
-                    className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-primary to-accent text-dark-900 text-sm font-semibold rounded-lg hover:shadow-lg hover:shadow-primary/25 transition-all"
+                    className="flex items-center gap-2 px-4 py-2.5 bg-linear-to-r from-primary to-accent text-dark-900 text-sm font-semibold rounded-lg hover:shadow-lg hover:shadow-primary/25 transition-all"
                 >
                     <FiPlus /> Add Project
                 </button>
@@ -248,8 +273,20 @@ const ManageProjects = () => {
                                     <input name="liveUrl" value={form.liveUrl} onChange={handleChange} className={inputClass} />
                                 </div>
                                 <div>
-                                    <label className="block text-text-secondary text-xs mb-1.5">Image URL</label>
-                                    <input name="imageUrl" value={form.imageUrl} onChange={handleChange} className={inputClass} />
+                                    <label className="block text-text-secondary text-xs mb-1.5">Project Image</label>
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleImageUpload}
+                                        className={inputClass}
+                                    />
+                                    <p className="text-[11px] text-text-muted mt-1">
+                                        {uploadingImage
+                                            ? 'Uploading image...'
+                                            : form.imageUrl
+                                                ? 'Image uploaded to Cloudinary.'
+                                                : 'Choose an image to upload.'}
+                                    </p>
                                 </div>
                                 <div>
                                     <label className="block text-text-secondary text-xs mb-1.5">Order</label>
@@ -263,7 +300,7 @@ const ManageProjects = () => {
                             </div>
 
                             <div className="flex gap-3 pt-2">
-                                <button type="submit" disabled={saving} className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-primary to-accent text-dark-900 font-semibold rounded-lg text-sm disabled:opacity-50">
+                                <button type="submit" disabled={saving} className="flex items-center gap-2 px-6 py-2.5 bg-linear-to-r from-primary to-accent text-dark-900 font-semibold rounded-lg text-sm disabled:opacity-50">
                                     {saving ? 'Saving...' : <><FiSave /> Save</>}
                                 </button>
                                 <button type="button" onClick={closeModal} className="px-6 py-2.5 glass text-text-secondary rounded-lg text-sm hover:text-text-primary">

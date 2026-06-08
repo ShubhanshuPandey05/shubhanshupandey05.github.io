@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '../../utils/api';
+import uploadMedia from '../../utils/uploadMedia';
 import { FiSave, FiCheck } from 'react-icons/fi';
 
 const ManageAbout = () => {
@@ -21,6 +22,10 @@ const ManageAbout = () => {
     });
     const [saving, setSaving] = useState(false);
     const [saved, setSaved] = useState(false);
+    const [uploadingMedia, setUploadingMedia] = useState({
+        profileImage: false,
+        resumeUrl: false,
+    });
 
     useEffect(() => {
         api.get('/about').then(({ data }) => {
@@ -53,6 +58,32 @@ const ManageAbout = () => {
             }));
         } else {
             setForm((prev) => ({ ...prev, [name]: value }));
+        }
+    };
+
+    const handleFileChange = async (e) => {
+        const { name, files } = e.target;
+        const file = files?.[0];
+
+        if (!file) {
+            return;
+        }
+
+        const resourceType = file.type === 'application/pdf' ? 'image' : 'image';
+
+        setUploadingMedia((prev) => ({ ...prev, [name]: true }));
+
+        try {
+            const url = await uploadMedia(file, {
+                folder: 'portfolio/about',
+                resourceType,
+            });
+
+            setForm((prev) => ({ ...prev, [name]: url }));
+        } catch (error) {
+            alert('Error uploading file: ' + (error.response?.data?.message || error.message));
+        } finally {
+            setUploadingMedia((prev) => ({ ...prev, [name]: false }));
         }
     };
 
@@ -121,12 +152,38 @@ const ManageAbout = () => {
                     </div>
                     <div className="grid sm:grid-cols-2 gap-5">
                         <div>
-                            <label className="block text-text-secondary text-xs mb-1.5">Profile Image URL</label>
-                            <input name="profileImage" value={form.profileImage} onChange={handleChange} className={inputClass} />
+                            <label className="block text-text-secondary text-xs mb-1.5">Profile Image</label>
+                            <input
+                                type="file"
+                                name="profileImage"
+                                accept="image/*"
+                                onChange={handleFileChange}
+                                className={inputClass}
+                            />
+                            <p className="text-[11px] text-text-muted mt-1">
+                                {uploadingMedia.profileImage
+                                    ? 'Uploading image...'
+                                    : form.profileImage
+                                        ? 'Image uploaded to Cloudinary.'
+                                        : 'Choose an image to upload.'}
+                            </p>
                         </div>
                         <div>
-                            <label className="block text-text-secondary text-xs mb-1.5">Resume URL</label>
-                            <input name="resumeUrl" value={form.resumeUrl} onChange={handleChange} className={inputClass} />
+                            <label className="block text-text-secondary text-xs mb-1.5">Resume PDF</label>
+                            <input
+                                type="file"
+                                name="resumeUrl"
+                                accept="application/pdf"
+                                onChange={handleFileChange}
+                                className={inputClass}
+                            />
+                            <p className="text-[11px] text-text-muted mt-1">
+                                {uploadingMedia.resumeUrl
+                                    ? 'Uploading PDF...'
+                                    : form.resumeUrl
+                                        ? 'Resume uploaded to Cloudinary.'
+                                        : 'Choose a PDF to upload.'}
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -160,7 +217,7 @@ const ManageAbout = () => {
                 <button
                     type="submit"
                     disabled={saving}
-                    className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary to-accent text-dark-900 font-semibold rounded-lg hover:shadow-lg hover:shadow-primary/25 transition-all duration-300 disabled:opacity-50"
+                    className="flex items-center gap-2 px-6 py-3 bg-linear-to-r from-primary to-accent text-dark-900 font-semibold rounded-lg hover:shadow-lg hover:shadow-primary/25 transition-all duration-300 disabled:opacity-50"
                 >
                     {saved ? (
                         <>

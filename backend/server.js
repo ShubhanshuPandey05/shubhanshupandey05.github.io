@@ -11,6 +11,7 @@ import projectRoutes from './routes/projects.js';
 import skillRoutes from './routes/skills.js';
 import socialLinkRoutes from './routes/socialLinks.js';
 import blogRoutes from './routes/blogs.js';
+import uploadRoutes from './routes/uploads.js';
 
 dotenv.config();
 
@@ -31,6 +32,7 @@ app.use('/api/projects', projectRoutes);
 app.use('/api/skills', skillRoutes);
 app.use('/api/social-links', socialLinkRoutes);
 app.use('/api/blogs', blogRoutes);
+app.use('/api/uploads', uploadRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
