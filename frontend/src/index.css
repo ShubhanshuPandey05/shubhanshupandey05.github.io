@@ -1,19 +1,18 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap');
 
 /* =================== DESIGN TOKENS =================== */
 @theme {
-  --font-serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --font-serif: 'Fraunces', Georgia, 'Times New Roman', serif;
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-mono: 'Space Mono', 'Courier New', monospace;
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
 
-  /* Core palette — mostly B&W */
-  --color-ink: #0a0a0a;
-  --color-paper: #f5f0eb;
-  --color-paper-warm: #ede6dd;
-  --color-cream: #faf7f2;
-  --color-accent: #c9a96e;
-  --color-accent-light: #d4bc8a;
+  /* Core palette: deep crimson, ink and paper */
+  --color-ink: #0d0b0b;
+  --color-paper: #f7f3ee;
+  --color-paper-warm: #efe8e1;
+  --color-cream: #fbf8f4;
+  --color-accent: #b0142c;
+  --color-accent-light: #c21a36;
   --color-gray-900: #1a1a1a;
   --color-gray-800: #2a2a2a;
   --color-gray-700: #3a3a3a;
@@ -25,11 +24,11 @@
   --color-gray-100: #eeeeee;
 
   /* Semantic colors — dark mode default */
-  --color-bg-primary: #0a0a0a;
-  --color-bg-secondary: #111111;
-  --color-bg-tertiary: #1a1a1a;
-  --color-bg-card: #141414;
-  --color-text-primary: #f5f0eb;
+  --color-bg-primary: #0d0b0b;
+  --color-bg-secondary: #141111;
+  --color-bg-tertiary: #1d1818;
+  --color-bg-card: #161212;
+  --color-text-primary: #f7f3ee;
   --color-text-secondary: #bbbbbb;
   --color-text-muted: #777777;
   --color-border: rgba(255, 255, 255, 0.1);
@@ -38,11 +37,12 @@
 
 /* =================== LIGHT THEME =================== */
 html.light {
-  --color-bg-primary: #f5f0eb;
-  --color-bg-secondary: #ede6dd;
-  --color-bg-tertiary: #e5ddd3;
-  --color-bg-card: #faf7f2;
-  --color-text-primary: #0a0a0a;
+  --color-bg-primary: #f7f3ee;
+  --color-bg-secondary: #efe8e1;
+  --color-bg-tertiary: #e6ddd5;
+  --color-bg-card: #fbf8f4;
+  --color-accent: #9b0d23;
+  --color-text-primary: #0d0b0b;
   --color-text-secondary: #3a3a3a;
   --color-text-muted: #777777;
   --color-border: rgba(0, 0, 0, 0.1);
@@ -84,7 +84,7 @@ body {
 
 ::selection {
   background-color: var(--color-accent);
-  color: var(--color-ink);
+  color: var(--color-paper);
 }
 
 /* =================== EDITORIAL TYPOGRAPHY =================== */

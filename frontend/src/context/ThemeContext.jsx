@@ -10,8 +10,9 @@ export const useTheme = () => {
 
 export const ThemeProvider = ({ children }) => {
     const [theme, setTheme] = useState(() => {
-        const saved = localStorage.getItem('portfolio_theme');
-        return saved || 'dark';
+        // v2: the editorial redesign is paper-first, so start everyone on the light theme.
+        const saved = localStorage.getItem('portfolio_theme_v2');
+        return saved || 'light';
     });
 
     useEffect(() => {
@@ -21,7 +22,7 @@ export const ThemeProvider = ({ children }) => {
         } else {
             root.classList.remove('light');
         }
-        localStorage.setItem('portfolio_theme', theme);
+        localStorage.setItem('portfolio_theme_v2', theme);
     }, [theme]);
 
     const toggleTheme = () => setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));

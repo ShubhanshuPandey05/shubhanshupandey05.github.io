@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import Home from './pages/Home';
@@ -14,12 +14,20 @@ import ManageSkills from './pages/admin/ManageSkills';
 import ManageSocials from './pages/admin/ManageSocials';
 import ManageBlogs from './pages/admin/ManageBlogs';
 import AdminLayout from './components/admin/AdminLayout';
+import BlossomCursor from './components/editorial/BlossomCursor';
+
+// The playful cursor belongs to the public site, not the admin dashboard.
+const PublicCursor = () => {
+  const { pathname } = useLocation();
+  return pathname.startsWith('/admin') ? null : <BlossomCursor />;
+};
 
 function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
         <Router>
+          <PublicCursor />
           <Routes>
             {/* Public Portfolio */}
             <Route path="/" element={<Home />} />
