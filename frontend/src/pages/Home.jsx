@@ -3,13 +3,13 @@ import { useLocation } from 'react-router-dom';
 import api from '../utils/api';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import AsciiHero from '../components/zen/AsciiHero';
-import Haiku from '../components/zen/Haiku';
-import Path from '../components/zen/Path';
-import Emaki from '../components/zen/Emaki';
-import RockGarden from '../components/zen/RockGarden';
-import Notes from '../components/zen/Notes';
-import Terminal from '../components/zen/Terminal';
+import Hero from '../components/ink/sections/Hero';
+import About from '../components/ink/sections/About';
+import Experience from '../components/ink/sections/Experience';
+import Work from '../components/ink/sections/Work';
+import Skills from '../components/ink/sections/Skills';
+import Notes from '../components/ink/sections/Notes';
+import Contact from '../components/ink/sections/Contact';
 import * as content from '../data/content';
 
 // Pair an API project with its curated, rewritten copy (matched by repo URL or title).
@@ -103,16 +103,16 @@ const Home = () => {
     }, [location.hash, location.key]);
 
     return (
-        <div className="zn">
+        <div className="ik">
             <Navbar />
-            <main className="zn-main">
-                <AsciiHero profile={data.profile} />
-                <Haiku copy={content.preface} stats={data.profile.stats} />
-                <Path experience={content.experience} education={content.education} />
-                <Emaki projects={data.projects} githubUrl={data.github} />
-                <RockGarden skills={data.skills} groups={content.skillGroups} />
+            <main>
+                <Hero profile={data.profile} />
+                <About copy={content.preface} education={content.education} />
+                <Experience experience={content.experience} />
+                <Work projects={data.projects} githubUrl={data.github} />
+                <Skills skills={data.skills} groups={content.skillGroups} />
                 <Notes blogs={data.blogs} />
-                <Terminal email={data.profile.email} socials={data.socials} />
+                <Contact email={data.profile.email} socials={data.socials} />
             </main>
             <Footer />
         </div>

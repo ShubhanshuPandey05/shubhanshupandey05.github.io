@@ -1,28 +1,28 @@
 import { Link } from 'react-router-dom';
-
-const RIDGE = '  /\\      /\\    _/\\_      /\\        /\\/\\     /\\   _/\\       /\\    /\\_/\\    /\\      _/\\_    /\\     ';
+import * as content from '../data/content';
 
 const Footer = () => (
-    <footer className="zn-footer">
-        <pre className="zn-footer__ridge" aria-hidden="true">
-            {RIDGE.repeat(3)}
-            {'\n'}
-            {' /  \\____/  \\__/    \\____/  \\______/    \\___/  \\_/    \\_____/  \\__/     \\__/  \\____/    \\__/  \\___ '.repeat(3)}
-        </pre>
-        <div className="zn-footer__inner">
-            <p className="zn-footer__sign">
-                <span className="zn-seal">桜</span>
-                Shubhanshu Pandey <em>· backend developer, Surat</em>
+    <footer className="ik-footer">
+        <div className="ik-footer__big" aria-hidden="true">
+            Shubhanshu<span>.</span>
+        </div>
+        <div className="ik-footer__row">
+            <p>
+                Backend developer in Surat, India.
+                <br />
+                Mountains, blossoms and mist on this site are drawn with text characters, and the music is generated
+                live in your browser.
             </p>
-            <p className="zn-footer__colophon">
-                Every mountain, blossom and petal on this site is a text character. The music is generated live in your
-                browser. Built with React and Vite.
-            </p>
-            <p className="zn-footer__meta">
-                <Link to="/resume">résumé</Link>
-                <Link to="/blog">notes</Link>
-                <span>© {new Date().getFullYear()}</span>
-            </p>
+            <ul>
+                <li><Link to="/resume">Résumé</Link></li>
+                <li><Link to="/blog">Notes</Link></li>
+                {content.socials.map((s) => (
+                    <li key={s.platform}>
+                        <a href={s.url} target="_blank" rel="noreferrer">{s.platform}</a>
+                    </li>
+                ))}
+            </ul>
+            <p className="ik-footer__copy">© {new Date().getFullYear()} Shubhanshu Pandey</p>
         </div>
     </footer>
 );

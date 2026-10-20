@@ -25,7 +25,7 @@ const BlossomCursor = () => {
         const canvas = canvasRef.current;
         const ctx = canvas.getContext('2d');
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
-        document.documentElement.classList.add('zn-has-cursor');
+        document.documentElement.classList.add('ik-has-cursor');
 
         const resize = () => {
             canvas.width = window.innerWidth * dpr;
@@ -67,7 +67,7 @@ const BlossomCursor = () => {
                 visible = true;
                 ringPos.x = mouse.x;
                 ringPos.y = mouse.y;
-                document.documentElement.classList.add('zn-cursor-visible');
+                document.documentElement.classList.add('ik-cursor-visible');
             }
             const dx = mouse.x - lastSpawn.x;
             const dy = mouse.y - lastSpawn.y;
@@ -80,7 +80,7 @@ const BlossomCursor = () => {
 
         const onLeave = () => {
             visible = false;
-            document.documentElement.classList.remove('zn-cursor-visible');
+            document.documentElement.classList.remove('ik-cursor-visible');
         };
 
         const onOver = (e) => {
@@ -144,7 +144,7 @@ const BlossomCursor = () => {
 
         return () => {
             cancelAnimationFrame(raf);
-            document.documentElement.classList.remove('zn-has-cursor', 'zn-cursor-visible');
+            document.documentElement.classList.remove('ik-has-cursor', 'ik-cursor-visible');
             window.removeEventListener('mousemove', onMove);
             window.removeEventListener('mousedown', onDown);
             window.removeEventListener('mouseup', onUp);
@@ -158,9 +158,9 @@ const BlossomCursor = () => {
 
     return (
         <>
-            <canvas ref={canvasRef} className="zn-cursor-trail" aria-hidden="true" />
-            <div ref={ringRef} className="zn-cursor-ring" aria-hidden="true" data-label="" />
-            <div ref={dotRef} className="zn-cursor-dot" aria-hidden="true" />
+            <canvas ref={canvasRef} className="ik-cursor-trail" aria-hidden="true" />
+            <div ref={ringRef} className="ik-cursor-ring" aria-hidden="true" data-label="" />
+            <div ref={dotRef} className="ik-cursor-dot" aria-hidden="true" />
         </>
     );
 };

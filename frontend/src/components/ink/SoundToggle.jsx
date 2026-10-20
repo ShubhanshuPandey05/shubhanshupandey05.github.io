@@ -8,16 +8,16 @@ const SoundToggle = ({ className = '', label = true }) => {
     return (
         <button
             type="button"
-            className={`zn-sound ${on ? 'is-on' : ''} ${className}`}
+            className={`ik-sound ${on ? 'is-on' : ''} ${className}`}
             onClick={toggleSound}
             aria-pressed={on}
             aria-label={on ? 'Turn ambient sound off' : 'Turn ambient sound on'}
             data-cursor={on ? 'hush' : 'listen'}
         >
-            <span className="zn-sound__bars" aria-hidden="true">
+            <span className="ik-sound__bars" aria-hidden="true">
                 <i /><i /><i /><i /><i />
             </span>
-            {label && <span className="zn-sound__label">{on ? 'sound on' : 'sound off'}</span>}
+            {label && <span className="ik-sound__label">{on ? 'sound on' : 'sound off'}</span>}
         </button>
     );
 };
