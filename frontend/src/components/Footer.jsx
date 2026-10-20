@@ -1,27 +1,28 @@
 import { Link } from 'react-router-dom';
 
+const RIDGE = '  /\\      /\\    _/\\_      /\\        /\\/\\     /\\   _/\\       /\\    /\\_/\\    /\\      _/\\_    /\\     ';
+
 const Footer = () => (
-    <footer className="ed-footer">
-        <svg className="ed-footer__range" viewBox="0 0 1600 160" preserveAspectRatio="none" aria-hidden="true">
-            <path d="M0 160 L0 110 L120 60 L220 100 L360 20 L470 90 L600 50 L760 120 L900 40 L1040 100 L1180 30 L1300 90 L1450 50 L1600 100 L1600 160Z" fill="currentColor" />
-        </svg>
-        <div className="ed-footer__inner">
-            <div className="ed-footer__brand">
-                <span className="ed-seal">桜</span>
-                <p>
-                    Shubhanshu Pandey<br />
-                    <em>Backend developer, Surat.</em>
-                </p>
-            </div>
-            <p className="ed-footer__colophon">
-                Colophon: set in Fraunces &amp; JetBrains Mono, printed in crimson, ink and paper.
-                Hand-built with React and Vite. No real petals were harmed.
+    <footer className="zn-footer">
+        <pre className="zn-footer__ridge" aria-hidden="true">
+            {RIDGE.repeat(3)}
+            {'\n'}
+            {' /  \\____/  \\__/    \\____/  \\______/    \\___/  \\_/    \\_____/  \\__/     \\__/  \\____/    \\__/  \\___ '.repeat(3)}
+        </pre>
+        <div className="zn-footer__inner">
+            <p className="zn-footer__sign">
+                <span className="zn-seal">桜</span>
+                Shubhanshu Pandey <em>· backend developer, Surat</em>
             </p>
-            <div className="ed-footer__meta">
-                <Link to="/resume">Résumé</Link>
-                <Link to="/blog">Notes</Link>
-                <span>&copy; {new Date().getFullYear()}</span>
-            </div>
+            <p className="zn-footer__colophon">
+                Every mountain, blossom and petal on this site is a text character. The music is generated live in your
+                browser. Built with React and Vite.
+            </p>
+            <p className="zn-footer__meta">
+                <Link to="/resume">résumé</Link>
+                <Link to="/blog">notes</Link>
+                <span>© {new Date().getFullYear()}</span>
+            </p>
         </div>
     </footer>
 );

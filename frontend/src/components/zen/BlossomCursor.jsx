@@ -1,10 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
-import { drawPetal, PETAL_COLORS, prefersReducedMotion } from './petal';
+import { prefersReducedMotion } from './motion';
+
+const PETAL_COLORS = ['#9b0d23', '#c21a36', '#e46a8c', '#ef8fab', '#f7b6c8'];
+const PETAL_CHARS = ['*', '✿', '❀', "'", '.', '`'];
 
 const HOVER_SELECTOR = 'a, button, [data-cursor], input, textarea, select, label';
 
-// Playful custom cursor: a crimson dot, a lagging ink ring that swells and
-// shows a label over links, a trail of falling petals, and a petal burst on click.
+// Playful custom cursor: a crimson dot, a lagging ring that swells and shows a label
+// over links, a trail of falling text-character petals, and a burst of them on click.
 // Only runs on devices with a fine pointer (mouse / trackpad).
 const BlossomCursor = () => {
     const dotRef = useRef(null);
@@ -22,7 +25,7 @@ const BlossomCursor = () => {
         const canvas = canvasRef.current;
         const ctx = canvas.getContext('2d');
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
-        document.documentElement.classList.add('ed-has-cursor');
+        document.documentElement.classList.add('zn-has-cursor');
 
         const resize = () => {
             canvas.width = window.innerWidth * dpr;
@@ -52,6 +55,7 @@ const BlossomCursor = () => {
                 life: 1,
                 decay: burst ? 0.012 : 0.018 + Math.random() * 0.01,
                 color: PETAL_COLORS[Math.floor(Math.random() * PETAL_COLORS.length)],
+                ch: PETAL_CHARS[Math.floor(Math.random() * PETAL_CHARS.length)],
             });
             if (petals.length > 140) petals.shift();
         };
@@ -63,7 +67,7 @@ const BlossomCursor = () => {
                 visible = true;
                 ringPos.x = mouse.x;
                 ringPos.y = mouse.y;
-                document.documentElement.classList.add('ed-cursor-visible');
+                document.documentElement.classList.add('zn-cursor-visible');
             }
             const dx = mouse.x - lastSpawn.x;
             const dy = mouse.y - lastSpawn.y;
@@ -76,7 +80,7 @@ const BlossomCursor = () => {
 
         const onLeave = () => {
             visible = false;
-            document.documentElement.classList.remove('ed-cursor-visible');
+            document.documentElement.classList.remove('zn-cursor-visible');
         };
 
         const onOver = (e) => {
@@ -118,7 +122,14 @@ const BlossomCursor = () => {
                     petals.splice(i, 1);
                     continue;
                 }
-                drawPetal(ctx, p.x, p.y, p.size, p.angle, p.color, Math.min(1, p.life * 1.4), Math.cos(p.life * 8));
+                ctx.save();
+                ctx.translate(p.x, p.y);
+                ctx.rotate(p.angle);
+                ctx.globalAlpha = Math.min(1, p.life * 1.4);
+                ctx.fillStyle = p.color;
+                ctx.font = `${Math.round(p.size * 2.4)}px "JetBrains Mono", monospace`;
+                ctx.fillText(p.ch, 0, 0);
+                ctx.restore();
             }
             raf = requestAnimationFrame(frame);
         };
@@ -133,7 +144,7 @@ const BlossomCursor = () => {
 
         return () => {
             cancelAnimationFrame(raf);
-            document.documentElement.classList.remove('ed-has-cursor', 'ed-cursor-visible');
+            document.documentElement.classList.remove('zn-has-cursor', 'zn-cursor-visible');
             window.removeEventListener('mousemove', onMove);
             window.removeEventListener('mousedown', onDown);
             window.removeEventListener('mouseup', onUp);
@@ -147,9 +158,9 @@ const BlossomCursor = () => {
 
     return (
         <>
-            <canvas ref={canvasRef} className="ed-cursor-trail" aria-hidden="true" />
-            <div ref={ringRef} className="ed-cursor-ring" aria-hidden="true" data-label="" />
-            <div ref={dotRef} className="ed-cursor-dot" aria-hidden="true" />
+            <canvas ref={canvasRef} className="zn-cursor-trail" aria-hidden="true" />
+            <div ref={ringRef} className="zn-cursor-ring" aria-hidden="true" data-label="" />
+            <div ref={dotRef} className="zn-cursor-dot" aria-hidden="true" />
         </>
     );
 };

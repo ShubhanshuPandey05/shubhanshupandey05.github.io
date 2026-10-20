@@ -3,15 +3,13 @@ import { useLocation } from 'react-router-dom';
 import api from '../utils/api';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import Hero from '../components/editorial/Hero';
-import Marquee from '../components/editorial/Marquee';
-import Preface from '../components/editorial/Preface';
-import Experience from '../components/editorial/Experience';
-import Works from '../components/editorial/Works';
-import Toolkit from '../components/editorial/Toolkit';
-import Margins from '../components/editorial/Margins';
-import Notes from '../components/editorial/Notes';
-import Contact from '../components/editorial/Contact';
+import AsciiHero from '../components/zen/AsciiHero';
+import Haiku from '../components/zen/Haiku';
+import Path from '../components/zen/Path';
+import Emaki from '../components/zen/Emaki';
+import RockGarden from '../components/zen/RockGarden';
+import Notes from '../components/zen/Notes';
+import Terminal from '../components/zen/Terminal';
 import * as content from '../data/content';
 
 // Pair an API project with its curated, rewritten copy (matched by repo URL or title).
@@ -105,18 +103,16 @@ const Home = () => {
     }, [location.hash, location.key]);
 
     return (
-        <div className="ed">
+        <div className="zn">
             <Navbar />
-            <main>
-                <Hero profile={data.profile} />
-                <Marquee skills={data.skills} />
-                <Preface copy={content.preface} stats={data.profile.stats} />
-                <Experience items={content.experience} />
-                <Works projects={data.projects} githubUrl={data.github} />
-                <Toolkit skills={data.skills} groups={content.skillGroups} />
-                <Margins education={content.education} />
+            <main className="zn-main">
+                <AsciiHero profile={data.profile} />
+                <Haiku copy={content.preface} stats={data.profile.stats} />
+                <Path experience={content.experience} education={content.education} />
+                <Emaki projects={data.projects} githubUrl={data.github} />
+                <RockGarden skills={data.skills} groups={content.skillGroups} />
                 <Notes blogs={data.blogs} />
-                <Contact email={data.profile.email} socials={data.socials} />
+                <Terminal email={data.profile.email} socials={data.socials} />
             </main>
             <Footer />
         </div>
