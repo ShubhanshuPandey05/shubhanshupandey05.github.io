@@ -4,7 +4,7 @@
    ========================================================= */
 
 :root {
-  --bg: var(--ink);
+  --bg: #0b0b0d;
   --bg-2: #111114;
   --bg-3: #18181c;
   --fg: #f2efe9;
@@ -25,17 +25,17 @@
   --gutter: clamp(16px, 4vw, 56px);
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --radius: 22px;
-  --ink: var(--ink);
-  --glass: var(--glass);
-  --glass-solid: var(--glass-solid);
+  --ink: #0b0b0d;
+  --glass: rgba(11, 11, 13, 0.8);
+  --glass-solid: rgba(17, 17, 20, 0.96);
   --card-a: #141418;
   --card-b: #0f0f12;
-  --demo: var(--demo);
-  --console: var(--console);
-  --ghost: var(--ghost);
-  --grid-dot: var(--grid-dot);
-  --edge: var(--edge);
-  --ring: var(--ring);
+  --demo: #121216;
+  --console: #070708;
+  --ghost: rgba(242, 239, 233, 0.14);
+  --grid-dot: rgba(242, 239, 233, 0.07);
+  --edge: rgba(242, 239, 233, 0.16);
+  --ring: rgba(242, 239, 233, 0.5);
   --form-bg: #f2efe9;
   --shadow: rgba(0, 0, 0, 0.45);
   --grain: 0.05;
