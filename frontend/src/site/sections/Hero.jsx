@@ -1,10 +1,7 @@
 import { useEffect, useState } from 'react';
-import { clamp, fontReady, reducedMotion, useCanvasScene } from '../lib';
+import { canvasPalette, clamp, fontReady, reducedMotion, useCanvasScene } from '../lib';
 import { unlock } from '../secrets';
 
-const FG = [242, 239, 233];
-const ACC = [255, 91, 46];
-const rgb = (c) => `rgb(${c[0]},${c[1]},${c[2]})`;
 
 const fontFor = (kind, size) =>
     kind === 'sans' ? `900 ${size}px "Inter Tight", Inter, system-ui, sans-serif` : `italic 400 ${size}px "Instrument Serif", Georgia, serif`;
@@ -197,8 +194,9 @@ const nameScene = ({ canvas, ctx }) => {
                     ctx.fillRect(p.x + Math.sin(t * 0.0016 + p.s) * wob, p.y + Math.cos(t * 0.0013 + p.s) * wob, size, size);
                 }
             };
-            draw(calm, rgb(FG));
-            draw(hot, rgb(ACC));
+            const pal = canvasPalette();
+            draw(calm, `rgb(${pal.fg})`);
+            draw(hot, `rgb(${pal.acc})`);
 
             for (let i = waves.length - 1; i >= 0; i--) {
                 const w = waves[i];
@@ -207,7 +205,7 @@ const nameScene = ({ canvas, ctx }) => {
                     waves.splice(i, 1);
                     continue;
                 }
-                ctx.strokeStyle = `rgba(${ACC.join(',')},${(1 - age) * 0.7})`;
+                ctx.strokeStyle = `rgba(${pal.acc},${(1 - age) * 0.7})`;
                 ctx.lineWidth = 1.5;
                 ctx.beginPath();
                 ctx.arc(w.x, w.y, 10 + age * Math.max(W, H) * 0.45, 0, Math.PI * 2);
@@ -243,9 +241,6 @@ const Hero = ({ profile }) => {
                 {profile.name}, {profile.title}
             </h1>
             <div className="sp-hero__top">
-                <p className="sp-pill">
-                    <span className="sp-live" /> Available for backend work
-                </p>
                 <p className="sp-hero__lede">
                     I build the quiet parts of software: <em>APIs, queues, scrapers and real-time pipes</em>, and the servers
                     they run on.

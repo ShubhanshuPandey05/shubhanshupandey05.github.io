@@ -14,12 +14,23 @@ import ManageSkills from './pages/admin/ManageSkills';
 import ManageSocials from './pages/admin/ManageSocials';
 import ManageBlogs from './pages/admin/ManageBlogs';
 import AdminLayout from './components/admin/AdminLayout';
+import { useEffect } from 'react';
 import Cursor from './site/Cursor';
+import { armAutoplay, stopSound } from './site/sound';
 
 // The custom cursor belongs to the public site, not the admin dashboard.
 const PublicCursor = () => {
   const { pathname } = useLocation();
-  return pathname.startsWith('/admin') ? null : <Cursor />;
+  const admin = pathname.startsWith('/admin');
+  // Ambient music on the public site; never in the admin dashboard.
+  useEffect(() => {
+    if (admin) {
+      stopSound();
+      return undefined;
+    }
+    return armAutoplay();
+  }, [admin]);
+  return admin ? null : <Cursor />;
 };
 
 function App() {

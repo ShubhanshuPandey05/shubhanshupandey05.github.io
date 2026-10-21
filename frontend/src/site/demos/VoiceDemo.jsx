@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useCanvasScene, reducedMotion } from '../lib';
+import { canvasPalette, useCanvasScene, reducedMotion } from '../lib';
 import { unlock } from '../secrets';
 
 const CHANNELS = [
@@ -16,7 +16,6 @@ const SCRIPT = [
     { ch: 'web', who: 'ai', text: 'Moved to 5 PM. Same conversation, third channel. ✓' },
 ];
 
-const COLORS = ['255,91,46', '255,177,153', '92,242,181', '242,239,233'];
 
 const waveScene = (state) => ({ ctx }) => {
     let W = 0;
@@ -31,7 +30,8 @@ const waveScene = (state) => ({ ctx }) => {
             state.target = Math.max(state.floor, state.target * 0.97);
             ctx.clearRect(0, 0, W, H);
             const mid = H / 2;
-            COLORS.forEach((c, i) => {
+            const pal = canvasPalette();
+            [pal.acc, pal.soft, pal.ok, pal.fg].forEach((c, i) => {
                 const amp = H * 0.36 * state.energy * (1 - i * 0.17);
                 const f = 0.012 + i * 0.004;
                 const ph = t * (0.003 + i * 0.0011) + i * 1.7;

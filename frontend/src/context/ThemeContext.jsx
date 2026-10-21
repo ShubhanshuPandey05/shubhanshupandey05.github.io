@@ -10,9 +10,11 @@ export const useTheme = () => {
 
 export const ThemeProvider = ({ children }) => {
     const [theme, setTheme] = useState(() => {
-        // v3: the redesign is dark-first.
+        // Saved choice first, otherwise follow the visitor's system setting.
         try {
-            return localStorage.getItem('portfolio_theme_v3') || 'dark';
+            const saved = localStorage.getItem('portfolio_theme_v3');
+            if (saved) return saved;
+            return window.matchMedia?.('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
         } catch {
             return 'dark';
         }
@@ -25,6 +27,7 @@ export const ThemeProvider = ({ children }) => {
         } else {
             root.classList.remove('light');
         }
+        document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'light' ? '#f4f1ea' : '#0b0b0d');
         try {
             localStorage.setItem('portfolio_theme_v3', theme);
         } catch {

@@ -1,4 +1,4 @@
-import { clamp, useCanvasScene } from '../lib';
+import { canvasPalette, clamp, useCanvasScene } from '../lib';
 import { unlock } from '../secrets';
 
 const ROLES = ['Backend Engineer', 'Node.js Developer', 'Data Analyst', 'DevOps Intern', 'React Developer', 'QA Engineer', 'Python Developer', 'Product Designer', 'SRE', 'ML Engineer', 'Support Engineer', 'Go Developer'];
@@ -25,6 +25,8 @@ const geoScene = ({ canvas, ctx }) => {
     let W = 0;
     let H = 0;
     let base = null;
+    let baseLight = null;
+    let pal = canvasPalette();
     let pins = [];
     let last = 0;
     let search = null;
@@ -38,11 +40,13 @@ const geoScene = ({ canvas, ctx }) => {
         const b = base.getContext('2d');
         b.scale(dpr, dpr);
         const r = rng(7);
-        b.fillStyle = '#121216';
+        pal = canvasPalette();
+        baseLight = pal.light;
+        b.fillStyle = pal.bg;
         b.fillRect(0, 0, W, H);
         // Parks
         for (let i = 0; i < 6; i++) {
-            b.fillStyle = 'rgba(92,242,181,0.05)';
+            b.fillStyle = `rgba(${pal.park},${pal.light ? 0.1 : 0.05})`;
             b.beginPath();
             b.roundRect(r() * W, r() * H, 40 + r() * 90, 30 + r() * 60, 10);
             b.fill();
@@ -51,7 +55,7 @@ const geoScene = ({ canvas, ctx }) => {
         b.save();
         b.translate(W / 2, H / 2);
         b.rotate(-0.18);
-        b.strokeStyle = 'rgba(242,239,233,0.05)';
+        b.strokeStyle = `rgba(${pal.fg},${pal.light ? 0.07 : 0.05})`;
         b.lineWidth = 1;
         const span = Math.max(W, H) * 1.3;
         for (let x = -span; x < span; x += 22 + r() * 18) {
@@ -68,7 +72,7 @@ const geoScene = ({ canvas, ctx }) => {
         }
         b.restore();
         // Arterial roads
-        b.strokeStyle = 'rgba(242,239,233,0.13)';
+        b.strokeStyle = `rgba(${pal.fg},${pal.light ? 0.16 : 0.13})`;
         b.lineWidth = 2.5;
         for (let i = 0; i < 4; i++) {
             b.beginPath();
@@ -80,7 +84,7 @@ const geoScene = ({ canvas, ctx }) => {
         b.ellipse(W * 0.55, H * 0.5, W * 0.32, H * 0.36, 0.2, 0, Math.PI * 2);
         b.stroke();
         // River
-        b.strokeStyle = 'rgba(120,160,255,0.16)';
+        b.strokeStyle = `rgba(${pal.blue},${pal.light ? 0.2 : 0.16})`;
         b.lineWidth = 16;
         b.lineCap = 'round';
         b.beginPath();
@@ -125,6 +129,7 @@ const geoScene = ({ canvas, ctx }) => {
         },
         frame(t) {
             if (!base) return;
+            if (canvasPalette().light !== baseLight) paintBase();
             ctx.drawImage(base, 0, 0, W, H);
             if (!last || t - last > (pins.length < MAX_PINS ? 380 : 1500)) {
                 last = t;
@@ -136,8 +141,8 @@ const geoScene = ({ canvas, ctx }) => {
             if (search) {
                 const grow = clamp((t - search.t0) / 400, 0, 1);
                 const rr = search.r * (1 - Math.pow(1 - grow, 3));
-                ctx.fillStyle = 'rgba(255,91,46,0.08)';
-                ctx.strokeStyle = 'rgba(255,91,46,0.8)';
+                ctx.fillStyle = `rgba(${pal.acc},0.08)`;
+                ctx.strokeStyle = `rgba(${pal.acc},0.8)`;
                 ctx.setLineDash([5, 5]);
                 ctx.lineDashOffset = -t / 60;
                 ctx.lineWidth = 1.2;
@@ -146,7 +151,7 @@ const geoScene = ({ canvas, ctx }) => {
                 ctx.fill();
                 ctx.stroke();
                 ctx.setLineDash([]);
-                ctx.fillStyle = '#ff5b2e';
+                ctx.fillStyle = `rgb(${pal.acc})`;
                 ctx.beginPath();
                 ctx.arc(search.x, search.y, 3, 0, Math.PI * 2);
                 ctx.fill();
@@ -159,7 +164,7 @@ const geoScene = ({ canvas, ctx }) => {
                 const fade = Math.min(1, age * 3);
                 const inS = search && Math.hypot(p.x - search.x, p.y - search.y) <= search.r;
                 if (inS) inside++;
-                const color = inS ? '255,91,46' : '242,239,233';
+                const color = inS ? pal.acc : pal.fg;
                 const alpha = (search && !inS ? 0.35 : 1) * fade;
                 if (age < 1.6) {
                     const ra = age / 1.6;
@@ -176,7 +181,7 @@ const geoScene = ({ canvas, ctx }) => {
                 ctx.lineTo(p.x, y);
                 ctx.closePath();
                 ctx.fill();
-                ctx.fillStyle = '#121216';
+                ctx.fillStyle = pal.bg;
                 ctx.beginPath();
                 ctx.arc(p.x, y - 9, 2, 0, Math.PI * 2);
                 ctx.fill();
@@ -193,15 +198,15 @@ const geoScene = ({ canvas, ctx }) => {
                 ? `${inside} roles within ${(search.r * kmPerPx).toFixed(1)} km`
                 : `${pins.length} roles indexed · live`;
             const hw = ctx.measureText(hud).width + 34;
-            ctx.fillStyle = 'rgba(11,11,13,0.85)';
+            ctx.fillStyle = pal.light ? 'rgba(250,248,243,0.92)' : 'rgba(11,11,13,0.85)';
             ctx.beginPath();
             ctx.roundRect(12, 12, hw, 26, 13);
             ctx.fill();
-            ctx.fillStyle = Math.sin(t / 300) > 0 ? '#5cf2b5' : 'rgba(92,242,181,0.35)';
+            ctx.fillStyle = `rgba(${pal.ok},${Math.sin(t / 300) > 0 ? 1 : 0.35})`;
             ctx.beginPath();
             ctx.arc(25, 25, 3.5, 0, Math.PI * 2);
             ctx.fill();
-            ctx.fillStyle = '#f2efe9';
+            ctx.fillStyle = `rgb(${pal.fg})`;
             ctx.fillText(hud, 34, 25.5);
 
             if (hover) {
@@ -215,14 +220,14 @@ const geoScene = ({ canvas, ctx }) => {
                 const bw = Math.max(w1, w2) + 22;
                 const bx = Math.min(W - bw - 8, Math.max(8, hover.x - bw / 2));
                 const by = hover.y - 66 < 8 ? hover.y + 8 : hover.y - 66;
-                ctx.fillStyle = '#f2efe9';
+                ctx.fillStyle = `rgb(${pal.fg})`;
                 ctx.beginPath();
                 ctx.roundRect(bx, by, bw, 46, 10);
                 ctx.fill();
-                ctx.fillStyle = '#0b0b0d';
+                ctx.fillStyle = pal.light ? '#f4f1ea' : '#0b0b0d';
                 ctx.font = '600 12px Inter, sans-serif';
                 ctx.fillText(l1, bx + 11, by + 16);
-                ctx.fillStyle = '#5b5852';
+                ctx.fillStyle = pal.light ? '#b5afa4' : '#5b5852';
                 ctx.font = '500 11px "JetBrains Mono", monospace';
                 ctx.fillText(l2, bx + 11, by + 32);
             }

@@ -116,6 +116,14 @@ export const useCanvasScene = (factory) => {
     return ref;
 };
 
+export const isLight = () => typeof document !== 'undefined' && document.documentElement.classList.contains('light');
+
+// Colors for canvas scenes, which cannot read CSS variables cheaply every frame.
+export const canvasPalette = () =>
+    isLight()
+        ? { fg: '20,20,22', acc: '229,72,27', soft: '185,67,31', ok: '14,159,110', bg: '#e9e5dc', blue: '61,111,217', park: '14,159,110', light: true }
+        : { fg: '242,239,233', acc: '255,91,46', soft: '255,177,153', ok: '92,242,181', bg: '#121216', blue: '120,160,255', park: '92,242,181', light: false };
+
 export const cssVar = (name, fallback) => {
     if (typeof window === 'undefined') return fallback;
     const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();

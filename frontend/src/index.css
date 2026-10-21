@@ -37,16 +37,17 @@
 
 /* =================== LIGHT THEME =================== */
 html.light {
-  --color-bg-primary: #f7f3ee;
-  --color-bg-secondary: #efe8e1;
-  --color-bg-tertiary: #e6ddd5;
-  --color-bg-card: #fbf8f4;
-  --color-accent: #9b0d23;
-  --color-text-primary: #0d0b0b;
-  --color-text-secondary: #3a3a3a;
-  --color-text-muted: #777777;
-  --color-border: rgba(0, 0, 0, 0.1);
-  --color-border-strong: rgba(0, 0, 0, 0.2);
+  --color-bg-primary: #f4f1ea;
+  --color-bg-secondary: #ebe7de;
+  --color-bg-tertiary: #e3ded3;
+  --color-bg-card: #fbf9f4;
+  --color-accent: #e5481b;
+  --color-accent-light: #f0623a;
+  --color-text-primary: #141416;
+  --color-text-secondary: #45423c;
+  --color-text-muted: #7a756c;
+  --color-border: rgba(20, 20, 22, 0.1);
+  --color-border-strong: rgba(20, 20, 22, 0.2);
 }
 
 /* =================== BASE STYLES =================== */

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { SoundToggle, ThemeToggle } from '../site/Toggles';
 
 export const CHAPTERS = [
     { id: 'about', label: 'About' },
@@ -78,6 +79,10 @@ const Navbar = () => {
                 <div className="sp-rail__progress" aria-hidden="true">
                     <span style={{ transform: `scaleY(${progress})` }} />
                 </div>
+                <div className="sp-rail__tools">
+                    <SoundToggle />
+                    <ThemeToggle />
+                </div>
                 <Link to="/resume" className="sp-rail__cv" data-cursor="read">
                     Résumé
                 </Link>
@@ -88,6 +93,8 @@ const Navbar = () => {
                     S<span>P</span>
                 </Link>
                 <span className="sp-topbar__name">Shubhanshu Pandey</span>
+                <SoundToggle />
+                <ThemeToggle />
                 <button
                     type="button"
                     className={`sp-burger ${open ? 'is-open' : ''}`}
