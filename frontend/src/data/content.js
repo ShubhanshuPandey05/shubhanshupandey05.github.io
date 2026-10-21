@@ -1,4 +1,4 @@
-// Curated copy for the editorial redesign.
+// Curated copy for the portfolio.
 // Live data from the API (about, projects, skills, socials) still wins where it exists;
 // this file fills the gaps and supplies the rewritten long-form copy.
 
@@ -19,12 +19,12 @@ export const profile = {
 };
 
 export const preface = {
-    headline: ['I like my systems the way', 'I like mountains —', 'steady, layered,', 'built to outlast the weather.'],
+    statement:
+        'I build the backends nobody sees: *APIs,* *queues,* *scrapers* and *real-time* *pipes,* so the product on top can feel effortless.',
     paragraphs: [
         "Hello. I'm Shubhanshu, a backend developer from Surat, wrapping up a B.Tech in Computer Science at Uka Tarsadia University. In the last year and a half I've shipped real-time voice and chat backends, WhatsApp automation, a face-recognition attendance system on AWS, and a map-based job search engine that scrapes and re-indexes itself twice a day.",
         "My home turf is Node.js and Python, Postgres and Mongo, Redis and BullMQ, and the unglamorous work in between: retries, idempotency, caching, and the Nginx config nobody else wants to touch. Lately I've been working directly with business owners too, turning paper processes into software that quietly saves them hours.",
     ],
-    quote: 'Good backends are like blossoms on old wood. Nobody sees the branch, but nothing blooms without it.',
 };
 
 export const experience = [
@@ -146,11 +146,11 @@ export const skills = [
 ];
 
 export const skillGroups = [
-    { key: 'Backend', label: 'The Engine Room', note: 'Languages, runtimes, queues' },
-    { key: 'Database', label: 'The Archive', note: 'Where the data sleeps' },
-    { key: 'DevOps', label: 'The Weather', note: 'Infra, deploys, servers' },
-    { key: 'Tools', label: 'The Workbench', note: 'Everyday instruments' },
-    { key: 'Frontend', label: 'The Shopfront', note: 'When the UI needs me' },
+    { key: 'Backend', label: 'Backend', note: 'Languages, runtimes, queues' },
+    { key: 'Database', label: 'Data', note: 'Where the data sleeps' },
+    { key: 'DevOps', label: 'Infra', note: 'Deploys, servers, pipelines' },
+    { key: 'Tools', label: 'Workbench', note: 'Everyday instruments' },
+    { key: 'Frontend', label: 'Frontend', note: 'When the UI needs me' },
     { key: 'Other', label: 'Odds & Ends', note: 'Everything else' },
 ];
 

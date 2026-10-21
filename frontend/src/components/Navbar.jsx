@@ -1,83 +1,125 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import SoundToggle from './ink/SoundToggle';
 
-const links = [
-    { label: 'About', hash: 'about' },
-    { label: 'Experience', hash: 'experience' },
-    { label: 'Work', hash: 'work' },
-    { label: 'Skills', hash: 'skills' },
-    { label: 'Notes', to: '/blog' },
-    { label: 'Contact', hash: 'contact' },
+export const CHAPTERS = [
+    { id: 'about', label: 'About' },
+    { id: 'work', label: 'Work' },
+    { id: 'system', label: 'System' },
+    { id: 'experience', label: 'Experience' },
+    { id: 'skills', label: 'Toolbox' },
+    { id: 'terminal', label: 'Terminal' },
+    { id: 'notes', label: 'Notes' },
+    { id: 'contact', label: 'Contact' },
 ];
 
-// A plain top bar: name on the left, chapters in the middle, sound and résumé on the right.
+// Desktop: a fixed chapter rail on the left with reading progress.
+// Mobile: a slim top bar and a full-screen menu.
 const Navbar = () => {
-    const location = useLocation();
-    const [scrolled, setScrolled] = useState(false);
-    const [open, setOpen] = useState(false);
+    const { pathname, hash } = useLocation();
+    const onHome = pathname === '/';
     const [active, setActive] = useState('');
+    const [progress, setProgress] = useState(0);
+    const [open, setOpen] = useState(false);
 
     useEffect(() => {
-        const onScroll = () => {
-            setScrolled(window.scrollY > 24);
-            let current = '';
-            links.forEach((l) => {
-                const el = l.hash && document.getElementById(l.hash);
-                if (el && el.getBoundingClientRect().top < window.innerHeight * 0.4) current = l.hash;
+        document.documentElement.classList.add('sp-has-rail');
+        return () => document.documentElement.classList.remove('sp-has-rail');
+    }, []);
+
+    useEffect(() => {
+        let raf = 0;
+        const update = () => {
+            raf = 0;
+            const max = document.documentElement.scrollHeight - window.innerHeight;
+            setProgress(max > 0 ? window.scrollY / max : 0);
+            let cur = '';
+            CHAPTERS.forEach((c) => {
+                const el = document.getElementById(c.id);
+                if (el && el.getBoundingClientRect().top < window.innerHeight * 0.45) cur = c.id;
             });
-            setActive(current);
+            setActive(cur);
         };
-        onScroll();
+        const onScroll = () => {
+            if (!raf) raf = requestAnimationFrame(update);
+        };
+        update();
         window.addEventListener('scroll', onScroll, { passive: true });
-        return () => window.removeEventListener('scroll', onScroll);
-    }, [location.pathname]);
+        window.addEventListener('resize', onScroll);
+        return () => {
+            cancelAnimationFrame(raf);
+            window.removeEventListener('scroll', onScroll);
+            window.removeEventListener('resize', onScroll);
+        };
+    }, [pathname]);
 
-    useEffect(() => setOpen(false), [location.pathname, location.hash]);
-
+    useEffect(() => setOpen(false), [pathname, hash]);
     useEffect(() => {
-        document.documentElement.classList.toggle('ik-menu-open', open);
-        return () => document.documentElement.classList.remove('ik-menu-open');
+        document.documentElement.classList.toggle('sp-menu-open', open);
+        return () => document.documentElement.classList.remove('sp-menu-open');
     }, [open]);
 
+    const to = (id) => ({ pathname: '/', hash: `#${id}` });
+    const isActive = (id) => (id === 'notes' && pathname.startsWith('/blog')) || (onHome && active === id);
+
     return (
-        <header className={`ik-nav ${scrolled ? 'is-scrolled' : ''} ${open ? 'is-open' : ''}`}>
-            <Link to="/" className="ik-nav__logo" data-cursor="home">
-                <span className="ik-nav__mark" aria-hidden="true">山</span>
-                <span>Shubhanshu Pandey</span>
-            </Link>
-            <nav className="ik-nav__links" aria-label="Main">
-                {links.map((l, i) => {
-                    const isActive = l.to ? location.pathname.startsWith(l.to) : location.pathname === '/' && active === l.hash;
-                    return (
-                        <Link
-                            key={l.label}
-                            to={l.to || { pathname: '/', hash: `#${l.hash}` }}
-                            className={isActive ? 'is-active' : ''}
-                            style={{ '--i': i }}
-                        >
-                            {l.label}
+        <>
+            <aside className="sp-rail" aria-label="Chapters">
+                <Link to="/" className="sp-rail__logo" data-cursor="home" aria-label="Home">
+                    S<span>P</span>
+                </Link>
+                <nav className="sp-rail__nav">
+                    {CHAPTERS.map((c, i) => (
+                        <Link key={c.id} to={to(c.id)} className={isActive(c.id) ? 'is-active' : ''}>
+                            <span className="sp-rail__num">{String(i + 1).padStart(2, '0')}</span>
+                            <span className="sp-rail__label">{c.label}</span>
                         </Link>
-                    );
-                })}
-            </nav>
-            <div className="ik-nav__tools">
-                <SoundToggle />
-                <Link to="/resume" className="ik-btn ik-btn--small" data-cursor="read">
+                    ))}
+                </nav>
+                <div className="sp-rail__progress" aria-hidden="true">
+                    <span style={{ transform: `scaleY(${progress})` }} />
+                </div>
+                <Link to="/resume" className="sp-rail__cv" data-cursor="read">
                     Résumé
                 </Link>
+            </aside>
+
+            <header className="sp-topbar">
+                <Link to="/" className="sp-topbar__logo" aria-label="Home">
+                    S<span>P</span>
+                </Link>
+                <span className="sp-topbar__name">Shubhanshu Pandey</span>
                 <button
                     type="button"
-                    className="ik-nav__burger"
+                    className={`sp-burger ${open ? 'is-open' : ''}`}
+                    onClick={() => setOpen((v) => !v)}
                     aria-expanded={open}
                     aria-label={open ? 'Close menu' : 'Open menu'}
-                    onClick={() => setOpen((v) => !v)}
                 >
                     <span />
                     <span />
                 </button>
+                <span className="sp-topbar__progress" style={{ transform: `scaleX(${progress})` }} aria-hidden="true" />
+            </header>
+
+            <Link to={to('contact')} className="sp-talk" data-cursor="say hi">
+                <span className="sp-live" /> Let’s talk
+            </Link>
+
+            <div className={`sp-menu ${open ? 'is-open' : ''}`} aria-hidden={!open}>
+                <nav>
+                    {CHAPTERS.map((c, i) => (
+                        <Link key={c.id} to={to(c.id)} tabIndex={open ? 0 : -1} style={{ '--i': i }}>
+                            <span className="sp-mono">{String(i + 1).padStart(2, '0')}</span>
+                            {c.label}
+                        </Link>
+                    ))}
+                    <Link to="/resume" tabIndex={open ? 0 : -1} style={{ '--i': CHAPTERS.length }}>
+                        <span className="sp-mono">CV</span>
+                        Résumé
+                    </Link>
+                </nav>
             </div>
-        </header>
+        </>
     );
 };
 

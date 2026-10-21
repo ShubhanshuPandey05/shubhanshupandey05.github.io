@@ -47,7 +47,7 @@ const ResumeViewer = () => {
                         </Link>
                     </div>
 
-                    <div className="glass rounded-2xl overflow-hidden border border-dark-500/60 shadow-2xl shadow-black/20 min-h-[75vh]">
+                    <div className="glass rounded-2xl overflow-hidden border border-border shadow-2xl shadow-black/20 min-h-[75vh]">
                         {loading ? (
                             <div className="min-h-[75vh] flex items-center justify-center">
                                 <div className="flex flex-col items-center gap-4">

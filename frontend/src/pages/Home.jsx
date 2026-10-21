@@ -3,13 +3,18 @@ import { useLocation } from 'react-router-dom';
 import api from '../utils/api';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import Hero from '../components/ink/sections/Hero';
-import About from '../components/ink/sections/About';
-import Experience from '../components/ink/sections/Experience';
-import Work from '../components/ink/sections/Work';
-import Skills from '../components/ink/sections/Skills';
-import Notes from '../components/ink/sections/Notes';
-import Contact from '../components/ink/sections/Contact';
+import Hero from '../site/sections/Hero';
+import About, { Marquee } from '../site/sections/About';
+import Work from '../site/sections/Work';
+import SystemMap from '../site/sections/SystemMap';
+import Experience from '../site/sections/Experience';
+import Skills from '../site/sections/Skills';
+import Terminal from '../site/sections/Terminal';
+import Notes from '../site/sections/Notes';
+import Contact from '../site/sections/Contact';
+import SecretsTracker from '../site/SecretsTracker';
+import Preloader from '../site/Preloader';
+import { confetti, unlock } from '../site/secrets';
 import * as content from '../data/content';
 
 // Pair an API project with its curated, rewritten copy (matched by repo URL or title).
@@ -87,6 +92,23 @@ const Home = () => {
         return { profile, projects, skills, socials, blogs, github };
     }, [remote]);
 
+    // Konami code anywhere on the page unlocks a secret.
+    useEffect(() => {
+        const code = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+        let pos = 0;
+        const onKey = (e) => {
+            const k = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+            pos = k === code[pos] ? pos + 1 : k === code[0] ? 1 : 0;
+            if (pos === code.length) {
+                pos = 0;
+                unlock('hire');
+                confetti(window.innerWidth / 2, window.innerHeight / 2, 220);
+            }
+        };
+        window.addEventListener('keydown', onKey);
+        return () => window.removeEventListener('keydown', onKey);
+    }, []);
+
     // Support /#works style links from other pages and the nav.
     useEffect(() => {
         if (!location.hash) return undefined;
@@ -102,19 +124,26 @@ const Home = () => {
         return () => clearInterval(timer);
     }, [location.hash, location.key]);
 
+    const tech = ['Node.js', 'Python', 'PostgreSQL', 'Redis', 'BullMQ', 'WebSockets', 'Playwright', 'Docker', 'AWS', 'Nginx', 'MongoDB', 'Twilio'];
+
     return (
-        <div className="ik">
+        <div className="sp">
+            <Preloader />
             <Navbar />
             <main>
                 <Hero profile={data.profile} />
-                <About copy={content.preface} education={content.education} />
-                <Experience experience={content.experience} />
+                <Marquee items={tech} />
+                <About copy={content.preface} stats={data.profile.stats} education={content.education} />
                 <Work projects={data.projects} githubUrl={data.github} />
+                <SystemMap />
+                <Experience experience={content.experience} />
                 <Skills skills={data.skills} groups={content.skillGroups} />
-                <Notes blogs={data.blogs} />
-                <Contact email={data.profile.email} socials={data.socials} />
+                <Terminal data={{ ...data, experience: content.experience }} />
+                <Notes blogs={data.blogs} index="07" />
+                <Contact email={data.profile.email} socials={data.socials} index="08" />
             </main>
             <Footer />
+            <SecretsTracker />
         </div>
     );
 };

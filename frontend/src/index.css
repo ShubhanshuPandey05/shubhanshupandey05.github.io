@@ -2,17 +2,17 @@
 
 /* =================== DESIGN TOKENS =================== */
 @theme {
-  --font-serif: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --font-serif: 'Inter Tight', 'Inter', system-ui, sans-serif;
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', 'Courier New', monospace;
 
-  /* Core palette: deep crimson, ink and paper */
-  --color-ink: #0d0b0b;
-  --color-paper: #f7f3ee;
+  /* Core palette: near-black, warm white and a signal orange */
+  --color-ink: #0b0b0d;
+  --color-paper: #f2efe9;
   --color-paper-warm: #efe8e1;
   --color-cream: #fbf8f4;
-  --color-accent: #b0142c;
-  --color-accent-light: #c21a36;
+  --color-accent: #ff5b2e;
+  --color-accent-light: #ff7a52;
   --color-gray-900: #1a1a1a;
   --color-gray-800: #2a2a2a;
   --color-gray-700: #3a3a3a;
@@ -24,13 +24,13 @@
   --color-gray-100: #eeeeee;
 
   /* Semantic colors — dark mode default */
-  --color-bg-primary: #0d0b0b;
-  --color-bg-secondary: #141111;
-  --color-bg-tertiary: #1d1818;
-  --color-bg-card: #161212;
-  --color-text-primary: #f7f3ee;
-  --color-text-secondary: #bbbbbb;
-  --color-text-muted: #777777;
+  --color-bg-primary: #0b0b0d;
+  --color-bg-secondary: #111114;
+  --color-bg-tertiary: #18181c;
+  --color-bg-card: #141417;
+  --color-text-primary: #f2efe9;
+  --color-text-secondary: #b9b5ad;
+  --color-text-muted: #8a867f;
   --color-border: rgba(255, 255, 255, 0.1);
   --color-border-strong: rgba(255, 255, 255, 0.2);
 }
@@ -240,7 +240,7 @@ html.light .editorial-card:hover {
 /* =================== BLOG TYPOGRAPHY =================== */
 
 .blog-content {
-  font-family: var(--font-serif);
+  font-family: var(--font-sans);
   font-size: 1.125rem;
   line-height: 1.9;
   color: var(--color-text-secondary);

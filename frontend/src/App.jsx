@@ -14,12 +14,12 @@ import ManageSkills from './pages/admin/ManageSkills';
 import ManageSocials from './pages/admin/ManageSocials';
 import ManageBlogs from './pages/admin/ManageBlogs';
 import AdminLayout from './components/admin/AdminLayout';
-import BlossomCursor from './components/ink/BlossomCursor';
+import Cursor from './site/Cursor';
 
-// The playful cursor belongs to the public site, not the admin dashboard.
+// The custom cursor belongs to the public site, not the admin dashboard.
 const PublicCursor = () => {
   const { pathname } = useLocation();
-  return pathname.startsWith('/admin') ? null : <BlossomCursor />;
+  return pathname.startsWith('/admin') ? null : <Cursor />;
 };
 
 function App() {
