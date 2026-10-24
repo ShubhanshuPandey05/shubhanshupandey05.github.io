@@ -1,0 +1,162 @@
+{
+  "title": "Choose the visual world",
+  "question": "The roll assigned the Kominka farmhouse. Keep it, take the alternate, or re-roll. Every option keeps your asks: torii, cherry blossom, a red sun, brush lettering, Japanese text and rich motion.",
+  "options": [
+    {
+      "id": "assigned",
+      "label": "Kominka: the farmhouse above the paddies",
+      "kicker": "THE ROLL",
+      "lineage": "Thatched farmhouses of Japan's mountain villages: noren, shoji, engawa, andon",
+      "thesis": "Your site is an old farmhouse you walk through, and the valley is always in view.",
+      "palette": ["#1F3559", "#241D1A", "#EDE7D9", "#D5462B", "#EDB9C0"],
+      "materials": ["indigo-dyed cotton", "charred cedar", "shoji paper", "vermilion lacquer"],
+      "viewport": "An indigo noren with your name dyed in white hangs from a cedar beam; three paper lanterns, one per live project, glow beside it; below the hem, the valley: torii, cherry tree, red sun.",
+      "risk": "An interior walk can tip into theme park. Every prop has to carry real content or it goes.",
+      "raised": [
+        { "from": "challenger-command-center", "raise": "Live state is real: a lantern lights only after your browser reaches that project's URL." },
+        { "from": "challenger-orizuru", "raise": "Colour commits at page scale: the noren is a whole field of indigo, never an accent on cream." },
+        { "from": "challenger-neubrutalist", "raise": "One module rules the page: every column and gap snaps to the shoji lattice." },
+        { "from": "challenger-terminal", "raise": "States speak in the house's own signs: a hanging sign when the journal is empty, an empty room when a page is missing." },
+        { "from": "challenger-datamatics", "raise": "Total palette commitment: indigo, cedar, paper, vermilion, blossom. Nothing else gets in." },
+        { "from": "challenger-cloud-edge", "raise": "Light is a state: the valley moves from morning to red-sun dusk to lantern-lit night as the visit goes on." }
+      ],
+      "wireframe": {
+        "cols": 12,
+        "rows": 10,
+        "regions": [
+          { "label": "cedar beam: nav, resume", "x": 0, "y": 0, "w": 12, "h": 1 },
+          { "label": "indigo noren: name in white, brush kanji", "x": 0, "y": 1, "w": 9, "h": 5, "accent": true },
+          { "label": "lanterns: lit = live project", "x": 9, "y": 1, "w": 3, "h": 5 },
+          { "label": "valley: torii, cherry tree, red sun", "x": 0, "y": 6, "w": 12, "h": 4 }
+        ]
+      }
+    },
+    {
+      "id": "model-pick",
+      "label": "Emaki: the valley as one ink scroll",
+      "kicker": "IMPECCABLE’S PICK",
+      "lineage": "Suibokuga ink-wash handscrolls and the brush title cards of period cinema",
+      "thesis": "One continuous ink-wash valley, painted in code stroke by stroke, with a brush title card for every section.",
+      "palette": ["#ECE6D8", "#17191C", "#8B8D8B", "#CF3A24", "#EAB5BD"],
+      "materials": ["sumi ink wash", "washi with kozo fibre", "vermilion seal paste"],
+      "viewport": "A giant kanji is brush-written stroke by stroke beside your name; behind it ink ridges, a vermilion torii and a red sun, with petals crossing on the wind.",
+      "risk": "Paper, ink and a red sun is the first picture of Japan anyone, and any AI, reaches for. It only lifts if the brushwork is convincing.",
+      "wireframe": {
+        "cols": 12,
+        "rows": 10,
+        "regions": [
+          { "label": "nav", "x": 0, "y": 0, "w": 12, "h": 1 },
+          { "label": "name, role, actions", "x": 0, "y": 2, "w": 7, "h": 4 },
+          { "label": "giant brush kanji, written live", "x": 8, "y": 1, "w": 4, "h": 6, "accent": true },
+          { "label": "ink ridges, torii, red sun, petals", "x": 0, "y": 7, "w": 12, "h": 3 }
+        ]
+      }
+    },
+    {
+      "id": "challenger-command-center",
+      "label": "Anime command wall",
+      "verdict": "declined",
+      "lineage": "Nineties mecha-anime crisis displays",
+      "thesis": "Your live products on a wall of orange readouts and kanji-over-caps alarms.",
+      "palette": ["#000000", "#FF7A00", "#B6FF00", "#E01E1E"],
+      "materials": ["phosphor glow", "hazard chevrons"],
+      "viewport": "A black wall of framed readouts with a countdown clock taller than the headline.",
+      "case": "Fuses with the live-products story but cannot carry the countryside you asked for without becoming a costume.",
+      "kept": "Live condition readouts on every project.",
+      "risk": "Japanese, but a city control room, not a rural valley.",
+      "hero": "https://impeccable.style/worlds/cards/pop-culture-shelf-anime-command-center-hero.webp"
+    },
+    {
+      "id": "challenger-orizuru",
+      "label": "Vermilion washi crane",
+      "verdict": "declined",
+      "lineage": "Origami fold diagrams on dyed washi",
+      "thesis": "One sheet of vermilion washi folded, section by section, into a crane.",
+      "palette": ["#D83A2E", "#F6F1E9", "#EDE3D1", "#1A1A1A", "#D4AF37"],
+      "materials": ["vermilion washi", "crease lines", "sumi notes"],
+      "viewport": "A red square of paper with fold lines fills the right half; the step list runs down the margin.",
+      "case": "Beautiful material, but torii, blossom and a valley have nowhere to live on a folding sheet.",
+      "kept": "A saturated field that owns whole regions, with visible paper fibre.",
+      "risk": "Reads as a craft tutorial rather than a place.",
+      "hero": "https://impeccable.style/worlds/cards/paper-folds-pleats-deployable-orizuru-crane-sequence-hero.webp"
+    },
+    {
+      "id": "challenger-neubrutalist",
+      "label": "Award-grade neubrutalism",
+      "verdict": "declined",
+      "lineage": "Neubrutalist product sites",
+      "thesis": "Flat clashing solids in heavy black outlines on one strict grid.",
+      "palette": ["#F5F0E6", "#111111", "#FFB703", "#FF4D8D", "#2D5BFF"],
+      "materials": ["black outlines", "hard offset shadows"],
+      "viewport": "A chunky grotesk headline over outlined colour blocks.",
+      "case": "No path to a Japanese countryside without discarding everything that makes it itself.",
+      "kept": "One rhythmic grid that every element locks to.",
+      "risk": "A different brief entirely.",
+      "hero": "https://impeccable.style/worlds/cards/neubrutalist-award-grade-hero.webp"
+    },
+    {
+      "id": "challenger-terminal",
+      "label": "Green phosphor terminal",
+      "verdict": "declined",
+      "lineage": "Machine-room CRT terminals",
+      "thesis": "The portfolio as one scrolling green-on-black transcript.",
+      "palette": ["#07110A", "#3DFF7A", "#1E7A3C"],
+      "materials": ["phosphor glow", "scanlines"],
+      "viewport": "A blinking cursor and an 80-column log of your work.",
+      "case": "The tool a developer operates, worn as a costume, and the opposite of the theme you asked for.",
+      "kept": "States print themselves in the world's own voice instead of generic chrome.",
+      "risk": "The default developer-portfolio cliche.",
+      "hero": "https://impeccable.style/worlds/cards/signals-instruments-phosphor-terminal-midnight-hero.webp"
+    },
+    {
+      "id": "challenger-datamatics",
+      "label": "Data-sublime field",
+      "verdict": "declined",
+      "lineage": "Black-and-white data installations",
+      "thesis": "Barcode columns and sine lattices in pure black and white.",
+      "palette": ["#000000", "#FFFFFF"],
+      "materials": ["hairline bars", "monospace numerals"],
+      "viewport": "A wall of vertical bars with dense numbers in the margin.",
+      "case": "Hiring managers would see noise before they see three live products.",
+      "kept": "Total commitment to a small palette.",
+      "risk": "Striking, cold, and nothing to do with a village.",
+      "hero": "https://impeccable.style/worlds/cards/ikeda-datamatics-hero.webp"
+    },
+    {
+      "id": "challenger-cloud-edge",
+      "label": "Iridescent cloud edge",
+      "verdict": "declined",
+      "lineage": "Atmospheric optics field notes",
+      "thesis": "A white page whose only colour is a thin pastel fringe that shifts with state.",
+      "palette": ["#FAFAFA", "#5B6570", "#BFE8D6", "#F2C2D4", "#C9B8F0"],
+      "materials": ["cloud white", "hairline spectra"],
+      "viewport": "A near-empty white field with a faint mint-to-violet edge.",
+      "case": "Too quiet for the showpiece you asked for.",
+      "kept": "Light as a state that changes while you watch.",
+      "risk": "The opposite of fabulous.",
+      "hero": "https://impeccable.style/worlds/cards/clouds-storms-auroras-iridescent-cloud-edge-hero.webp"
+    }
+  ],
+  "reroll": { "registers": ["safer", "bolder"] },
+  "buildPath": { "value": "code" },
+  "canon": true,
+  "canonCard": {
+    "label": "The category standard",
+    "thesis": "A clean developer portfolio in the current standard, executed well.",
+    "palette": ["#0B0D10", "#F5F5F4", "#3B82F6"],
+    "materials": ["clean grid", "project screenshots"],
+    "viewport": "Name, role and two buttons over a dark ground, with a row of project cards below.",
+    "risk": "Indistinguishable from most developer portfolios by design, and it drops the Japanese countryside.",
+    "wireframe": {
+      "cols": 12,
+      "rows": 10,
+      "regions": [
+        { "label": "nav", "x": 0, "y": 0, "w": 12, "h": 1 },
+        { "label": "name and role", "x": 1, "y": 2, "w": 7, "h": 3 },
+        { "label": "buttons", "x": 1, "y": 5, "w": 4, "h": 1 },
+        { "label": "project cards", "x": 1, "y": 7, "w": 10, "h": 3 }
+      ]
+    }
+  },
+  "steer": true
+}

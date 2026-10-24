@@ -1,74 +1,149 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import api from '../utils/api';
 import Navbar from '../components/Navbar';
-import Hero from '../components/Hero';
-import Blog from '../components/Blog';
-import About from '../components/About';
-import Contact from '../components/Contact';
 import Footer from '../components/Footer';
-import CursorGlow from '../components/CursorGlow';
-import Projects from '../components/Projects';
-import Skills from '../components/Skills';
+import Hero from '../site/sections/Hero';
+import About, { Marquee } from '../site/sections/About';
+import Work from '../site/sections/Work';
+import SystemMap from '../site/sections/SystemMap';
+import Experience from '../site/sections/Experience';
+import Skills from '../site/sections/Skills';
+import Terminal from '../site/sections/Terminal';
+import Notes from '../site/sections/Notes';
+import Contact from '../site/sections/Contact';
+import SecretsTracker from '../site/SecretsTracker';
+import Preloader from '../site/Preloader';
+import { confetti, unlock } from '../site/secrets';
+import * as content from '../data/content';
+
+// Pair an API project with its curated, rewritten copy (matched by repo URL or title).
+const curate = (apiProject) => {
+    const haystack = `${apiProject.githubUrl || ''} ${apiProject.title || ''}`.toLowerCase();
+    const curated = content.projects.find((c) => c.match.some((m) => haystack.includes(m)));
+    if (curated) {
+        return {
+            ...curated,
+            githubUrl: apiProject.githubUrl || curated.githubUrl,
+            liveUrl: apiProject.liveUrl || curated.liveUrl,
+        };
+    }
+    return {
+        key: null,
+        title: apiProject.title,
+        kicker: apiProject.category || 'Project',
+        year: apiProject.createdAt ? String(new Date(apiProject.createdAt).getFullYear()) : '',
+        deck: apiProject.description,
+        body: apiProject.longDescription ? [apiProject.longDescription] : [],
+        techStack: apiProject.techStack || [],
+        githubUrl: apiProject.githubUrl,
+        liveUrl: apiProject.liveUrl,
+    };
+};
 
 const Home = () => {
-    const [about, setAbout] = useState(null);
-    const [socialLinks, setSocialLinks] = useState([]);
-    const [blogs, setBlogs] = useState([]);
-    const [projects, setProjects] = useState([]);
-    const [skills, setSkills] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const location = useLocation();
+    const [remote, setRemote] = useState({ about: null, socials: [], blogs: [], projects: [], skills: [] });
 
+    // Render the curated copy immediately, then layer in live data from the CMS when it arrives.
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const [aboutRes, socialsRes, blogsRes, projectsRes, skillsRes] = await Promise.allSettled([
-                    api.get('/about'),
-                    api.get('/social-links'),
-                    api.get('/blogs'),
-                    api.get('/projects'),
-                    api.get('/skills'),
-                ]);
-                if (aboutRes.status === 'fulfilled') setAbout(aboutRes.value.data);
-                if (socialsRes.status === 'fulfilled') setSocialLinks(socialsRes.value.data);
-                if (blogsRes.status === 'fulfilled') setBlogs(blogsRes.value.data);
-                if (projectsRes.status === 'fulfilled') setProjects(projectsRes.value.data);
-                if (skillsRes.status === 'fulfilled') setSkills(skillsRes.value.data);
-            } catch (err) {
-                console.error('Error loading portfolio data:', err);
-            } finally {
-                setLoading(false);
-            }
+        let alive = true;
+        Promise.allSettled([
+            api.get('/about'),
+            api.get('/social-links'),
+            api.get('/blogs'),
+            api.get('/projects'),
+            api.get('/skills'),
+        ]).then(([about, socials, blogs, projects, skills]) => {
+            if (!alive) return;
+            const ok = (r) => (r.status === 'fulfilled' ? r.value.data : null);
+            setRemote({
+                about: ok(about),
+                socials: Array.isArray(ok(socials)) ? ok(socials) : [],
+                blogs: Array.isArray(ok(blogs)) ? ok(blogs) : [],
+                projects: Array.isArray(ok(projects)) ? ok(projects) : [],
+                skills: Array.isArray(ok(skills)) ? ok(skills) : [],
+            });
+        });
+        return () => {
+            alive = false;
         };
-        fetchData();
     }, []);
 
-    if (loading) {
-        return (
-            <div className="min-h-screen bg-bg-primary flex items-center justify-center">
-                <div className="flex flex-col items-center gap-4">
-                    <div className="w-8 h-8 border border-accent border-t-transparent rounded-full animate-spin" />
-                    <span className="font-mono text-xs text-text-muted tracking-widest uppercase">Loading</span>
-                </div>
-            </div>
-        );
-    }
+    const data = useMemo(() => {
+        const about = remote.about || {};
+        const profile = {
+            ...content.profile,
+            title: about.title || content.profile.title,
+            email: about.email || content.profile.email,
+            stats: { ...content.profile.stats, ...(about.stats || {}) },
+        };
+        const projects = remote.projects.length
+            ? [...remote.projects].sort((a, b) => (a.order ?? 0) - (b.order ?? 0)).map(curate)
+            : content.projects;
+        const skills = remote.skills.length
+            ? [...remote.skills].sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+            : content.skills;
+        const socials = remote.socials.length
+            ? [...remote.socials].sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+            : content.socials;
+        const blogs = remote.blogs.filter((b) => b.published !== false);
+        const github = socials.find((s) => /github/i.test(s.platform))?.url || content.socials[0].url;
+        return { profile, projects, skills, socials, blogs, github };
+    }, [remote]);
+
+    // Konami code anywhere on the page unlocks a secret.
+    useEffect(() => {
+        const code = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+        let pos = 0;
+        const onKey = (e) => {
+            const k = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+            pos = k === code[pos] ? pos + 1 : k === code[0] ? 1 : 0;
+            if (pos === code.length) {
+                pos = 0;
+                unlock('hire');
+                confetti(window.innerWidth / 2, window.innerHeight / 2, 220);
+            }
+        };
+        window.addEventListener('keydown', onKey);
+        return () => window.removeEventListener('keydown', onKey);
+    }, []);
+
+    // Support /#works style links from other pages and the nav.
+    useEffect(() => {
+        if (!location.hash) return undefined;
+        const id = location.hash.slice(1);
+        let tries = 0;
+        const timer = setInterval(() => {
+            const el = document.getElementById(id);
+            if (el || tries++ > 20) {
+                clearInterval(timer);
+                el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }, 60);
+        return () => clearInterval(timer);
+    }, [location.hash, location.key]);
+
+    const tech = ['Node.js', 'Python', 'PostgreSQL', 'Redis', 'BullMQ', 'WebSockets', 'Playwright', 'Docker', 'AWS', 'Nginx', 'MongoDB', 'Twilio'];
 
     return (
-        <div className="min-h-screen bg-bg-primary">
-            <CursorGlow />
+        <div className="sp">
+            <Preloader />
             <Navbar />
-            <Hero about={about} />
-            <About about={about} />
-            {blogs.length > 0 ? (
-                <Blog blogs={blogs} />
-            ) : (
-                <>
-                    <Skills skills={skills} />
-                    <Projects projects={projects} />
-                </>
-            )}
-            <Contact about={about} socialLinks={socialLinks} />
+            <main>
+                <Hero profile={data.profile} />
+                <Marquee items={tech} />
+                <About copy={content.preface} stats={data.profile.stats} education={content.education} />
+                <Work projects={data.projects} githubUrl={data.github} />
+                <SystemMap />
+                <Experience experience={content.experience} />
+                <Skills skills={data.skills} groups={content.skillGroups} />
+                <Terminal data={{ ...data, experience: content.experience }} />
+                <Notes blogs={data.blogs} index="07" />
+                <Contact email={data.profile.email} socials={data.socials} index="08" />
+            </main>
             <Footer />
+            <SecretsTracker />
         </div>
     );
 };

@@ -1,138 +1,132 @@
-import { useState, useEffect } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { FiMenu, FiX, FiSun, FiMoon } from 'react-icons/fi';
-import { useTheme } from '../context/ThemeContext';
+import { useEffect, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { SoundToggle, ThemeToggle } from '../site/Toggles';
 
-const navLinks = [
-    { label: 'About', href: 'about', type: 'scroll' },
-    { label: 'Work', href: '/work', type: 'route' },
-    { label: 'Blog', href: '/blog', type: 'route' },
-    { label: 'Contact', href: 'contact', type: 'scroll' },
+export const CHAPTERS = [
+    { id: 'about', label: 'About' },
+    { id: 'work', label: 'Work' },
+    { id: 'system', label: 'System' },
+    { id: 'experience', label: 'Experience' },
+    { id: 'skills', label: 'Toolbox' },
+    { id: 'terminal', label: 'Terminal' },
+    { id: 'notes', label: 'Notes' },
+    { id: 'contact', label: 'Contact' },
 ];
 
+// Desktop: a fixed chapter rail on the left with reading progress.
+// Mobile: a slim top bar and a full-screen menu.
 const Navbar = () => {
-    const navigate = useNavigate();
-    const location = useLocation();
-    const [scrolled, setScrolled] = useState(false);
-    const [mobileOpen, setMobileOpen] = useState(false);
-    const { theme, toggleTheme } = useTheme();
+    const { pathname, hash } = useLocation();
+    const onHome = pathname === '/';
+    const [active, setActive] = useState('');
+    const [progress, setProgress] = useState(0);
+    const [open, setOpen] = useState(false);
 
     useEffect(() => {
-        const handleScroll = () => setScrolled(window.scrollY > 50);
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
+        document.documentElement.classList.add('sp-has-rail');
+        return () => document.documentElement.classList.remove('sp-has-rail');
     }, []);
 
-    const scrollToSection = (sectionId, attempts = 0) => {
-        const el = document.getElementById(sectionId);
-        if (el) {
-            el.scrollIntoView({ behavior: 'smooth' });
-            return;
-        }
-        if (attempts < 25) {
-            setTimeout(() => scrollToSection(sectionId, attempts + 1), 100);
-        }
-    };
+    useEffect(() => {
+        let raf = 0;
+        const update = () => {
+            raf = 0;
+            const max = document.documentElement.scrollHeight - window.innerHeight;
+            setProgress(max > 0 ? window.scrollY / max : 0);
+            let cur = '';
+            CHAPTERS.forEach((c) => {
+                const el = document.getElementById(c.id);
+                if (el && el.getBoundingClientRect().top < window.innerHeight * 0.45) cur = c.id;
+            });
+            setActive(cur);
+        };
+        const onScroll = () => {
+            if (!raf) raf = requestAnimationFrame(update);
+        };
+        update();
+        window.addEventListener('scroll', onScroll, { passive: true });
+        window.addEventListener('resize', onScroll);
+        return () => {
+            cancelAnimationFrame(raf);
+            window.removeEventListener('scroll', onScroll);
+            window.removeEventListener('resize', onScroll);
+        };
+    }, [pathname]);
 
-    const handleNavClick = (link) => {
-        if (link.type === 'route') {
-            navigate(link.href);
-            return;
-        }
+    useEffect(() => setOpen(false), [pathname, hash]);
+    useEffect(() => {
+        document.documentElement.classList.toggle('sp-menu-open', open);
+        return () => document.documentElement.classList.remove('sp-menu-open');
+    }, [open]);
 
-        if (location.pathname !== '/') {
-            navigate('/');
-        }
-        scrollToSection(link.href);
-    };
+    const to = (id) => ({ pathname: '/', hash: `#${id}` });
+    const isActive = (id) => (id === 'notes' && pathname.startsWith('/blog')) || (onHome && active === id);
 
     return (
-        <motion.nav
-            initial={{ y: -100 }}
-            animate={{ y: 0 }}
-            transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
-            className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled
-                ? 'bg-bg-primary/90 backdrop-blur-md border-b border-border'
-                : 'bg-transparent'
-                }`}
-        >
-            <div className="max-w-7xl mx-auto px-6 md:px-12 py-5 flex items-center justify-between">
-                {/* Logo */}
-                <Link
-                    to="/"
-                    className="font-serif text-xl md:text-2xl font-bold tracking-tight text-text-primary hover:text-accent transition-colors duration-300"
-                >
-                    SP<span className="text-accent">.</span>
+        <>
+            <aside className="sp-rail" aria-label="Chapters">
+                <Link to="/" className="sp-rail__logo" data-cursor="home" aria-label="Home">
+                    S<span>P</span>
                 </Link>
-
-                {/* Desktop Links */}
-                <div className="hidden md:flex items-center gap-10">
-                    {navLinks.map((link) => (
-                        <button
-                            key={link.label}
-                            onClick={() => handleNavClick(link)}
-                            className="text-caption text-text-muted hover:text-text-primary transition-colors duration-300"
-                        >
-                            {link.label}
-                        </button>
+                <nav className="sp-rail__nav">
+                    {CHAPTERS.map((c, i) => (
+                        <Link key={c.id} to={to(c.id)} className={isActive(c.id) ? 'is-active' : ''}>
+                            <span className="sp-rail__num">{String(i + 1).padStart(2, '0')}</span>
+                            <span className="sp-rail__label">{c.label}</span>
+                        </Link>
                     ))}
-                    <button
-                        onClick={toggleTheme}
-                        className="p-2 text-text-muted hover:text-text-primary transition-colors duration-300"
-                        aria-label="Toggle theme"
-                    >
-                        {theme === 'dark' ? <FiSun size={16} /> : <FiMoon size={16} />}
-                    </button>
+                </nav>
+                <div className="sp-rail__progress" aria-hidden="true">
+                    <span style={{ transform: `scaleY(${progress})` }} />
                 </div>
+                <div className="sp-rail__tools">
+                    <SoundToggle />
+                    <ThemeToggle />
+                </div>
+                <Link to="/resume" className="sp-rail__cv" data-cursor="read">
+                    Résumé
+                </Link>
+            </aside>
 
-                {/* Mobile buttons */}
-                <div className="flex md:hidden items-center gap-3">
-                    <button
-                        onClick={toggleTheme}
-                        className="p-2 text-text-muted hover:text-text-primary transition-colors"
-                        aria-label="Toggle theme"
-                    >
-                        {theme === 'dark' ? <FiSun size={16} /> : <FiMoon size={16} />}
-                    </button>
-                    <button
-                        onClick={() => setMobileOpen(!mobileOpen)}
-                        className="text-text-primary"
-                        aria-label="Toggle menu"
-                    >
-                        {mobileOpen ? <FiX size={22} /> : <FiMenu size={22} />}
-                    </button>
-                </div>
+            <header className="sp-topbar">
+                <Link to="/" className="sp-topbar__logo" aria-label="Home">
+                    S<span>P</span>
+                </Link>
+                <span className="sp-topbar__name">Shubhanshu Pandey</span>
+                <SoundToggle />
+                <ThemeToggle />
+                <button
+                    type="button"
+                    className={`sp-burger ${open ? 'is-open' : ''}`}
+                    onClick={() => setOpen((v) => !v)}
+                    aria-expanded={open}
+                    aria-label={open ? 'Close menu' : 'Open menu'}
+                >
+                    <span />
+                    <span />
+                </button>
+                <span className="sp-topbar__progress" style={{ transform: `scaleX(${progress})` }} aria-hidden="true" />
+            </header>
+
+            <Link to={to('contact')} className="sp-talk" data-cursor="say hi">
+                <span className="sp-live" /> Let’s talk
+            </Link>
+
+            <div className={`sp-menu ${open ? 'is-open' : ''}`} aria-hidden={!open}>
+                <nav>
+                    {CHAPTERS.map((c, i) => (
+                        <Link key={c.id} to={to(c.id)} tabIndex={open ? 0 : -1} style={{ '--i': i }}>
+                            <span className="sp-mono">{String(i + 1).padStart(2, '0')}</span>
+                            {c.label}
+                        </Link>
+                    ))}
+                    <Link to="/resume" tabIndex={open ? 0 : -1} style={{ '--i': CHAPTERS.length }}>
+                        <span className="sp-mono">CV</span>
+                        Résumé
+                    </Link>
+                </nav>
             </div>
-
-            {/* Mobile Menu */}
-            <AnimatePresence>
-                {mobileOpen && (
-                    <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.3 }}
-                        className="md:hidden bg-bg-primary border-b border-border overflow-hidden"
-                    >
-                        <div className="px-6 py-6 flex flex-col gap-5">
-                            {navLinks.map((link) => (
-                                <button
-                                    key={link.label}
-                                    onClick={() => {
-                                        handleNavClick(link);
-                                        setMobileOpen(false);
-                                    }}
-                                    className="text-caption text-text-muted hover:text-text-primary transition-colors text-left"
-                                >
-                                    {link.label}
-                                </button>
-                            ))}
-                        </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
-        </motion.nav>
+        </>
     );
 };
 

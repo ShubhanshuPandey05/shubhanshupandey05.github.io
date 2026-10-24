@@ -10,8 +10,14 @@ export const useTheme = () => {
 
 export const ThemeProvider = ({ children }) => {
     const [theme, setTheme] = useState(() => {
-        const saved = localStorage.getItem('portfolio_theme');
-        return saved || 'dark';
+        // Saved choice first, otherwise light.
+        try {
+            const saved = localStorage.getItem('portfolio_theme_v4');
+            if (saved) return saved;
+            return 'light';
+        } catch {
+            return 'light';
+        }
     });
 
     useEffect(() => {
@@ -21,7 +27,12 @@ export const ThemeProvider = ({ children }) => {
         } else {
             root.classList.remove('light');
         }
-        localStorage.setItem('portfolio_theme', theme);
+        document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'light' ? '#f4f1ea' : '#0b0b0d');
+        try {
+            localStorage.setItem('portfolio_theme_v4', theme);
+        } catch {
+            /* ignore */
+        }
     }, [theme]);
 
     const toggleTheme = () => setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));

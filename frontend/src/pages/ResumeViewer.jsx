@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import api from '../utils/api';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import CursorGlow from '../components/CursorGlow';
 
 const ResumeViewer = () => {
     const [resumeUrl, setResumeUrl] = useState('');
@@ -26,7 +25,6 @@ const ResumeViewer = () => {
 
     return (
         <div className="min-h-screen bg-bg-primary text-text-primary">
-            <CursorGlow />
             <Navbar />
 
             <main className="relative px-6 md:px-12 py-24 md:py-32">
@@ -49,7 +47,7 @@ const ResumeViewer = () => {
                         </Link>
                     </div>
 
-                    <div className="glass rounded-2xl overflow-hidden border border-dark-500/60 shadow-2xl shadow-black/20 min-h-[75vh]">
+                    <div className="glass rounded-2xl overflow-hidden border border-border shadow-2xl shadow-black/20 min-h-[75vh]">
                         {loading ? (
                             <div className="min-h-[75vh] flex items-center justify-center">
                                 <div className="flex flex-col items-center gap-4">
