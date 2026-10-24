@@ -10,13 +10,13 @@ export const useTheme = () => {
 
 export const ThemeProvider = ({ children }) => {
     const [theme, setTheme] = useState(() => {
-        // Saved choice first, otherwise follow the visitor's system setting.
+        // Saved choice first, otherwise light.
         try {
-            const saved = localStorage.getItem('portfolio_theme_v3');
+            const saved = localStorage.getItem('portfolio_theme_v4');
             if (saved) return saved;
-            return window.matchMedia?.('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+            return 'light';
         } catch {
-            return 'dark';
+            return 'light';
         }
     });
 
@@ -29,7 +29,7 @@ export const ThemeProvider = ({ children }) => {
         }
         document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'light' ? '#f4f1ea' : '#0b0b0d');
         try {
-            localStorage.setItem('portfolio_theme_v3', theme);
+            localStorage.setItem('portfolio_theme_v4', theme);
         } catch {
             /* ignore */
         }
