@@ -1,0 +1,743 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-08T03:53:00.902Z",
+  "title": "Design System: Shubhanshu Pandey Portfolio",
+  "extensions": {
+    "colorMeta": {
+      "cedar-950": {
+        "role": "neutral",
+        "displayName": "Soot Cedar, underside",
+        "canonical": "oklch(16.8% 0.008 48)",
+        "tonalRamp": [
+          "#0e0a08",
+          "#272321",
+          "#46413f",
+          "#67625f",
+          "#8a8582",
+          "#afa9a6",
+          "#d2ccc9",
+          "#f3edea"
+        ]
+      },
+      "cedar-900": {
+        "role": "neutral",
+        "displayName": "Soot Cedar, wall",
+        "canonical": "oklch(20.1% 0.010 53)",
+        "tonalRamp": [
+          "#0f0a07",
+          "#282320",
+          "#47413d",
+          "#68625e",
+          "#8b8581",
+          "#b0a9a5",
+          "#d3ccc8",
+          "#f4ede8"
+        ]
+      },
+      "cedar-800": {
+        "role": "neutral",
+        "displayName": "Soot Cedar, beam",
+        "canonical": "oklch(23.8% 0.013 52)",
+        "tonalRamp": [
+          "#100a06",
+          "#29221e",
+          "#48413c",
+          "#6a615c",
+          "#8d847f",
+          "#b2a9a3",
+          "#d5cbc6",
+          "#f6ece7"
+        ]
+      },
+      "cedar-700": {
+        "role": "neutral",
+        "displayName": "Soot Cedar, post",
+        "canonical": "oklch(28.5% 0.022 64)",
+        "tonalRamp": [
+          "#120903",
+          "#2c2219",
+          "#4b4037",
+          "#6c6157",
+          "#908479",
+          "#b5a89d",
+          "#d8cbbf",
+          "#f9ece0"
+        ]
+      },
+      "cedar-600": {
+        "role": "neutral",
+        "displayName": "Soot Cedar, sill",
+        "canonical": "oklch(36.5% 0.030 63)",
+        "tonalRamp": [
+          "#140801",
+          "#2f2115",
+          "#4e3f32",
+          "#706052",
+          "#948374",
+          "#b9a798",
+          "#ddcaba",
+          "#feebda"
+        ]
+      },
+      "ai-700": {
+        "role": "secondary",
+        "displayName": "Indigo Cotton",
+        "canonical": "oklch(33.0% 0.070 260)",
+        "tonalRamp": [
+          "#000828",
+          "#0e2345",
+          "#2c4267",
+          "#4b648b",
+          "#6d87b1",
+          "#91acd8",
+          "#b3cffc",
+          "#e6effe"
+        ]
+      },
+      "ai-300": {
+        "role": "secondary",
+        "displayName": "Faded Indigo, mark",
+        "canonical": "oklch(75.8% 0.052 259)",
+        "tonalRamp": [
+          "#010a20",
+          "#14243d",
+          "#31435e",
+          "#516481",
+          "#7387a6",
+          "#97accc",
+          "#bacff0",
+          "#e5efff"
+        ]
+      },
+      "ai-200": {
+        "role": "secondary",
+        "displayName": "Faded Indigo, text",
+        "canonical": "oklch(86.1% 0.032 262)",
+        "tonalRamp": [
+          "#050b19",
+          "#1b2434",
+          "#394354",
+          "#596476",
+          "#7c879a",
+          "#a0abc0",
+          "#c2cee3",
+          "#e6effe"
+        ]
+      },
+      "washi": {
+        "role": "neutral",
+        "displayName": "Washi",
+        "canonical": "oklch(92.9% 0.020 88)",
+        "tonalRamp": [
+          "#0f0b03",
+          "#282419",
+          "#474237",
+          "#686357",
+          "#8b8679",
+          "#b0aa9d",
+          "#d3cdc0",
+          "#f4eee0"
+        ]
+      },
+      "washi-dim": {
+        "role": "neutral",
+        "displayName": "Washi, transom",
+        "canonical": "oklch(85.7% 0.028 86)",
+        "tonalRamp": [
+          "#100a01",
+          "#2a2314",
+          "#494232",
+          "#6a6252",
+          "#8e8574",
+          "#b3aa98",
+          "#d6cdba",
+          "#f7eeda"
+        ]
+      },
+      "washi-warm": {
+        "role": "neutral",
+        "displayName": "Lit Lamp Paper",
+        "canonical": "oklch(93.1% 0.050 88)",
+        "tonalRamp": [
+          "#110a00",
+          "#2e2203",
+          "#4d4122",
+          "#6f6242",
+          "#938564",
+          "#b8aa87",
+          "#dbcda9",
+          "#fcedc9"
+        ]
+      },
+      "paper-unlit": {
+        "role": "neutral",
+        "displayName": "Unlit Paper",
+        "canonical": "oklch(68.9% 0.025 82)",
+        "tonalRamp": [
+          "#100a02",
+          "#2a2316",
+          "#494133",
+          "#6a6253",
+          "#8e8575",
+          "#b3aa99",
+          "#d6cdbc",
+          "#f7eddc"
+        ]
+      },
+      "sumi": {
+        "role": "neutral",
+        "displayName": "Sumi Ink",
+        "canonical": "oklch(22.6% 0.008 59)",
+        "tonalRamp": [
+          "#0e0a08",
+          "#272320",
+          "#46413e",
+          "#67625e",
+          "#8a8581",
+          "#afaaa6",
+          "#d2ccc8",
+          "#f3ede9"
+        ]
+      },
+      "sumi-2": {
+        "role": "neutral",
+        "displayName": "Sumi Ink, running text",
+        "canonical": "oklch(38.4% 0.018 71)",
+        "tonalRamp": [
+          "#100a04",
+          "#2a231a",
+          "#494138",
+          "#6a6258",
+          "#8e847a",
+          "#b3a99f",
+          "#d6ccc1",
+          "#f7ede2"
+        ]
+      },
+      "sumi-3": {
+        "role": "neutral",
+        "displayName": "Sumi Ink, labels",
+        "canonical": "oklch(48.1% 0.023 72)",
+        "tonalRamp": [
+          "#110903",
+          "#2b2218",
+          "#4a4135",
+          "#6c6155",
+          "#8f8478",
+          "#b4a99c",
+          "#d7ccbe",
+          "#f8ecde"
+        ]
+      },
+      "ash": {
+        "role": "neutral",
+        "displayName": "Ash",
+        "canonical": "oklch(77.0% 0.026 81)",
+        "tonalRamp": [
+          "#110a01",
+          "#2b2315",
+          "#4a4133",
+          "#6b6253",
+          "#8e8575",
+          "#b3a999",
+          "#d7ccbb",
+          "#f8eddb"
+        ]
+      },
+      "ash-dim": {
+        "role": "neutral",
+        "displayName": "Ash, dim",
+        "canonical": "oklch(64.8% 0.025 78)",
+        "tonalRamp": [
+          "#110a02",
+          "#2b2316",
+          "#4a4134",
+          "#6b6254",
+          "#8f8576",
+          "#b4a99a",
+          "#d7ccbc",
+          "#f8eddc"
+        ]
+      },
+      "shu": {
+        "role": "primary",
+        "displayName": "Vermilion Lacquer",
+        "canonical": "oklch(59.3% 0.184 33)",
+        "tonalRamp": [
+          "#210000",
+          "#490500",
+          "#7d1300",
+          "#b42302",
+          "#df4f34",
+          "#fe8167",
+          "#ffbbac",
+          "#fee9e4"
+        ]
+      },
+      "shu-bright": {
+        "role": "primary",
+        "displayName": "Vermilion, bright",
+        "canonical": "oklch(65.7% 0.180 33)",
+        "tonalRamp": [
+          "#200000",
+          "#480700",
+          "#7c1600",
+          "#b32704",
+          "#dd5235",
+          "#ff8165",
+          "#febbab",
+          "#fee9e4"
+        ]
+      },
+      "shu-deep": {
+        "role": "primary",
+        "displayName": "Vermilion Lacquer, deep",
+        "canonical": "oklch(50.9% 0.164 33)",
+        "tonalRamp": [
+          "#210000",
+          "#490500",
+          "#7d1300",
+          "#ad311a",
+          "#d75840",
+          "#fe8168",
+          "#ffbbac",
+          "#fee9e4"
+        ]
+      },
+      "lamp": {
+        "role": "tertiary",
+        "displayName": "Lamp Amber",
+        "canonical": "oklch(81.9% 0.120 74)",
+        "tonalRamp": [
+          "#140800",
+          "#341f00",
+          "#5b3b01",
+          "#865800",
+          "#b07a20",
+          "#d79f4c",
+          "#fcc270",
+          "#feebd3"
+        ]
+      },
+      "blossom-light": {
+        "role": "tertiary",
+        "displayName": "Blossom, light",
+        "canonical": "oklch(93.7% 0.025 18)",
+        "tonalRamp": [
+          "#140707",
+          "#2f1f1f",
+          "#4f3d3d",
+          "#715e5e",
+          "#958080",
+          "#baa5a5",
+          "#dec8c8",
+          "#fee9e9"
+        ]
+      },
+      "blossom": {
+        "role": "tertiary",
+        "displayName": "Blossom",
+        "canonical": "oklch(84.5% 0.062 6)",
+        "tonalRamp": [
+          "#1e0007",
+          "#3c151f",
+          "#5e343d",
+          "#82545e",
+          "#a77780",
+          "#ce9ba5",
+          "#f3bdc7",
+          "#fee8ec"
+        ]
+      },
+      "blossom-deep": {
+        "role": "tertiary",
+        "displayName": "Blossom, deep",
+        "canonical": "oklch(76.3% 0.090 4)",
+        "tonalRamp": [
+          "#1f0008",
+          "#44091f",
+          "#682b3d",
+          "#8d4c5d",
+          "#b46f80",
+          "#db93a4",
+          "#ffb7c7",
+          "#ffe8ec"
+        ]
+      },
+      "border": {
+        "role": "neutral",
+        "displayName": "Board Hairline",
+        "canonical": "rgb(237 231 217 / 0.14)",
+        "tonalRamp": [
+          "#0f0b03",
+          "#282419",
+          "#474237",
+          "#686357",
+          "#8b8679",
+          "#b0aa9d",
+          "#d3cdc0",
+          "#f4eee0"
+        ]
+      },
+      "border-strong": {
+        "role": "neutral",
+        "displayName": "Field Hairline",
+        "canonical": "rgb(237 231 217 / 0.28)",
+        "tonalRamp": [
+          "#0f0b03",
+          "#282419",
+          "#474237",
+          "#686357",
+          "#8b8679",
+          "#b0aa9d",
+          "#d3cdc0",
+          "#f4eee0"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "The name dyed on the entrance cloth. From 64rem up it is clamp(3rem, min(7.4vw, 23.7svh - 4.3rem), 6rem)."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "A room's English title beside its brushed kanji."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Project names on lamps and journal entry titles."
+      },
+      "quote": {
+        "displayName": "Quote",
+        "purpose": "The tagline on the veranda pane and article blockquotes, in mincho at weight 500."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Default reading text, capped at 62ch."
+      },
+      "body-long": {
+        "displayName": "Body, long-form",
+        "purpose": "The bio and journal articles, on paper only."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Tags, beam links, inline actions, tier names."
+      },
+      "caption": {
+        "displayName": "Caption",
+        "purpose": "Fact labels, dates, footer credits, short status lines."
+      },
+      "brush": {
+        "displayName": "Brush",
+        "purpose": "Small brushed marks: formal numerals, tier characters, the shop sign, the farewell. Display-size kanji are stroke-written SVG instead."
+      },
+      "code": {
+        "displayName": "Code",
+        "purpose": "Inline and block code in journal articles."
+      }
+    },
+    "shadows": [
+      {
+        "name": "board-edge",
+        "value": "0 2px 0 #120e0c",
+        "purpose": "The visible thickness of a piece of wood (3px on the beam and roof boards, 4px on the sill). Always paired with a soft drop."
+      },
+      {
+        "name": "hanging-drop",
+        "value": "0 14px 22px -12px rgb(0 0 0 / 0.8)",
+        "purpose": "Under tags and name plates at rest."
+      },
+      {
+        "name": "hanging-drop-raised",
+        "value": "0 22px 26px -14px rgb(0 0 0 / 0.85)",
+        "purpose": "Under a tag lifted on hover."
+      },
+      {
+        "name": "beam-drop",
+        "value": "0 3px 0 #120e0c, 0 18px 30px -12px rgb(0 0 0 / 0.85)",
+        "purpose": "Under the fixed beam."
+      },
+      {
+        "name": "pane-frame",
+        "value": "inset 0 0 0 1px rgb(255 255 255 / 0.4), inset 0 0 70px rgb(120 86 40 / 0.14), 0 0 0 5px #120e0c, 0 0 0 6px #4a3b2e, 0 36px 70px -34px rgb(0 0 0 / 0.85), 0 0 110px -36px rgb(242 184 102 / 0.4)",
+        "purpose": "A lit paper pane in its cedar frame, with a faint spill of lamplight."
+      },
+      {
+        "name": "lamp-glow",
+        "value": "radial-gradient(closest-side, rgb(242 184 102 / 0.5), rgb(242 184 102 / 0.16) 52%, transparent)",
+        "purpose": "Background glow on the wall behind a lit lamp; fades in over 900ms."
+      },
+      {
+        "name": "plaque",
+        "value": "inset 0 0 0 1px rgb(237 231 217 / 0.1), 0 10px 18px -10px rgb(0 0 0 / 0.8)",
+        "purpose": "Dark name plates by the lanterns."
+      },
+      {
+        "name": "dyed-lettering",
+        "value": "0 0 1px rgb(237 231 217 / 0.8), 0 0 14px rgb(19 34 56 / 0.5)",
+        "purpose": "Text-shadow for resist-dyed lettering on cloth: a slight bleed at the edges."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.23, 1, 0.32, 1)",
+        "purpose": "Reveals, presses, lamp ignition, brush strokes."
+      },
+      {
+        "name": "ease-in-out",
+        "value": "cubic-bezier(0.77, 0, 0.175, 1)",
+        "purpose": "The shop sign turning over (700ms)."
+      },
+      {
+        "name": "ease-drawer",
+        "value": "cubic-bezier(0.32, 0.72, 0, 1)",
+        "purpose": "The phone menu cloth let down from the beam (300ms)."
+      },
+      {
+        "name": "press",
+        "value": "160ms",
+        "purpose": "Tag hover and press."
+      },
+      {
+        "name": "shoji",
+        "value": "900ms",
+        "purpose": "A screen sliding open, once per room; also lamp ignition."
+      },
+      {
+        "name": "unroll",
+        "value": "1100ms",
+        "purpose": "The hanging scroll let down from its roller."
+      },
+      {
+        "name": "cloth-sway",
+        "value": "7.5s ease-in-out infinite alternate",
+        "purpose": "The entrance cloth breathing as one piece."
+      },
+      {
+        "name": "pendulum",
+        "value": "6s ease-in-out infinite alternate, rotate ±1.6deg",
+        "purpose": "Lanterns and hanging signs; each has its own period and lag."
+      },
+      {
+        "name": "drift",
+        "value": "90s linear infinite alternate",
+        "purpose": "Cloud and mist bands in the valley."
+      },
+      {
+        "name": "stillness",
+        "value": "html[data-still] pauses loops; prefers-reduced-motion removes them and turns reveals into a 300ms fade",
+        "purpose": "The pause control in the beam and the reduced-motion path."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "40rem"
+      },
+      {
+        "name": "md",
+        "value": "48rem"
+      },
+      {
+        "name": "lg",
+        "value": "64rem"
+      },
+      {
+        "name": "short",
+        "value": "max-height: 30rem"
+      },
+      {
+        "name": "entrance-tall",
+        "value": "container min-height: 51rem"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Wooden Tag",
+      "kind": "button",
+      "refersTo": "tag",
+      "description": "The default button: washi with sumi ink. Resume, and the second action in a pair.",
+      "html": "<a href=\"#\" class=\"ds-tag\">Resume</a>",
+      "css": ".ds-tag { display: inline-flex; align-items: center; gap: 0.6rem; min-height: 2.75rem; padding: 0.55rem 1.15rem 0.6rem; font-family: var(--font-sans, 'Zen Kaku Gothic New', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', system-ui, sans-serif); font-weight: 700; font-size: 0.95rem; line-height: 1.2; white-space: nowrap; text-decoration: none; border: 0; border-radius: 2px; cursor: pointer; box-shadow: 0 2px 0 var(--color-cedar-950, #120e0c), 0 14px 22px -12px rgb(0 0 0 / 0.8); transition: transform 160ms var(--ease-out, cubic-bezier(0.23, 1, 0.32, 1)), box-shadow 160ms var(--ease-out, cubic-bezier(0.23, 1, 0.32, 1)); } .ds-tag:hover { transform: translateY(-2px); box-shadow: 0 2px 0 var(--color-cedar-950, #120e0c), 0 22px 26px -14px rgb(0 0 0 / 0.85); } .ds-tag:active { transform: translateY(2px) scale(0.98); box-shadow: 0 0 0 var(--color-cedar-950, #120e0c), 0 6px 12px -8px rgb(0 0 0 / 0.8); } .ds-tag:focus-visible { outline: 2px solid var(--color-lamp, #f2b866); outline-offset: 3px; } .ds-tag { color: var(--color-sumi, #1f1b18); background-color: var(--color-washi, #ede7d9); background-image: var(--tooth, none); }"
+    },
+    {
+      "name": "Vermilion Tag",
+      "kind": "button",
+      "refersTo": "tag-shu",
+      "description": "The primary action. One per group: See the work, Open it live.",
+      "html": "<a href=\"#\" class=\"ds-tag-shu\">See the work</a>",
+      "css": ".ds-tag-shu { display: inline-flex; align-items: center; gap: 0.6rem; min-height: 2.75rem; padding: 0.55rem 1.15rem 0.6rem; font-family: var(--font-sans, 'Zen Kaku Gothic New', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', system-ui, sans-serif); font-weight: 700; font-size: 0.95rem; line-height: 1.2; white-space: nowrap; text-decoration: none; border: 0; border-radius: 2px; cursor: pointer; box-shadow: 0 2px 0 var(--color-cedar-950, #120e0c), 0 14px 22px -12px rgb(0 0 0 / 0.8); transition: transform 160ms var(--ease-out, cubic-bezier(0.23, 1, 0.32, 1)), box-shadow 160ms var(--ease-out, cubic-bezier(0.23, 1, 0.32, 1)); } .ds-tag-shu:hover { transform: translateY(-2px); box-shadow: 0 2px 0 var(--color-cedar-950, #120e0c), 0 22px 26px -14px rgb(0 0 0 / 0.85); } .ds-tag-shu:active { transform: translateY(2px) scale(0.98); box-shadow: 0 0 0 var(--color-cedar-950, #120e0c), 0 6px 12px -8px rgb(0 0 0 / 0.8); } .ds-tag-shu:focus-visible { outline: 2px solid var(--color-lamp, #f2b866); outline-offset: 3px; } .ds-tag-shu { color: var(--color-washi, #ede7d9); background-color: var(--color-shu-deep, #b0341d); background-image: var(--tooth, none); }"
+    },
+    {
+      "name": "Wood Tag",
+      "kind": "button",
+      "refersTo": "tag-wood",
+      "description": "Onward and social links, and the live link of a lamp that did not answer.",
+      "html": "<a href=\"#\" class=\"ds-tag-wood\">Read every project in full</a>",
+      "css": ".ds-tag-wood { display: inline-flex; align-items: center; gap: 0.6rem; min-height: 2.75rem; padding: 0.55rem 1.15rem 0.6rem; font-family: var(--font-sans, 'Zen Kaku Gothic New', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', system-ui, sans-serif); font-weight: 700; font-size: 0.95rem; line-height: 1.2; white-space: nowrap; text-decoration: none; border: 0; border-radius: 2px; cursor: pointer; box-shadow: 0 2px 0 var(--color-cedar-950, #120e0c), 0 14px 22px -12px rgb(0 0 0 / 0.8); transition: transform 160ms var(--ease-out, cubic-bezier(0.23, 1, 0.32, 1)), box-shadow 160ms var(--ease-out, cubic-bezier(0.23, 1, 0.32, 1)); } .ds-tag-wood:hover { transform: translateY(-2px); box-shadow: 0 2px 0 var(--color-cedar-950, #120e0c), 0 22px 26px -14px rgb(0 0 0 / 0.85); } .ds-tag-wood:active { transform: translateY(2px) scale(0.98); box-shadow: 0 0 0 var(--color-cedar-950, #120e0c), 0 6px 12px -8px rgb(0 0 0 / 0.8); } .ds-tag-wood:focus-visible { outline: 2px solid var(--color-lamp, #f2b866); outline-offset: 3px; } .ds-tag-wood { color: var(--color-washi, #ede7d9); background-color: var(--color-cedar-700, #32281f); background-image: var(--grain-h, none); }"
+    },
+    {
+      "name": "Text Link",
+      "kind": "custom",
+      "description": "An underline that thickens on hover; the colour does not change.",
+      "html": "<p class=\"ds-link-wrap\"><a href=\"#\" class=\"ds-link\">Read the longer story</a></p>",
+      "css": ".ds-link-wrap { margin: 0; padding: 1rem 1.25rem; background-color: var(--color-washi, #ede7d9); font-family: var(--font-sans, 'Zen Kaku Gothic New', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', system-ui, sans-serif); } .ds-link { color: var(--color-sumi, #1f1b18); font-size: 0.95rem; font-weight: 700; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.28em; transition: text-decoration-thickness 160ms ease; } .ds-link:hover { text-decoration-thickness: 3px; } .ds-link:focus-visible { outline: 2px solid var(--color-shu-deep, #b0341d); outline-offset: 3px; }"
+    },
+    {
+      "name": "The Beam",
+      "kind": "nav",
+      "refersTo": "beam",
+      "description": "Fixed cedar beam: crest and name, room links with a vermilion bar under the current room.",
+      "html": "<nav class=\"ds-beam\" aria-label=\"Main\"><span class=\"ds-beam-name\"><svg viewBox=\"0 0 48 48\" width=\"36\" height=\"36\" aria-hidden=\"true\"><circle cx=\"24\" cy=\"24\" r=\"21\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\"/><text x=\"24\" y=\"30.5\" text-anchor=\"middle\" font-weight=\"800\" font-size=\"18.5\" fill=\"currentColor\">SP</text></svg>Shubhanshu Pandey</span><a href=\"#\" class=\"ds-beam-link\">About</a><a href=\"#\" class=\"ds-beam-link\" aria-current=\"true\">Work</a><a href=\"#\" class=\"ds-beam-link\">Contact</a></nav>",
+      "css": ".ds-beam { display: flex; align-items: center; gap: 2rem; height: 3.75rem; padding-inline: 1.5rem; font-family: var(--font-sans, 'Zen Kaku Gothic New', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', system-ui, sans-serif); background-color: var(--color-cedar-800, #241d19); background-image: var(--grain-h, none); box-shadow: 0 3px 0 var(--color-cedar-950, #120e0c), 0 18px 30px -12px rgb(0 0 0 / 0.85); } .ds-beam-name { display: flex; align-items: center; gap: 0.75rem; margin-right: auto; color: var(--color-washi, #ede7d9); font-size: 0.95rem; font-weight: 700; } .ds-beam-name text { font-family: var(--font-display, 'Shippori Mincho B1', 'Hiragino Mincho ProN', 'Yu Mincho', serif); } .ds-beam-link { position: relative; padding-block: 0.5rem; color: var(--color-ash, #bdb3a2); font-size: 0.95rem; font-weight: 500; text-decoration: none; transition: color 150ms ease; } .ds-beam-link::after { content: ''; position: absolute; left: 0; right: 0; bottom: -2px; height: 3px; background-color: var(--color-shu, #d5462b); transform: scaleX(0); transform-origin: left; transition: transform 200ms var(--ease-out, cubic-bezier(0.23, 1, 0.32, 1)); } .ds-beam-link:hover, .ds-beam-link[aria-current] { color: var(--color-washi, #ede7d9); } .ds-beam-link[aria-current]::after { transform: scaleX(1); } .ds-beam-link:focus-visible { outline: 2px solid var(--color-lamp, #f2b866); outline-offset: 3px; }"
+    },
+    {
+      "name": "Lit Paper Pane",
+      "kind": "card",
+      "refersTo": "paper",
+      "description": "The only reading surface for long text: washi in a cedar frame, with a 3px kumiko bar and labelled facts.",
+      "html": "<section class=\"ds-paper\"><h3 class=\"ds-paper-title\">About</h3><p class=\"ds-paper-body\">Long text is set in ink on paper and nowhere else, capped at a readable measure.</p><hr class=\"ds-paper-bar\"><dl class=\"ds-paper-facts\"><div><dt>Years at it</dt><dd>1.5</dd></div><div><dt>Projects built</dt><dd>5</dd></div></dl></section>",
+      "css": ".ds-paper { margin: 6px; padding: 2.5rem; font-family: var(--font-sans, 'Zen Kaku Gothic New', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', system-ui, sans-serif); color: var(--color-sumi, #1f1b18); background-color: var(--color-washi, #ede7d9); background-image: radial-gradient(120% 90% at 50% 30%, rgb(255 249 232 / 0.9), transparent 70%), var(--fibers, none), var(--tooth, none); box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.4), inset 0 0 70px rgb(120 86 40 / 0.14), 0 0 0 5px var(--color-cedar-950, #120e0c), 0 0 0 6px var(--color-cedar-600, #4a3b2e), 0 36px 70px -34px rgb(0 0 0 / 0.85), 0 0 110px -36px rgb(242 184 102 / 0.4); } .ds-paper-title { margin: 0; font-family: var(--font-display, 'Shippori Mincho B1', 'Hiragino Mincho ProN', 'Yu Mincho', serif); font-weight: 800; font-size: 2.25rem; line-height: 1.02; letter-spacing: -0.02em; } .ds-paper-body { max-width: 62ch; margin: 1.25rem 0 0; font-size: 1.125rem; line-height: 1.75; color: var(--color-sumi-2, #4a4239); } .ds-paper-bar { height: 3px; margin: 2.5rem 0 0; border: 0; background-color: var(--color-cedar-700, #32281f); box-shadow: 0 1px 0 rgb(255 255 255 / 0.5); } .ds-paper-facts { display: flex; gap: 2rem; margin: 2rem 0 0; } .ds-paper-facts dt { font-size: 0.85rem; font-weight: 500; color: var(--color-sumi-3, #665c50); } .ds-paper-facts dd { margin: 0.125rem 0 0; font-weight: 700; font-variant-numeric: tabular-nums; }"
+    },
+    {
+      "name": "Doorway Cloth",
+      "kind": "custom",
+      "refersTo": "cloth",
+      "description": "A band of indigo on a bamboo pole with tails; carries a room title, with the brushed kanji beside the English heading.",
+      "html": "<div class=\"ds-doorway\"><div class=\"ds-doorway-pole\"></div><div class=\"ds-doorway-cloth\"><span class=\"ds-doorway-kanji\" lang=\"ja\">道具</span><div><h3 class=\"ds-doorway-title\">Tools</h3><p class=\"ds-doorway-body\">What is in the chest, one drawer to a tool.</p></div></div><div class=\"ds-doorway-tails\" aria-hidden=\"true\"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div></div>",
+      "css": ".ds-doorway { font-family: var(--font-sans, 'Zen Kaku Gothic New', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', system-ui, sans-serif); padding-inline: 0.5rem; } .ds-doorway-pole { position: relative; z-index: 1; height: 0.6rem; margin-inline: -0.5rem; border-radius: 0.3rem; background: linear-gradient(180deg, #c7b383, #8e7a4d 60%, #5b4c2c); box-shadow: 0 6px 10px rgb(0 0 0 / 0.5); } .ds-doorway-cloth, .ds-doorway-tails span { background-color: var(--color-ai-700, #1f3559); background-image: var(--weave, none), radial-gradient(140% 100% at 30% 0%, rgb(60 96 150 / 0.35), transparent 60%); } .ds-doorway-cloth { display: flex; align-items: flex-start; gap: 2rem; margin-top: -0.25rem; padding: 2.5rem 2.5rem 2.25rem; box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.05), inset 0 -1.5rem 2.5rem -1.5rem rgb(0 0 0 / 0.45); } .ds-doorway-kanji { writing-mode: vertical-rl; text-orientation: upright; font-family: var(--font-brush, 'Yuji Boku', 'Shippori Mincho B1', 'Hiragino Mincho ProN', serif); font-size: 3.5rem; line-height: 1; color: var(--color-washi, #ede7d9); } .ds-doorway-title { margin: 0; font-family: var(--font-display, 'Shippori Mincho B1', 'Hiragino Mincho ProN', 'Yu Mincho', serif); font-weight: 800; font-size: 2.75rem; line-height: 1.02; letter-spacing: -0.02em; color: var(--color-washi, #ede7d9); text-shadow: 0 0 1px rgb(237 231 217 / 0.8), 0 0 14px rgb(19 34 56 / 0.5); } .ds-doorway-body { max-width: 62ch; margin: 1rem 0 0; font-size: 1.0625rem; line-height: 1.65; color: var(--color-ai-200, #c6d2e7); } .ds-doorway-tails { display: flex; gap: 5px; height: 2.6rem; } .ds-doorway-tails span { flex: 1; box-shadow: inset 0 -0.5rem 0 -0.4rem rgb(255 255 255 / 0.18), inset 0.6rem 0 0.8rem -0.6rem rgb(0 0 0 / 0.5), inset -0.6rem 0 0.8rem -0.6rem rgb(0 0 0 / 0.5); }"
+    },
+    {
+      "name": "Standing Lamp",
+      "kind": "card",
+      "refersTo": "lamp-paper-lit",
+      "description": "A project as an andon. Shown lit: warm paper, vermilion numeral, \"Answering now\". Unlit paper is flat grey with full-strength ink and a wood tag.",
+      "html": "<article class=\"ds-andon\"><div class=\"ds-andon-roof\"></div><div class=\"ds-andon-posts\"><div class=\"ds-andon-paper\"><div class=\"ds-andon-top\"><span class=\"ds-andon-numeral\" lang=\"ja\" aria-hidden=\"true\">弐</span><span class=\"ds-andon-status\">Answering now</span></div><h3 class=\"ds-andon-title\">Forms Management Platform</h3><p class=\"ds-andon-body\">A short description of what the project does and who it is for.</p><hr class=\"ds-andon-bar\"></div></div><div class=\"ds-andon-rail\"></div><div class=\"ds-andon-legs\"><span></span><span></span></div></article>",
+      "css": ".ds-andon { max-width: 30rem; margin: 2rem 2.5rem; font-family: var(--font-sans, 'Zen Kaku Gothic New', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', system-ui, sans-serif); filter: drop-shadow(0 0 60px rgb(242 184 102 / 0.28)); } .ds-andon-roof, .ds-andon-rail { background-color: var(--color-cedar-600, #4a3b2e); background-image: var(--grain-h, none); box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.16), 0 3px 0 var(--color-cedar-950, #120e0c), 0 12px 18px -10px rgb(0 0 0 / 0.85); } .ds-andon-roof { position: relative; height: 1.15rem; margin-inline: -1.1rem; } .ds-andon-rail { position: relative; height: 0.9rem; margin-inline: -0.35rem; } .ds-andon-posts { padding-inline: 0.9rem; background-color: var(--color-cedar-700, #32281f); background-image: var(--grain-v, none); box-shadow: inset 1px 0 0 rgb(255 255 255 / 0.08), inset -1px 0 0 rgb(0 0 0 / 0.5); } .ds-andon-paper { padding: 1.75rem 2.25rem 2.5rem; color: var(--color-sumi, #1f1b18); background-color: var(--color-washi-warm, #f6e7c3); background-image: radial-gradient(90% 70% at 50% 42%, #fff6dc, transparent 72%), var(--fibers, none), var(--tooth, none); box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.45), inset 0 0 80px rgb(214 140 50 / 0.22); } .ds-andon-top { display: flex; justify-content: space-between; align-items: flex-start; } .ds-andon-numeral { font-family: var(--font-brush, 'Yuji Boku', 'Shippori Mincho B1', 'Hiragino Mincho ProN', serif); font-size: 2.75rem; line-height: 1; color: var(--color-shu-deep, #b0341d); } .ds-andon-status { padding-top: 0.25rem; font-size: 0.875rem; font-weight: 700; color: var(--color-sumi-2, #4a4239); } .ds-andon-title { margin: 1.5rem 0 0; font-family: var(--font-display, 'Shippori Mincho B1', 'Hiragino Mincho ProN', 'Yu Mincho', serif); font-weight: 800; font-size: 1.9rem; line-height: 1.02; letter-spacing: -0.02em; } .ds-andon-body { margin: 1.25rem 0 0; line-height: 1.65; color: var(--color-sumi-2, #4a4239); } .ds-andon-bar { height: 3px; margin: 1.75rem 0 0; border: 0; background-color: var(--color-cedar-700, #32281f); box-shadow: 0 1px 0 rgb(255 255 255 / 0.5); } .ds-andon-legs { display: flex; justify-content: space-between; } .ds-andon-legs span { width: 0.9rem; height: 1.75rem; background-color: var(--color-cedar-700, #32281f); box-shadow: inset -1px 0 0 rgb(0 0 0 / 0.5); }"
+    },
+    {
+      "name": "Name Plate",
+      "kind": "chip",
+      "refersTo": "plaque",
+      "description": "Dark, solid plate beside a lantern: project name with its status line. Amber when answering, ash otherwise.",
+      "html": "<div class=\"ds-plaques\"><span class=\"ds-plaque\"><span class=\"ds-plaque-name\">Forms Management Platform</span><span class=\"ds-plaque-status\" data-live=\"true\">Answering now</span></span><span class=\"ds-plaque\"><span class=\"ds-plaque-name\">GeoJobs</span><span class=\"ds-plaque-status\">No answer just now</span></span></div>",
+      "css": ".ds-plaques { display: flex; flex-wrap: wrap; gap: 0.75rem; font-family: var(--font-sans, 'Zen Kaku Gothic New', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', system-ui, sans-serif); } .ds-plaque { display: inline-block; max-width: 12.5rem; padding: 0.375rem 0.75rem; color: var(--color-washi, #ede7d9); background-color: var(--color-cedar-950, #120e0c); box-shadow: inset 0 0 0 1px rgb(237 231 217 / 0.1), 0 10px 18px -10px rgb(0 0 0 / 0.8); } .ds-plaque-name { display: block; font-size: 0.88rem; font-weight: 700; line-height: 1.25; } .ds-plaque-status { display: block; margin-top: 0.125rem; font-size: 0.8rem; line-height: 1.25; color: var(--color-ash, #bdb3a2); } .ds-plaque-status[data-live] { color: var(--color-lamp, #f2b866); }"
+    },
+    {
+      "name": "Tool Drawer",
+      "kind": "custom",
+      "refersTo": "drawer-label",
+      "description": "One drawer of the tool chest: grained front, paper label, iron ring pull, report-card grade mark in lamp amber.",
+      "html": "<ul class=\"ds-chest\"><li class=\"ds-drawer\"><span class=\"ds-drawer-mark\" aria-hidden=\"true\">◎</span><span class=\"ds-drawer-label\">Node.js</span><span class=\"ds-drawer-pull\" aria-hidden=\"true\"></span></li><li class=\"ds-drawer\"><span class=\"ds-drawer-mark\" aria-hidden=\"true\">○</span><span class=\"ds-drawer-label\">Redis</span><span class=\"ds-drawer-pull\" aria-hidden=\"true\"></span></li><li class=\"ds-drawer\"><span class=\"ds-drawer-mark\" aria-hidden=\"true\">△</span><span class=\"ds-drawer-label\">GraphQL</span><span class=\"ds-drawer-pull\" aria-hidden=\"true\"></span></li></ul>",
+      "css": ".ds-chest { display: flex; flex-wrap: wrap; gap: 3px; margin: 0; padding: 0.6rem; list-style: none; font-family: var(--font-sans, 'Zen Kaku Gothic New', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', system-ui, sans-serif); background-color: var(--color-cedar-950, #120e0c); } .ds-drawer { position: relative; flex: 1 1 8.75rem; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem; min-height: 6.25rem; padding: 0.9rem 0.75rem 0.8rem; background-color: #43322a; background-image: var(--grain-h, none); box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.1), inset 0 0 0 1px rgb(0 0 0 / 0.5), inset 0 -10px 18px -10px rgb(0 0 0 / 0.6); transition: transform 200ms var(--ease-out, cubic-bezier(0.23, 1, 0.32, 1)), box-shadow 200ms var(--ease-out, cubic-bezier(0.23, 1, 0.32, 1)); } .ds-drawer:hover { transform: translateY(-5px); box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.16), inset 0 0 0 1px rgb(0 0 0 / 0.5), 0 5px 0 var(--color-cedar-950, #120e0c), 0 22px 24px -12px rgb(0 0 0 / 0.9); } .ds-drawer-mark { position: absolute; right: 0.625rem; top: 0.375rem; font-size: 0.95rem; line-height: 1; color: var(--color-lamp, #f2b866); } .ds-drawer-label { padding: 0.2rem 0.6rem 0.25rem; font-size: 0.9rem; font-weight: 700; line-height: 1.25; color: var(--color-sumi, #1f1b18); background-color: var(--color-washi, #ede7d9); box-shadow: 0 1px 2px rgb(0 0 0 / 0.5); } .ds-drawer-pull { width: 1.5rem; height: 0.8rem; border: 2px solid #0b0908; border-top: 0; border-radius: 0 0 0.75rem 0.75rem; box-shadow: 0 1px 0 rgb(255 255 255 / 0.12); }"
+    },
+    {
+      "name": "Hanging Sign",
+      "kind": "custom",
+      "description": "Empty and error states: a cedar board on two cords with a brushed word and a short English sentence.",
+      "html": "<div class=\"ds-sign\"><svg viewBox=\"0 0 120 44\" width=\"120\" height=\"44\" aria-hidden=\"true\"><path d=\"M60 2L8 44M60 2L112 44\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"/><circle cx=\"60\" cy=\"3\" r=\"3\" fill=\"currentColor\"/></svg><div class=\"ds-sign-board\"><span class=\"ds-sign-kanji\" lang=\"ja\">準備中</span><span class=\"ds-sign-text\">Nothing on the bench yet. The first project will stand here.</span></div></div>",
+      "css": ".ds-sign { display: inline-flex; flex-direction: column; align-items: center; font-family: var(--font-sans, 'Zen Kaku Gothic New', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', system-ui, sans-serif); color: var(--color-ash-dim, #978d7e); } .ds-sign-board { display: flex; align-items: center; gap: 1.25rem; padding: 1.25rem 1.75rem; background-color: var(--color-cedar-800, #241d19); background-image: var(--grain-h, none); box-shadow: 0 3px 0 var(--color-cedar-950, #120e0c), 0 24px 40px -18px rgb(0 0 0 / 0.9); } .ds-sign-kanji { font-family: var(--font-brush, 'Yuji Boku', 'Shippori Mincho B1', 'Hiragino Mincho ProN', serif); font-size: 2.6rem; line-height: 1; color: var(--color-washi, #ede7d9); } .ds-sign-text { max-width: 16rem; font-size: 0.95rem; line-height: 1.375; color: var(--color-ash, #bdb3a2); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The House at Dusk",
+    "overview": "The site is one building and one valley. A visitor arrives under a cedar beam, reads a name dyed into an indigo cloth, sees paper lanterns by the door, and walks through: the cloth lifts, a veranda rises over the valley, lamps stand in a workroom, a chest of drawers holds the tools, and the visit ends at a gate after dark where a red postbox waits. Every surface is one of the house's own materials. Layout is carpentry: beams, posts, sills and rails do the work that rules, cards and dividers do elsewhere.\n\nThe claim the house makes is that the owner ships things that run, and the lighting is the proof. A lantern at the door and a standing lamp in the workroom are lit only when that project's live address has just answered the visitor's own browser. A lamp that did not answer is plainly dark, says so in words, and its link to the live site steps back from vermilion to plain wood. The wording is deliberately modest (\"Answering now\", \"2 of 3 answering right now\") because a reply is all the check proves.\n\nThere is one scene shown at two hours, dusk at the entrance and night at the gate. There is no light theme and no theme switch; the beam carries a pause-motion control instead. Density is low and physical: large objects, generous dark wall between them, and long text only ever on lit paper.",
+    "keyCharacteristics": [
+      "Four materials: soot-dark cedar (ground and structure), indigo cotton (whole fields), lit paper (the reading surface), vermilion lacquer (the one accent).",
+      "Light means live. Lamp amber appears where something is lit or marked, never as decoration.",
+      "Two scripts with two jobs: English carries the information, Japanese carries the atmosphere.",
+      "Large kanji are brush-written stroke by stroke in true stroke order.",
+      "Square timber forms, tiled paper and wood-grain textures, a printed-woodblock valley.",
+      "Constant slow motion (cloth, lanterns, petals) that one control stops."
+    ],
+    "rules": [
+      {
+        "name": "The Lit Paper Rule",
+        "body": "Long text is set in ink on paper and nowhere else. Cedar and cloth carry titles, a sentence or two, labels and status; a paragraph belongs on a pane.",
+        "section": "colors"
+      },
+      {
+        "name": "The One Lacquer Rule",
+        "body": "Vermilion is the only accent for actions and for the sign. Blossom pink is never used for interface: not for a link, a state, a border or a highlight.",
+        "section": "colors"
+      },
+      {
+        "name": "The Honest Lamp Rule",
+        "body": "A lamp is lit only when its project's live address answered this visitor's browser. Amber and warm paper are never applied to make something look better; unlit is a real, designed state with its own contrast-checked inks.",
+        "section": "colors"
+      },
+      {
+        "name": "The Two Scripts Rule",
+        "body": "English carries every piece of information and every action; Japanese carries atmosphere. A Japanese word is never the only label on something a visitor must understand or press. Each brushed room name sits with its kana reading set vertically beside it, furigana-style, and its English title alongside.",
+        "section": "typography"
+      },
+      {
+        "name": "The Written Hand Rule",
+        "body": "Kanji at display size are drawn from stroke data and written in true stroke order when their room opens, then stay written. The brush font is for small marks only (numerals, tier marks, signs).",
+        "section": "typography"
+      },
+      {
+        "name": "The Upright Rule",
+        "body": "Japanese set as a column runs top to bottom with upright glyphs and 0.08em tracking. Latin text is never rotated to match.",
+        "section": "typography"
+      },
+      {
+        "name": "The Hem Rule",
+        "body": "The strips of the entrance cloth part over its lowest 22%. All lettering stays above that line at every viewport size: the cloth grows to fit its words, and the name shrinks before the words are crowded. No letter ever sits on a slit.",
+        "section": "layout"
+      },
+      {
+        "name": "The Whole Piece Rule",
+        "body": "When the screen is too short for everything under the cloth, whole pieces are dropped from the end of the list, and dropped pieces leave the tab order. Nothing is ever shown cut in half.",
+        "section": "layout"
+      },
+      {
+        "name": "The Carpentry Rule",
+        "body": "Structure is built from house parts: beam, post, sill, rail, pole. The only drawn rule is a 3px kumiko bar, dark on cedar and mid-brown on paper.",
+        "section": "layout"
+      },
+      {
+        "name": "The Light Is A Layer Rule",
+        "body": "Lamplight is its own layer behind the text. The wick may flicker; the words never do.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Brightest Thing Rule",
+        "body": "At the entrance the lit lantern paper is the brightest element. Name plates beside it are dark and solid on purpose; do not put a light surface next to a lantern.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Stillness Rule",
+        "body": "Everything that moves by itself stops when the visitor presses pause in the beam, and under reduced motion it never starts: loops are removed, reveals become a 300ms fade, kanji appear already written, petals hold one frame, and the cloth cross-fades instead of lifting.",
+        "section": "components"
+      }
+    ],
+    "dos": [
+      "Do build new surfaces from the four materials: cedar wall, indigo cloth, lit paper, vermilion lacquer. Give each a texture (grain, weave, tooth) as the build does; no flat untextured fills for house surfaces.",
+      "Do set anything longer than a couple of sentences in sumi ink on a paper pane, capped at 62ch.",
+      "Do light a lamp or lantern only from the live check, and word the status as what the check proves: \"Answering now\", \"N of M answering right now\".",
+      "Do pair every Japanese word with English beside it, or hide it from assistive tech when it is purely atmospheric, and mark it as Japanese.",
+      "Do keep one vermilion tag per group of actions; make the rest washi or wood.",
+      "Do give every solid object a hard dark underside edge plus a soft close shadow, and keep corners square (2px on tags only).",
+      "Do design the unlit, loading, empty and failed states as house objects: a dark lamp, a blank pane, a hanging sign.",
+      "Do make every self-running animation answer to the pause control and to reduced motion.",
+      "Do keep lettering on the entrance cloth above the line where the strips part, and drop whole pieces rather than clip one when a screen is short.",
+      "Do use Phosphor icons on public pages, always beside a text label or with an accessible name."
+    ],
+    "donts": [
+      "Don't add a light theme or a theme switch. The scene has two hours, dusk and night, and they are places on the page, not a setting.",
+      "Don't use blossom pink for interface. It belongs to the cherry tree and its petals.",
+      "Don't use lamp amber or warm paper as decoration; it means lit, live, marked or focused.",
+      "Don't claim more than the check knows. No \"online\", \"healthy\", \"up\" or uptime figures.",
+      "Don't draw rays on the sun. It is a plain disc, and the moon is a smaller one.",
+      "Don't round the corners of panes, plaques, drawers or images, and don't put a light surface beside a lit lantern.",
+      "Don't separate rooms with lines or boxes. Use dark wall, a doorway cloth, a sill or a 3px bar.",
+      "Don't let a Japanese word be the only label on an action, and don't rotate Latin text to imitate vertical setting.",
+      "Don't add Japanese text without regenerating the font subsets and the stroke data; unsupported characters fall back to system faces.",
+      "Don't introduce a second accent hue, gradients on text, or glass and blur effects on public pages; none exist in the house."
+    ]
+  }
+}
