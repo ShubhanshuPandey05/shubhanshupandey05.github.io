@@ -4,7 +4,7 @@
 
 export const owner = {
     name: 'Shubhanshu Pandey',
-    title: 'Backend Developer',
+    title: 'Backend Engineer',
     subtitle: 'Building scalable & robust server-side architectures',
     initials: 'SP',
     tagline: 'thinking human',

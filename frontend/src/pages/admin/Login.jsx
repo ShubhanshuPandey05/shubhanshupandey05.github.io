@@ -1,110 +1,104 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Navigate, useNavigate } from 'react-router-dom';
+import { FiAlertTriangle, FiArrowLeft, FiLock, FiMail } from 'react-icons/fi';
 import { useAuth } from '../../context/AuthContext';
-import { FiLock, FiMail, FiArrowRight } from 'react-icons/fi';
+import { useSettings } from '../../context/SettingsContext';
+import { PORTRAITS } from '../../ascii/portraits';
+import PortraitPreview from '../../components/admin/PortraitPreview';
+import { Field, Spinner } from '../../components/admin/ui';
+import '../../components/admin/cms.css';
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const [loading, setLoading] = useState(false);
-    const { login } = useAuth();
+    const [busy, setBusy] = useState(false);
+    const { login, isAuthenticated, loading } = useAuth();
+    const { portrait } = useSettings();
     const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
+    useEffect(() => {
+        document.title = 'Sign in · Studio';
+    }, []);
+
+    if (!loading && isAuthenticated) return <Navigate to="/admin" replace />;
+
+    const submit = async (e) => {
         e.preventDefault();
         setError('');
-        setLoading(true);
+        setBusy(true);
         try {
             await login(email, password);
             navigate('/admin');
         } catch (err) {
-            setError(err.response?.data?.message || 'Login failed. Please try again.');
+            setError(err.response?.data?.message || 'Sign-in failed. Check your connection and try again.');
         } finally {
-            setLoading(false);
+            setBusy(false);
         }
     };
 
     return (
-        <div className="min-h-screen bg-dark-900 bg-grid flex items-center justify-center px-6">
-            {/* Gradient orbs */}
-            <div className="absolute top-1/3 -left-20 w-72 h-72 bg-primary/10 rounded-full blur-[100px]" />
-            <div className="absolute bottom-1/3 -right-20 w-72 h-72 bg-accent/10 rounded-full blur-[100px]" />
+        <div className="cms">
+            <div className="cms-login">
+                <figure className="cms-login__art" style={{ margin: 0 }}>
+                    <PortraitPreview url={(PORTRAITS[portrait] || PORTRAITS.sunset).url} rows={92} />
+                    <figcaption>
+                        <span>~/shubhanshu/studio</span>
+                        <span>plain text, live</span>
+                    </figcaption>
+                </figure>
+                <div className="cms-login__panel">
+                    <form className="cms-login__form" onSubmit={submit}>
+                        <span className="cms-brand__mark" aria-hidden="true">
+                            SP
+                        </span>
+                        <h1>Sign in to Studio</h1>
+                        <p>Manage the portfolio: appearance, profile, projects and notes.</p>
 
-            <div className="relative z-10 w-full max-w-md">
-                {/* Logo */}
-                <div className="text-center mb-8">
-                    <a href="/" className="inline-block text-2xl font-bold font-mono mb-2">
-                        <span className="text-primary">&lt;</span>
-                        <span className="text-text-primary">Dev</span>
-                        <span className="text-primary">/&gt;</span>
-                    </a>
-                    <p className="text-text-muted text-sm">Admin Panel</p>
-                </div>
+                        {error && (
+                            <div className="cms-alert cms-alert--err" role="alert">
+                                <FiAlertTriangle />
+                                <div>{error}</div>
+                            </div>
+                        )}
 
-                <div className="glass rounded-2xl p-8">
-                    <h2 className="text-xl font-semibold text-text-primary mb-6 text-center">
-                        Welcome Back
-                    </h2>
-
-                    {error && (
-                        <div className="mb-4 px-4 py-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
-                            {error}
-                        </div>
-                    )}
-
-                    <form onSubmit={handleSubmit} className="space-y-5">
-                        <div>
-                            <label className="block text-text-secondary text-sm mb-2">Email</label>
-                            <div className="relative">
-                                <FiMail className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" />
+                        <Field label="Email" htmlFor="login-email">
+                            <div className="cms-input-wrap">
+                                <FiMail />
                                 <input
+                                    id="login-email"
                                     type="email"
+                                    className="cms-input"
+                                    autoComplete="username"
+                                    required
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    className="w-full bg-dark-700 border border-dark-500 rounded-lg py-3 pl-10 pr-4 text-text-primary text-sm focus:outline-none focus:border-primary transition-colors"
-                                    placeholder="admin@portfolio.com"
-                                    required
                                 />
                             </div>
-                        </div>
-
-                        <div>
-                            <label className="block text-text-secondary text-sm mb-2">Password</label>
-                            <div className="relative">
-                                <FiLock className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" />
+                        </Field>
+                        <Field label="Password" htmlFor="login-password">
+                            <div className="cms-input-wrap">
+                                <FiLock />
                                 <input
+                                    id="login-password"
                                     type="password"
+                                    className="cms-input"
+                                    autoComplete="current-password"
+                                    required
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    className="w-full bg-dark-700 border border-dark-500 rounded-lg py-3 pl-10 pr-4 text-text-primary text-sm focus:outline-none focus:border-primary transition-colors"
-                                    placeholder="••••••••"
-                                    required
                                 />
                             </div>
-                        </div>
-
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className="w-full flex items-center justify-center gap-2 py-3 bg-gradient-to-r from-primary to-accent text-dark-900 font-semibold rounded-lg hover:shadow-lg hover:shadow-primary/25 transition-all duration-300 disabled:opacity-50"
-                        >
-                            {loading ? (
-                                <div className="w-5 h-5 border-2 border-dark-900 border-t-transparent rounded-full animate-spin" />
-                            ) : (
-                                <>
-                                    Sign In <FiArrowRight />
-                                </>
-                            )}
+                        </Field>
+                        <button type="submit" className="cms-btn cms-btn--primary" disabled={busy}>
+                            {busy && <Spinner />}
+                            {busy ? 'Signing in…' : 'Sign in'}
                         </button>
+                        <a href="/" className="cms-login__back">
+                            <FiArrowLeft /> Back to the site
+                        </a>
                     </form>
                 </div>
-
-                <p className="text-center mt-6 text-text-muted text-xs">
-                    <a href="/" className="hover:text-primary transition-colors">
-                        ← Back to Portfolio
-                    </a>
-                </p>
             </div>
         </div>
     );

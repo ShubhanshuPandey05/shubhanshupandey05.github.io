@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
-import AsciiTitle from '../ascii/AsciiTitle';
-import { useTitle } from '../ascii/lib';
+import Navbar from '../Navbar';
+import Footer from '../Footer';
+import AsciiTitle from '../AsciiTitle';
+import { useTitle } from '../lib';
 
 const NotFound = () => {
     useTitle('Not found');

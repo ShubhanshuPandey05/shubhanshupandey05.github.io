@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import api from '../utils/api';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
-import AsciiTitle from '../ascii/AsciiTitle';
-import { useTitle } from '../ascii/lib';
+import api from '../../utils/api';
+import Navbar from '../Navbar';
+import Footer from '../Footer';
+import AsciiTitle from '../AsciiTitle';
+import { useTitle } from '../lib';
 
 const fmt = (d) => (d ? new Date(d).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : '');
 

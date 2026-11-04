@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import api from '../utils/api';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
-import AsciiTitle from '../ascii/AsciiTitle';
-import { useTitle } from '../ascii/lib';
-import * as content from '../data/content';
+import api from '../../utils/api';
+import Navbar from '../Navbar';
+import Footer from '../Footer';
+import AsciiTitle from '../AsciiTitle';
+import { useTitle } from '../lib';
+import * as content from '../../data/content';
 
 const ResumeViewer = () => {
     const [resumeUrl, setResumeUrl] = useState('');
@@ -32,7 +32,7 @@ const ResumeViewer = () => {
                 </Link>
                 <AsciiTitle
                     text="RESUME"
-                    fill="Shubhanshu Pandey backend developer Surat India Node.js Python PostgreSQL MongoDB Redis BullMQ AWS Docker Nginx"
+                    fill="Shubhanshu Pandey backend engineer Surat India Node.js Python PostgreSQL MongoDB Redis BullMQ AWS Docker Nginx"
                     label="Résumé"
                 />
                 <div className="ax-resume__head">

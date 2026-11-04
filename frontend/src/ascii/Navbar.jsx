@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
+// The design's stylesheet loads with its navigation, which every page of this design renders.
+import './ascii.css';
 
 export const CHAPTERS = [
     { id: 'about', label: 'About' },
@@ -97,7 +99,7 @@ const Navbar = () => {
                     SP<span className="ax-caret" aria-hidden="true" />
                 </Link>
                 <span className="ax-bar__who">
-                    Shubhanshu Pandey <i aria-hidden="true">/</i> backend developer
+                    Shubhanshu Pandey <i aria-hidden="true">/</i> backend engineer
                 </span>
                 <nav className="ax-bar__nav" aria-label="Sections">
                     {CHAPTERS.map((c) => (

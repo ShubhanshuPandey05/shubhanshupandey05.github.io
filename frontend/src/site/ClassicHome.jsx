@@ -1,18 +1,22 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import api from '../utils/api';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
-import AsciiStage from '../ascii/Stage';
-import { buildScenes, sectionNumbers } from '../ascii/scenes';
-import Hero from '../ascii/sections/Hero';
-import About from '../ascii/sections/About';
-import Work from '../ascii/sections/Work';
-import Experience from '../ascii/sections/Experience';
-import Stack from '../ascii/sections/Stack';
-import Notes from '../ascii/sections/Notes';
-import Contact from '../ascii/sections/Contact';
+import Navbar from './ClassicNavbar';
+import Footer from './ClassicFooter';
+import Hero from './sections/Hero';
+import About, { Marquee } from './sections/About';
+import Work from './sections/Work';
+import SystemMap from './sections/SystemMap';
+import Experience from './sections/Experience';
+import Skills from './sections/Skills';
+import Terminal from './sections/Terminal';
+import Notes from './sections/Notes';
+import Contact from './sections/Contact';
+import SecretsTracker from './SecretsTracker';
+import Preloader from './Preloader';
+import { confetti, unlock } from './secrets';
 import * as content from '../data/content';
+import './site.css';
 
 // Pair an API project with its curated, rewritten copy (matched by repo URL or title).
 const curate = (apiProject) => {
@@ -38,14 +42,13 @@ const curate = (apiProject) => {
     };
 };
 
-const Home = () => {
+const ClassicHome = () => {
     const location = useLocation();
-    const [remote, setRemote] = useState({ about: null, socials: [], blogs: [], projects: [], skills: [] });
-    const [portraitChars, setPortraitChars] = useState(0);
 
     useEffect(() => {
-        document.title = 'Shubhanshu Pandey · Backend Developer';
+        document.title = 'Shubhanshu Pandey · Backend Engineer';
     }, []);
+    const [remote, setRemote] = useState({ about: null, socials: [], blogs: [], projects: [], skills: [] });
 
     // Render the curated copy immediately, then layer in live data from the CMS when it arrives.
     useEffect(() => {
@@ -94,29 +97,27 @@ const Home = () => {
         return { profile, projects, skills, socials, blogs, github };
     }, [remote]);
 
-    const scenes = useMemo(
-        () =>
-            buildScenes({
-                profile: data.profile,
-                preface: content.preface,
-                projects: data.projects,
-                experience: content.experience,
-                skills: data.skills,
-                blogs: data.blogs,
-                socials: data.socials,
-            }),
-        [data]
-    );
-    const n = sectionNumbers(data.blogs.length > 0);
-
-    const onStageInfo = useCallback((info) => {
-        if (info.scene === 'hero' && info.count) setPortraitChars(info.count);
+    // Konami code anywhere on the page unlocks a secret.
+    useEffect(() => {
+        const code = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+        let pos = 0;
+        const onKey = (e) => {
+            const k = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+            pos = k === code[pos] ? pos + 1 : k === code[0] ? 1 : 0;
+            if (pos === code.length) {
+                pos = 0;
+                unlock('hire');
+                confetti(window.innerWidth / 2, window.innerHeight / 2, 220);
+            }
+        };
+        window.addEventListener('keydown', onKey);
+        return () => window.removeEventListener('keydown', onKey);
     }, []);
 
-    // Support /#work style links from other pages and the nav.
+    // Support /#works style links from other pages and the nav.
     useEffect(() => {
         if (!location.hash) return undefined;
-        const id = decodeURIComponent(location.hash.slice(1));
+        const id = location.hash.slice(1);
         let tries = 0;
         const timer = setInterval(() => {
             const el = document.getElementById(id);
@@ -128,22 +129,28 @@ const Home = () => {
         return () => clearInterval(timer);
     }, [location.hash, location.key]);
 
+    const tech = ['Node.js', 'Python', 'PostgreSQL', 'Redis', 'BullMQ', 'WebSockets', 'Playwright', 'Docker', 'AWS', 'Nginx', 'MongoDB', 'Twilio'];
+
     return (
-        <div className="ax ax-home">
+        <div className="sp">
+            <Preloader />
             <Navbar />
-            <AsciiStage scenes={scenes} onInfo={onStageInfo} />
-            <main className="ax-main" id="main">
-                <Hero profile={data.profile} count={portraitChars} />
-                <About copy={content.preface} stats={data.profile.stats} education={content.education} n={n.about} />
-                <Work projects={data.projects} githubUrl={data.github} n={n.work} />
-                <Experience experience={content.experience} n={n.experience} />
-                <Stack skills={data.skills} groups={content.skillGroups} n={n.stack} />
-                {data.blogs.length > 0 && <Notes blogs={data.blogs} n={n.notes} />}
-                <Contact email={data.profile.email} socials={data.socials} n={n.contact} />
-                <Footer />
+            <main>
+                <Hero profile={data.profile} />
+                <Marquee items={tech} />
+                <About copy={content.preface} stats={data.profile.stats} education={content.education} />
+                <Work projects={data.projects} githubUrl={data.github} />
+                <SystemMap />
+                <Experience experience={content.experience} />
+                <Skills skills={data.skills} groups={content.skillGroups} />
+                <Terminal data={{ ...data, experience: content.experience }} />
+                <Notes blogs={data.blogs} index="07" />
+                <Contact email={data.profile.email} socials={data.socials} index="08" />
             </main>
+            <Footer />
+            <SecretsTracker />
         </div>
     );
 };
 
-export default Home;
+export default ClassicHome;

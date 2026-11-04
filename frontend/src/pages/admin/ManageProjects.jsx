@@ -1,7 +1,24 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { FiEdit2, FiExternalLink, FiFolder, FiGithub, FiPlus, FiSearch, FiStar, FiTrash2 } from 'react-icons/fi';
 import api from '../../utils/api';
-import uploadMedia from '../../utils/uploadMedia';
-import { FiPlus, FiEdit2, FiTrash2, FiX, FiSave } from 'react-icons/fi';
+import {
+    Card,
+    Drawer,
+    EmptyState,
+    Field,
+    FileField,
+    PageHeader,
+    Skeleton,
+    Spinner,
+    Switch,
+    TagInput,
+    errorText,
+    useConfirm,
+    useToast,
+} from '../../components/admin/ui';
+
+const CATEGORIES = ['API', 'Full-Stack', 'Backend', 'DevOps', 'CLI', 'Other'];
 
 const emptyProject = {
     title: '',
@@ -17,300 +34,249 @@ const emptyProject = {
 };
 
 const ManageProjects = () => {
-    const [projects, setProjects] = useState([]);
-    const [editing, setEditing] = useState(null); // null = closed, 'new' or project object
-    const [form, setForm] = useState({ ...emptyProject });
-    const [techInput, setTechInput] = useState('');
+    const toast = useToast();
+    const confirm = useConfirm();
+    const [params, setParams] = useSearchParams();
+    const [projects, setProjects] = useState(null);
+    const [query, setQuery] = useState('');
+    const [editing, setEditing] = useState(null); // null, 'new' or the project being edited
+    const [form, setForm] = useState(emptyProject);
     const [saving, setSaving] = useState(false);
-    const [uploadingImage, setUploadingImage] = useState(false);
 
-    const fetchProjects = async () => {
-        const { data } = await api.get('/projects');
-        setProjects(data);
-    };
+    const load = useCallback(async () => {
+        try {
+            const { data } = await api.get('/projects');
+            setProjects(data);
+        } catch (error) {
+            setProjects([]);
+            toast(`Couldn’t load projects: ${errorText(error)}`, 'err');
+        }
+    }, [toast]);
 
     useEffect(() => {
-        fetchProjects();
-    }, []);
+        document.title = 'Projects · Studio';
+        load();
+    }, [load]);
 
     const openNew = () => {
-        setForm({ ...emptyProject });
-        setTechInput('');
+        setForm({ ...emptyProject, order: projects?.length || 0 });
         setEditing('new');
     };
 
+    // /admin/projects?new=1 (from the dashboard) opens a blank form once the list has loaded.
+    const wantsNew = params.get('new') === '1';
+    const [handledNew, setHandledNew] = useState(false);
+    if (wantsNew && projects && !handledNew) {
+        setHandledNew(true);
+        setForm({ ...emptyProject, order: projects.length });
+        setEditing('new');
+    }
+    useEffect(() => {
+        if (handledNew && wantsNew) setParams({}, { replace: true });
+    }, [handledNew, wantsNew, setParams]);
+
     const openEdit = (project) => {
-        setForm({ ...project });
-        setTechInput('');
+        setForm({ ...emptyProject, ...project, techStack: project.techStack || [] });
         setEditing(project);
     };
+    const close = useCallback(() => setEditing(null), []);
+    const set = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
 
-    const closeModal = () => {
-        setEditing(null);
-        setForm({ ...emptyProject });
-    };
-
-    const handleChange = (e) => {
-        const { name, value, type, checked } = e.target;
-        setForm((prev) => ({
-            ...prev,
-            [name]: type === 'checkbox' ? checked : value,
-        }));
-    };
-
-    const handleImageUpload = async (e) => {
-        const file = e.target.files?.[0];
-
-        if (!file) {
-            return;
-        }
-
-        setUploadingImage(true);
-
-        try {
-            const url = await uploadMedia(file, {
-                folder: 'portfolio/projects',
-                resourceType: 'image',
-            });
-
-            setForm((prev) => ({ ...prev, imageUrl: url }));
-        } catch (error) {
-            alert('Error uploading image: ' + (error.response?.data?.message || error.message));
-        } finally {
-            setUploadingImage(false);
-        }
-    };
-
-    const addTech = () => {
-        if (techInput.trim() && !form.techStack.includes(techInput.trim())) {
-            setForm((prev) => ({
-                ...prev,
-                techStack: [...prev.techStack, techInput.trim()],
-            }));
-            setTechInput('');
-        }
-    };
-
-    const removeTech = (tech) => {
-        setForm((prev) => ({
-            ...prev,
-            techStack: prev.techStack.filter((t) => t !== tech),
-        }));
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const save = async () => {
         setSaving(true);
+        const payload = { ...form, order: Number(form.order) || 0 };
         try {
-            if (editing === 'new') {
-                await api.post('/projects', form);
-            } else {
-                await api.put(`/projects/${editing._id}`, form);
-            }
-            await fetchProjects();
-            closeModal();
-        } catch (err) {
-            alert('Error: ' + (err.response?.data?.message || err.message));
-        }
-        setSaving(false);
-    };
-
-    const handleDelete = async (id) => {
-        if (!confirm('Delete this project?')) return;
-        try {
-            await api.delete(`/projects/${id}`);
-            await fetchProjects();
-        } catch (err) {
-            alert('Error deleting: ' + err.message);
+            if (editing === 'new') await api.post('/projects', payload);
+            else await api.put(`/projects/${editing._id}`, payload);
+            await load();
+            toast(editing === 'new' ? 'Project added' : 'Project saved');
+            close();
+        } catch (error) {
+            toast(`Couldn’t save: ${errorText(error)}`, 'err');
+        } finally {
+            setSaving(false);
         }
     };
 
-    const inputClass =
-        'w-full bg-dark-700 border border-dark-500 rounded-lg py-2.5 px-4 text-text-primary text-sm focus:outline-none focus:border-primary transition-colors';
+    const remove = async (project) => {
+        const ok = await confirm({ title: `Delete “${project.title}”?`, body: 'It disappears from the site immediately. This can’t be undone.' });
+        if (!ok) return;
+        try {
+            await api.delete(`/projects/${project._id}`);
+            await load();
+            toast('Project deleted');
+        } catch (error) {
+            toast(`Couldn’t delete: ${errorText(error)}`, 'err');
+        }
+    };
+
+    const shown = useMemo(() => {
+        const q = query.trim().toLowerCase();
+        if (!projects) return [];
+        if (!q) return projects;
+        return projects.filter((p) => `${p.title} ${p.description} ${(p.techStack || []).join(' ')}`.toLowerCase().includes(q));
+    }, [projects, query]);
 
     return (
         <div>
-            <div className="flex items-center justify-between mb-8">
-                <div>
-                    <h1 className="text-2xl font-bold text-text-primary">Manage Projects</h1>
-                    <p className="text-text-muted text-sm mt-1">{projects.length} projects</p>
-                </div>
-                <button
-                    onClick={openNew}
-                    className="flex items-center gap-2 px-4 py-2.5 bg-linear-to-r from-primary to-accent text-dark-900 text-sm font-semibold rounded-lg hover:shadow-lg hover:shadow-primary/25 transition-all"
-                >
-                    <FiPlus /> Add Project
-                </button>
-            </div>
+            <PageHeader
+                eyebrow="Content"
+                title="Projects"
+                description="Shown in the Work section, in this order. Featured projects are marked in the list."
+                actions={
+                    <button type="button" className="cms-btn cms-btn--primary" onClick={openNew}>
+                        <FiPlus /> Add project
+                    </button>
+                }
+            />
 
-            {/* Project List */}
-            <div className="space-y-3">
-                {projects.map((project) => (
-                    <div
-                        key={project._id}
-                        className="glass rounded-xl p-5 flex items-center justify-between gap-4 hover:border-primary/20 transition-all"
-                    >
-                        <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-3 mb-1">
-                                <h3 className="font-semibold text-text-primary truncate">{project.title}</h3>
-                                {project.featured && (
-                                    <span className="px-2 py-0.5 bg-primary/10 text-primary text-[10px] font-bold rounded uppercase">
-                                        Featured
-                                    </span>
-                                )}
-                                <span className="px-2 py-0.5 bg-dark-600 text-text-muted text-[10px] font-mono rounded">
-                                    {project.category}
-                                </span>
-                            </div>
-                            <p className="text-sm text-text-muted truncate">{project.description}</p>
-                            <div className="flex flex-wrap gap-1.5 mt-2">
-                                {project.techStack?.slice(0, 5).map((tech) => (
-                                    <span key={tech} className="px-2 py-0.5 bg-dark-600 text-[10px] text-text-secondary rounded font-mono">
-                                        {tech}
-                                    </span>
-                                ))}
-                            </div>
+            {projects === null ? (
+                <Skeleton />
+            ) : projects.length === 0 ? (
+                <EmptyState
+                    icon={FiFolder}
+                    title="No projects yet"
+                    body="Add the first thing you’ve built and shipped."
+                    action={
+                        <button type="button" className="cms-btn cms-btn--primary" onClick={openNew}>
+                            <FiPlus /> Add project
+                        </button>
+                    }
+                />
+            ) : (
+                <>
+                    <div className="cms-toolbar">
+                        <div className="cms-input-wrap cms-search">
+                            <FiSearch />
+                            <input
+                                className="cms-input"
+                                placeholder="Search projects"
+                                value={query}
+                                onChange={(e) => setQuery(e.target.value)}
+                                aria-label="Search projects"
+                            />
                         </div>
-                        <div className="flex gap-2 shrink-0">
-                            <button
-                                onClick={() => openEdit(project)}
-                                className="p-2 rounded-lg hover:bg-dark-600 text-text-muted hover:text-primary transition-colors"
-                            >
-                                <FiEdit2 />
-                            </button>
-                            <button
-                                onClick={() => handleDelete(project._id)}
-                                className="p-2 rounded-lg hover:bg-red-500/10 text-text-muted hover:text-red-400 transition-colors"
-                            >
-                                <FiTrash2 />
-                            </button>
-                        </div>
+                        <span className="cms-muted cms-mono">
+                            {shown.length} of {projects.length}
+                        </span>
                     </div>
-                ))}
-            </div>
-
-            {/* Modal */}
-            {editing !== null && (
-                <div
-                    onClick={closeModal}
-                    className="fixed inset-0 z-50 bg-dark-900/80 backdrop-blur-sm flex items-start justify-center p-6 overflow-y-auto"
-                >
-                    <div
-                        onClick={(e) => e.stopPropagation()}
-                        className="glass rounded-2xl w-full max-w-2xl p-8 mt-10 mb-10"
-                    >
-                        <div className="flex items-center justify-between mb-6">
-                            <h2 className="text-lg font-semibold text-text-primary">
-                                {editing === 'new' ? 'Add Project' : 'Edit Project'}
-                            </h2>
-                            <button onClick={closeModal} className="text-text-muted hover:text-text-primary">
-                                <FiX className="text-xl" />
-                            </button>
-                        </div>
-
-                        <form onSubmit={handleSubmit} className="space-y-5">
-                            <div className="grid sm:grid-cols-2 gap-5">
-                                <div>
-                                    <label className="block text-text-secondary text-xs mb-1.5">Title *</label>
-                                    <input name="title" value={form.title} onChange={handleChange} required className={inputClass} />
-                                </div>
-                                <div>
-                                    <label className="block text-text-secondary text-xs mb-1.5">Category</label>
-                                    <select name="category" value={form.category} onChange={handleChange} className={inputClass}>
-                                        <option value="API">API</option>
-                                        <option value="Full-Stack">Full-Stack</option>
-                                        <option value="Backend">Backend</option>
-                                        <option value="DevOps">DevOps</option>
-                                        <option value="CLI">CLI</option>
-                                        <option value="Other">Other</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div>
-                                <label className="block text-text-secondary text-xs mb-1.5">Description *</label>
-                                <textarea name="description" value={form.description} onChange={handleChange} required rows={3} className={inputClass + ' resize-none'} />
-                            </div>
-                            <div>
-                                <label className="block text-text-secondary text-xs mb-1.5">Long Description</label>
-                                <textarea name="longDescription" value={form.longDescription} onChange={handleChange} rows={4} className={inputClass + ' resize-none'} />
-                            </div>
-
-                            {/* Tech Stack */}
-                            <div>
-                                <label className="block text-text-secondary text-xs mb-1.5">Tech Stack</label>
-                                <div className="flex gap-2 mb-2">
-                                    <input
-                                        value={techInput}
-                                        onChange={(e) => setTechInput(e.target.value)}
-                                        onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addTech())}
-                                        placeholder="e.g. Node.js"
-                                        className={inputClass}
-                                    />
-                                    <button type="button" onClick={addTech} className="px-4 py-2 bg-dark-600 text-text-secondary rounded-lg hover:text-text-primary transition-colors text-sm shrink-0">
-                                        Add
-                                    </button>
-                                </div>
-                                <div className="flex flex-wrap gap-2">
-                                    {form.techStack?.map((tech) => (
-                                        <span key={tech} className="flex items-center gap-1.5 px-3 py-1 bg-dark-600 text-xs text-text-secondary rounded-lg font-mono">
-                                            {tech}
-                                            <button type="button" onClick={() => removeTech(tech)} className="text-text-muted hover:text-red-400">
-                                                <FiX className="text-xs" />
-                                            </button>
-                                        </span>
-                                    ))}
-                                </div>
-                            </div>
-
-                            <div className="grid sm:grid-cols-2 gap-5">
-                                <div>
-                                    <label className="block text-text-secondary text-xs mb-1.5">GitHub URL</label>
-                                    <input name="githubUrl" value={form.githubUrl} onChange={handleChange} className={inputClass} />
-                                </div>
-                                <div>
-                                    <label className="block text-text-secondary text-xs mb-1.5">Live URL</label>
-                                    <input name="liveUrl" value={form.liveUrl} onChange={handleChange} className={inputClass} />
-                                </div>
-                                <div>
-                                    <label className="block text-text-secondary text-xs mb-1.5">Project Image</label>
-                                    <input
-                                        type="file"
-                                        accept="image/*"
-                                        onChange={handleImageUpload}
-                                        className={inputClass}
-                                    />
-                                    <p className="text-[11px] text-text-muted mt-1">
-                                        {uploadingImage
-                                            ? 'Uploading image...'
-                                            : form.imageUrl
-                                                ? 'Image uploaded to Cloudinary.'
-                                                : 'Choose an image to upload.'}
-                                    </p>
-                                </div>
-                                <div>
-                                    <label className="block text-text-secondary text-xs mb-1.5">Order</label>
-                                    <input type="number" name="order" value={form.order} onChange={handleChange} className={inputClass} />
-                                </div>
-                            </div>
-
-                            <div className="flex items-center gap-3">
-                                <input type="checkbox" name="featured" checked={form.featured} onChange={handleChange} id="featured" className="accent-primary" />
-                                <label htmlFor="featured" className="text-text-secondary text-sm">Featured project</label>
-                            </div>
-
-                            <div className="flex gap-3 pt-2">
-                                <button type="submit" disabled={saving} className="flex items-center gap-2 px-6 py-2.5 bg-linear-to-r from-primary to-accent text-dark-900 font-semibold rounded-lg text-sm disabled:opacity-50">
-                                    {saving ? 'Saving...' : <><FiSave /> Save</>}
-                                </button>
-                                <button type="button" onClick={closeModal} className="px-6 py-2.5 glass text-text-secondary rounded-lg text-sm hover:text-text-primary">
-                                    Cancel
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+                    <Card bodyClass="">
+                        <ul className="cms-list">
+                            {shown.map((p) => (
+                                <li className="cms-row" key={p._id}>
+                                    <div className="cms-row__media">{p.imageUrl ? <img src={p.imageUrl} alt="" /> : (p.title || '?').slice(0, 1)}</div>
+                                    <div className="cms-row__main">
+                                        <div className="cms-row__title">
+                                            <span>{p.title}</span>
+                                            {p.featured && (
+                                                <span className="cms-badge cms-badge--ok">
+                                                    <FiStar size={11} /> Featured
+                                                </span>
+                                            )}
+                                            <span className="cms-badge">{p.category}</span>
+                                            <span className="cms-badge">#{p.order ?? 0}</span>
+                                        </div>
+                                        <div className="cms-row__sub">{p.description}</div>
+                                        <div className="cms-row__meta">
+                                            {(p.techStack || []).slice(0, 6).map((t) => (
+                                                <span className="cms-chip" key={t}>
+                                                    {t}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    <div className="cms-row__actions">
+                                        {p.liveUrl && (
+                                            <a className="cms-btn cms-btn--ghost cms-btn--icon" href={p.liveUrl} target="_blank" rel="noreferrer" aria-label={`Open ${p.title} live site`}>
+                                                <FiExternalLink />
+                                            </a>
+                                        )}
+                                        {p.githubUrl && (
+                                            <a className="cms-btn cms-btn--ghost cms-btn--icon" href={p.githubUrl} target="_blank" rel="noreferrer" aria-label={`Open ${p.title} source`}>
+                                                <FiGithub />
+                                            </a>
+                                        )}
+                                        <button type="button" className="cms-btn cms-btn--ghost cms-btn--icon" onClick={() => openEdit(p)} aria-label={`Edit ${p.title}`}>
+                                            <FiEdit2 />
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className="cms-btn cms-btn--ghost cms-btn--icon cms-btn--danger-ghost"
+                                            onClick={() => remove(p)}
+                                            aria-label={`Delete ${p.title}`}
+                                        >
+                                            <FiTrash2 />
+                                        </button>
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                        {shown.length === 0 && <p className="cms-muted" style={{ padding: 16, margin: 0 }}>No project matches “{query}”.</p>}
+                    </Card>
+                </>
             )}
+
+            <Drawer
+                open={editing !== null}
+                title={editing === 'new' ? 'Add project' : 'Edit project'}
+                onClose={close}
+                onSubmit={save}
+                footer={
+                    <>
+                        <button type="button" className="cms-btn" onClick={close}>
+                            Cancel
+                        </button>
+                        <button type="submit" className="cms-btn cms-btn--primary" disabled={saving}>
+                            {saving && <Spinner />}
+                            {editing === 'new' ? 'Add project' : 'Save changes'}
+                        </button>
+                    </>
+                }
+            >
+                <div className="cms-grid cms-grid--2">
+                    <Field label="Title *" htmlFor="pr-title">
+                        <input id="pr-title" className="cms-input" required value={form.title} onChange={set('title')} />
+                    </Field>
+                    <Field label="Category" htmlFor="pr-category">
+                        <select id="pr-category" className="cms-select" value={form.category} onChange={set('category')}>
+                            {CATEGORIES.map((c) => (
+                                <option key={c} value={c}>
+                                    {c}
+                                </option>
+                            ))}
+                        </select>
+                    </Field>
+                    <Field label="Short description *" htmlFor="pr-desc" className="cms-span-2" hint="One or two sentences.">
+                        <textarea id="pr-desc" className="cms-textarea" rows={3} required value={form.description} onChange={set('description')} />
+                    </Field>
+                    <Field label="Long description" htmlFor="pr-long" className="cms-span-2">
+                        <textarea id="pr-long" className="cms-textarea" rows={5} value={form.longDescription} onChange={set('longDescription')} />
+                    </Field>
+                    <Field label="Tech stack" htmlFor="pr-tech" className="cms-span-2" hint="Press Enter or comma after each one.">
+                        <TagInput id="pr-tech" value={form.techStack} onChange={(techStack) => setForm((f) => ({ ...f, techStack }))} placeholder="Node.js, PostgreSQL…" />
+                    </Field>
+                    <Field label="Live URL" htmlFor="pr-live">
+                        <input id="pr-live" type="url" className="cms-input" placeholder="https://" value={form.liveUrl} onChange={set('liveUrl')} />
+                    </Field>
+                    <Field label="Source URL" htmlFor="pr-github">
+                        <input id="pr-github" type="url" className="cms-input" placeholder="https://github.com/…" value={form.githubUrl} onChange={set('githubUrl')} />
+                    </Field>
+                    <Field label="Image" className="cms-span-2">
+                        <FileField value={form.imageUrl} onChange={(imageUrl) => setForm((f) => ({ ...f, imageUrl }))} accept="image/*" folder="portfolio/projects" />
+                    </Field>
+                    <Field label="Order" htmlFor="pr-order" hint="Lower numbers come first.">
+                        <input id="pr-order" type="number" className="cms-input" value={form.order} onChange={set('order')} />
+                    </Field>
+                    <div className="cms-field" style={{ justifyContent: 'flex-end' }}>
+                        <Switch
+                            checked={!!form.featured}
+                            onChange={(featured) => setForm((f) => ({ ...f, featured }))}
+                            label="Featured"
+                            note="Highlight this project"
+                        />
+                    </div>
+                </div>
+            </Drawer>
         </div>
     );
 };

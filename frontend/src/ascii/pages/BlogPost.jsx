@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import api from '../utils/api';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
-import { renderMarkdown } from '../utils/markdown';
-import { useTitle } from '../ascii/lib';
+import api from '../../utils/api';
+import Navbar from '../Navbar';
+import Footer from '../Footer';
+import { renderMarkdown } from '../../utils/markdown';
+import { useTitle } from '../lib';
 
 const BlogPost = () => {
     const { slug } = useParams();

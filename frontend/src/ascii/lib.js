@@ -33,7 +33,7 @@ export const useInView = (rootMargin = '0px 0px -10% 0px') => {
 
 export const useTitle = (title) => {
     useEffect(() => {
-        document.title = title ? `${title} · Shubhanshu Pandey` : 'Shubhanshu Pandey · Backend Developer';
+        document.title = title ? `${title} · Shubhanshu Pandey` : 'Shubhanshu Pandey · Backend Engineer';
     }, [title]);
 };
 

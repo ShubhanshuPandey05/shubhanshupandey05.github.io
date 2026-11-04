@@ -1,8 +1,8 @@
 import axios from 'axios';
 
+// VITE_API_URL points the site at another API (for example a local backend); see .env.example.
 const api = axios.create({
-    baseURL: `https://shubhanshupandey05.vercel.app/api`,
-    // baseURL: `http://localhost:5000/api`,
+    baseURL: import.meta.env.VITE_API_URL || 'https://shubhanshupandey05.vercel.app/api',
 });
 
 // Add auth token to requests if available
@@ -18,9 +18,13 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
     (response) => response,
     (error) => {
-        if (error.response?.status === 401) {
+        // An expired session sends the CMS back to sign-in. A wrong password on the
+        // sign-in form itself is just an error to show there, not a redirect.
+        const isLogin = error.config?.url?.includes('/auth/login');
+        if (error.response?.status === 401 && !isLogin) {
             localStorage.removeItem('portfolio_admin_token');
-            if (window.location.pathname.startsWith('/admin')) {
+            const path = window.location.pathname;
+            if (path.startsWith('/admin') && path !== '/admin/login') {
                 window.location.href = '/admin/login';
             }
         }

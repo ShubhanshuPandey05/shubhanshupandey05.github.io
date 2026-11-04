@@ -1268,6 +1268,14 @@ html.ax-menu-open {
     padding-left: 3ch;
 }
 
+.ax-post__body ul {
+    list-style: disc;
+}
+
+.ax-post__body ol {
+    list-style: decimal;
+}
+
 .ax-post__body li {
     margin-bottom: 0.4em;
 }

@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import portraitUrl from './assets/portrait.webp';
 import { Stage as Engine } from './engine/stage';
 import { LINE } from './engine/glyphs';
 import { portraitFrame, wordsFrame } from './engine/raster';
@@ -27,7 +26,7 @@ const activeScene = (panel) => {
     return active;
 };
 
-const AsciiStage = ({ scenes, onInfo }) => {
+const AsciiStage = ({ scenes, portrait, onInfo }) => {
     const panelRef = useRef(null);
     const canvasRef = useRef(null);
     const engineRef = useRef(null);
@@ -111,12 +110,7 @@ const AsciiStage = ({ scenes, onInfo }) => {
 
         (async () => {
             const matchers = await prepareGlyphs();
-            const img = new Image();
-            img.decoding = 'async';
-            img.src = portraitUrl;
-            await img.decode().catch(() => {});
             if (!alive) return;
-            engine.image = img;
             engine.matchers = matchers;
             defineAll(engine, scenesRef.current);
             configure();
@@ -182,6 +176,26 @@ const AsciiStage = ({ scenes, onInfo }) => {
             engineRef.current = null;
         };
     }, []);
+
+    // The portrait photo (chosen in the CMS). When it changes, the hero re-draws with the usual scramble.
+    useEffect(() => {
+        if (!portrait) return undefined;
+        let alive = true;
+        const img = new Image();
+        img.decoding = 'async';
+        img.src = portrait;
+        img.decode()
+            .catch(() => {})
+            .then(() => {
+                const engine = engineRef.current;
+                if (!alive || !engine) return;
+                engine.image = img;
+                engine.invalidate('hero');
+            });
+        return () => {
+            alive = false;
+        };
+    }, [portrait]);
 
     // New content from the CMS: rebuild the affected frames and redraw if the visible one changed.
     useEffect(() => {

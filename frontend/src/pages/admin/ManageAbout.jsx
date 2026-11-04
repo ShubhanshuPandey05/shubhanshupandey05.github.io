@@ -1,241 +1,149 @@
 import { useEffect, useState } from 'react';
 import api from '../../utils/api';
-import uploadMedia from '../../utils/uploadMedia';
-import { FiSave, FiCheck } from 'react-icons/fi';
+import { Card, Field, FileField, PageHeader, SaveBar, Skeleton, errorText, useToast } from '../../components/admin/ui';
+
+const STATS = [
+    { key: 'yearsOfExperience', label: 'Years of experience', step: '0.5' },
+    { key: 'projectsCompleted', label: 'Projects shipped', step: '1' },
+    { key: 'technologiesUsed', label: 'Technologies', step: '1' },
+    { key: 'codeCommits', label: 'Commits this year', step: '1' },
+];
+
+const fromServer = (data = {}) => ({
+    name: data.name || '',
+    title: data.title || '',
+    subtitle: data.subtitle || '',
+    bio: data.bio || '',
+    email: data.email || '',
+    location: data.location || '',
+    profileImage: data.profileImage || '',
+    resumeUrl: data.resumeUrl || '',
+    stats: Object.fromEntries(STATS.map((s) => [s.key, Number(data.stats?.[s.key]) || 0])),
+});
 
 const ManageAbout = () => {
-    const [form, setForm] = useState({
-        name: '',
-        title: '',
-        subtitle: '',
-        bio: '',
-        email: '',
-        location: '',
-        profileImage: '',
-        resumeUrl: '',
-        stats: {
-            yearsOfExperience: 0,
-            projectsCompleted: 0,
-            technologiesUsed: 0,
-            codeCommits: 0,
-        },
-    });
+    const toast = useToast();
+    const [initial, setInitial] = useState(null);
+    const [form, setForm] = useState(null);
     const [saving, setSaving] = useState(false);
-    const [saved, setSaved] = useState(false);
-    const [uploadingMedia, setUploadingMedia] = useState({
-        profileImage: false,
-        resumeUrl: false,
-    });
 
     useEffect(() => {
-        api.get('/about').then(({ data }) => {
-            setForm({
-                name: data.name || '',
-                title: data.title || '',
-                subtitle: data.subtitle || '',
-                bio: data.bio || '',
-                email: data.email || '',
-                location: data.location || '',
-                profileImage: data.profileImage || '',
-                resumeUrl: data.resumeUrl || '',
-                stats: {
-                    yearsOfExperience: data.stats?.yearsOfExperience || 0,
-                    projectsCompleted: data.stats?.projectsCompleted || 0,
-                    technologiesUsed: data.stats?.technologiesUsed || 0,
-                    codeCommits: data.stats?.codeCommits || 0,
-                },
-            });
-        });
-    }, []);
+        document.title = 'Profile · Studio';
+        let alive = true;
+        api.get('/about')
+            .then(({ data }) => {
+                if (!alive) return;
+                const value = fromServer(data);
+                setInitial(value);
+                setForm(value);
+            })
+            .catch((error) => toast(`Couldn’t load the profile: ${errorText(error)}`, 'err'));
+        return () => {
+            alive = false;
+        };
+    }, [toast]);
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        if (name.startsWith('stats.')) {
-            const statKey = name.split('.')[1];
-            setForm((prev) => ({
-                ...prev,
-                stats: { ...prev.stats, [statKey]: Number(value) },
-            }));
-        } else {
-            setForm((prev) => ({ ...prev, [name]: value }));
-        }
-    };
+    const dirty = !!form && JSON.stringify(form) !== JSON.stringify(initial);
+    const set = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
+    const setFile = (key) => (url) => setForm((f) => ({ ...f, [key]: url }));
+    const setStat = (key) => (e) => setForm((f) => ({ ...f, stats: { ...f.stats, [key]: Number(e.target.value) } }));
 
-    const handleFileChange = async (e) => {
-        const { name, files } = e.target;
-        const file = files?.[0];
-
-        if (!file) {
-            return;
-        }
-
-        const resourceType = file.type === 'application/pdf' ? 'image' : 'image';
-
-        setUploadingMedia((prev) => ({ ...prev, [name]: true }));
-
-        try {
-            const url = await uploadMedia(file, {
-                folder: 'portfolio/about',
-                resourceType,
-            });
-
-            setForm((prev) => ({ ...prev, [name]: url }));
-        } catch (error) {
-            alert('Error uploading file: ' + (error.response?.data?.message || error.message));
-        } finally {
-            setUploadingMedia((prev) => ({ ...prev, [name]: false }));
-        }
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const save = async () => {
         setSaving(true);
         try {
-            await api.put('/about', form);
-            setSaved(true);
-            setTimeout(() => setSaved(false), 2000);
-        } catch (err) {
-            alert('Error saving: ' + (err.response?.data?.message || err.message));
+            const { data } = await api.put('/about', form);
+            const value = fromServer(data);
+            setInitial(value);
+            setForm(value);
+            toast('Profile saved');
+        } catch (error) {
+            toast(`Couldn’t save: ${errorText(error)}`, 'err');
+        } finally {
+            setSaving(false);
         }
-        setSaving(false);
     };
 
-    const inputClass =
-        'w-full bg-dark-700 border border-dark-500 rounded-lg py-2.5 px-4 text-text-primary text-sm focus:outline-none focus:border-primary transition-colors';
+    if (!form) {
+        return (
+            <div>
+                <PageHeader eyebrow="Content" title="Profile" />
+                <Skeleton height={120} count={3} />
+            </div>
+        );
+    }
 
     return (
-        <div>
-            <div className="mb-8">
-                <h1 className="text-2xl font-bold text-text-primary">Manage About</h1>
-                <p className="text-text-muted text-sm mt-1">
-                    Update your personal information displayed on the portfolio.
-                </p>
-            </div>
+        <form
+            onSubmit={(e) => {
+                e.preventDefault();
+                if (dirty) save();
+            }}
+        >
+            <PageHeader
+                eyebrow="Content"
+                title="Profile"
+                description="Who you are, how to reach you, your résumé and the numbers on the site."
+            />
 
-            <form onSubmit={handleSubmit} className="max-w-3xl space-y-8">
-                {/* Personal Info */}
-                <div className="glass rounded-xl p-6 space-y-5">
-                    <h3 className="text-sm font-semibold text-text-secondary uppercase tracking-wider">
-                        Personal Info
-                    </h3>
-                    <div className="grid sm:grid-cols-2 gap-5">
-                        <div>
-                            <label className="block text-text-secondary text-xs mb-1.5">Name</label>
-                            <input name="name" value={form.name} onChange={handleChange} className={inputClass} />
-                        </div>
-                        <div>
-                            <label className="block text-text-secondary text-xs mb-1.5">Title</label>
-                            <input name="title" value={form.title} onChange={handleChange} className={inputClass} />
-                        </div>
-                        <div className="sm:col-span-2">
-                            <label className="block text-text-secondary text-xs mb-1.5">Subtitle</label>
-                            <input name="subtitle" value={form.subtitle} onChange={handleChange} className={inputClass} />
-                        </div>
-                        <div>
-                            <label className="block text-text-secondary text-xs mb-1.5">Email</label>
-                            <input name="email" value={form.email} onChange={handleChange} className={inputClass} />
-                        </div>
-                        <div>
-                            <label className="block text-text-secondary text-xs mb-1.5">Location</label>
-                            <input name="location" value={form.location} onChange={handleChange} className={inputClass} />
-                        </div>
-                    </div>
-                    <div>
-                        <label className="block text-text-secondary text-xs mb-1.5">Bio</label>
-                        <textarea
-                            name="bio"
-                            value={form.bio}
-                            onChange={handleChange}
-                            rows={4}
-                            className={inputClass + ' resize-none'}
-                        />
-                    </div>
-                    <div className="grid sm:grid-cols-2 gap-5">
-                        <div>
-                            <label className="block text-text-secondary text-xs mb-1.5">Profile Image</label>
-                            <input
-                                type="file"
-                                name="profileImage"
-                                accept="image/*"
-                                onChange={handleFileChange}
-                                className={inputClass}
-                            />
-                            <p className="text-[11px] text-text-muted mt-1">
-                                {uploadingMedia.profileImage
-                                    ? 'Uploading image...'
-                                    : form.profileImage
-                                        ? 'Image uploaded to Cloudinary.'
-                                        : 'Choose an image to upload.'}
-                            </p>
-                        </div>
-                        <div>
-                            <label className="block text-text-secondary text-xs mb-1.5">Resume PDF</label>
-                            <input
-                                type="file"
-                                name="resumeUrl"
-                                accept="application/pdf"
-                                onChange={handleFileChange}
-                                className={inputClass}
-                            />
-                            <p className="text-[11px] text-text-muted mt-1">
-                                {uploadingMedia.resumeUrl
-                                    ? 'Uploading PDF...'
-                                    : form.resumeUrl
-                                        ? 'Resume uploaded to Cloudinary.'
-                                        : 'Choose a PDF to upload.'}
-                            </p>
-                        </div>
-                    </div>
+            <Card title="Identity" description="Your title appears in the hero of both designs.">
+                <div className="cms-grid cms-grid--2">
+                    <Field label="Name" htmlFor="p-name">
+                        <input id="p-name" className="cms-input" value={form.name} onChange={set('name')} />
+                    </Field>
+                    <Field label="Title" htmlFor="p-title" hint="For example: Backend Engineer">
+                        <input id="p-title" className="cms-input" value={form.title} onChange={set('title')} />
+                    </Field>
+                    <Field label="Subtitle" htmlFor="p-subtitle" className="cms-span-2">
+                        <input id="p-subtitle" className="cms-input" value={form.subtitle} onChange={set('subtitle')} />
+                    </Field>
+                    <Field label="Bio" htmlFor="p-bio" className="cms-span-2">
+                        <textarea id="p-bio" className="cms-textarea" rows={4} value={form.bio} onChange={set('bio')} />
+                    </Field>
                 </div>
+            </Card>
 
-                {/* Stats */}
-                <div className="glass rounded-xl p-6 space-y-5">
-                    <h3 className="text-sm font-semibold text-text-secondary uppercase tracking-wider">
-                        Stats
-                    </h3>
-                    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                        <div>
-                            <label className="block text-text-secondary text-xs mb-1.5">Years Experience</label>
-                            <input type="number" name="stats.yearsOfExperience" value={form.stats.yearsOfExperience} onChange={handleChange} className={inputClass} />
-                        </div>
-                        <div>
-                            <label className="block text-text-secondary text-xs mb-1.5">Projects</label>
-                            <input type="number" name="stats.projectsCompleted" value={form.stats.projectsCompleted} onChange={handleChange} className={inputClass} />
-                        </div>
-                        <div>
-                            <label className="block text-text-secondary text-xs mb-1.5">Technologies</label>
-                            <input type="number" name="stats.technologiesUsed" value={form.stats.technologiesUsed} onChange={handleChange} className={inputClass} />
-                        </div>
-                        <div>
-                            <label className="block text-text-secondary text-xs mb-1.5">Code Commits</label>
-                            <input type="number" name="stats.codeCommits" value={form.stats.codeCommits} onChange={handleChange} className={inputClass} />
-                        </div>
-                    </div>
+            <Card title="Contact">
+                <div className="cms-grid cms-grid--2">
+                    <Field label="Email" htmlFor="p-email" hint="Used for the contact links and the copy button.">
+                        <input id="p-email" type="email" className="cms-input" value={form.email} onChange={set('email')} />
+                    </Field>
+                    <Field label="Location" htmlFor="p-location">
+                        <input id="p-location" className="cms-input" value={form.location} onChange={set('location')} />
+                    </Field>
                 </div>
+            </Card>
 
-                {/* Save Button */}
-                <button
-                    type="submit"
-                    disabled={saving}
-                    className="flex items-center gap-2 px-6 py-3 bg-linear-to-r from-primary to-accent text-dark-900 font-semibold rounded-lg hover:shadow-lg hover:shadow-primary/25 transition-all duration-300 disabled:opacity-50"
-                >
-                    {saved ? (
-                        <>
-                            <FiCheck /> Saved!
-                        </>
-                    ) : saving ? (
-                        <>
-                            <div className="w-4 h-4 border-2 border-dark-900 border-t-transparent rounded-full animate-spin" />
-                            Saving...
-                        </>
-                    ) : (
-                        <>
-                            <FiSave /> Save Changes
-                        </>
-                    )}
-                </button>
-            </form>
-        </div>
+            <Card title="Files" description="Uploaded to Cloudinary. The résumé page shows the PDF.">
+                <div className="cms-grid cms-grid--2">
+                    <Field label="Résumé (PDF)">
+                        <FileField value={form.resumeUrl} onChange={setFile('resumeUrl')} accept="application/pdf" folder="portfolio/about" kind="pdf" />
+                    </Field>
+                    <Field label="Profile image">
+                        <FileField value={form.profileImage} onChange={setFile('profileImage')} accept="image/*" folder="portfolio/about" />
+                    </Field>
+                </div>
+            </Card>
+
+            <Card title="Numbers" description="The stats in the About section.">
+                <div className="cms-grid cms-grid--4">
+                    {STATS.map((s) => (
+                        <Field key={s.key} label={s.label} htmlFor={`p-${s.key}`}>
+                            <input
+                                id={`p-${s.key}`}
+                                type="number"
+                                min="0"
+                                step={s.step}
+                                className="cms-input"
+                                value={form.stats[s.key]}
+                                onChange={setStat(s.key)}
+                            />
+                        </Field>
+                    ))}
+                </div>
+            </Card>
+
+            <SaveBar dirty={dirty} saving={saving} onSave={save} onDiscard={() => setForm(initial)} />
+        </form>
     );
 };
 

@@ -69,6 +69,13 @@ export class Stage {
         this.frames.delete(id);
     }
 
+    // Throw away a scene's frame (its source changed) and redraw it if it is on screen.
+    invalidate(id) {
+        this.frames.delete(id);
+        if (this.geo && this.current === id) this.show(id);
+        this.prewarm();
+    }
+
     frame(id) {
         if (!this.geo) return null;
         let f = this.frames.get(id);
