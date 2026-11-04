@@ -1,36 +1,31 @@
 import { Link } from 'react-router-dom';
-import { useTitle } from '../hooks/usePage';
-import { pages } from '../content/site';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import BrushKanji from '../brush/BrushKanji';
+import AsciiTitle from '../ascii/AsciiTitle';
+import { useTitle } from '../ascii/lib';
 
-// Rusu: the word left on a door when nobody is in.
 const NotFound = () => {
-    useTitle(pages.notFound.label);
-
+    useTitle('Not found');
     return (
-        <>
+        <div className="ax ax-page">
             <Navbar />
-            <main id="main" className="flex min-h-svh items-center pb-24 pt-[calc(var(--beam)+4rem)]">
-                <div className="shell flex flex-col items-start gap-10 md:flex-row md:items-center md:gap-16">
-                    <div className="flex items-start gap-2" lang="ja">
-                        <BrushKanji text={pages.notFound.kanji} className="h-[13rem] w-auto md:h-[19rem]" />
-                        <span aria-hidden="true" className="tategaki pt-1 text-[0.75rem] font-medium text-ash-dim">
-                            {pages.notFound.kana}
-                        </span>
-                    </div>
-                    <div>
-                        <h1 className="display text-[clamp(2.5rem,6vw,4.5rem)]">Nobody home.</h1>
-                        <p className="measure mt-5 text-ash">This room is not part of the house. The address may be mistyped, or the page may have been taken down.</p>
-                        <Link to="/" className="tag tag-shu mt-9">
-                            Back to the entrance
-                        </Link>
-                    </div>
+            <main id="main" className="ax-page__main">
+                <AsciiTitle text="404" fill="page not found nobody home" label="404" className="ax-title--tall" />
+                <h1 className="ax-post__title">Nobody home.</h1>
+                <p className="ax-page__lead">
+                    This page doesn’t exist. The address may be mistyped, or the page may have been taken down.
+                </p>
+                <div className="ax-ctas">
+                    <Link to="/" className="ax-btn ax-btn--solid">
+                        Back to the portfolio
+                    </Link>
+                    <Link to="/#work" className="ax-btn">
+                        See the work
+                    </Link>
                 </div>
             </main>
             <Footer />
-        </>
+        </div>
     );
 };
 

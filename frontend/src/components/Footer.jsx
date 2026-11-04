@@ -2,20 +2,12 @@ import { Link } from 'react-router-dom';
 import * as content from '../data/content';
 
 const Footer = () => (
-    <footer className="sp-footer">
-        <div className="sp-footer__big" aria-hidden="true">
-            {'Shubhanshu'.split('').map((c, i) => (
-                <span key={i} style={{ '--i': i }}>
-                    {c}
-                </span>
-            ))}
-            <em>.</em>
-        </div>
-        <div className="sp-footer__row">
+    <footer className="ax-footer">
+        <div className="ax-footer__row">
             <p>
-                Backend developer in Surat, India.
+                © {new Date().getFullYear()} Shubhanshu Pandey
                 <br />
-                <span className="sp-dim">Built with React and a lot of canvas. No templates were harmed.</span>
+                <span>Backend developer in Surat, India.</span>
             </p>
             <ul>
                 <li>
@@ -32,11 +24,13 @@ const Footer = () => (
                     </li>
                 ))}
             </ul>
-            <button type="button" className="sp-footer__top" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} data-cursor="up">
+            <button type="button" className="ax-footer__top" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
                 Back to top ↑
             </button>
         </div>
-        <p className="sp-footer__copy sp-mono">© {new Date().getFullYear()} Shubhanshu Pandey</p>
+        <p className="ax-footer__note">
+            Rendered in plain text. The portrait on the home page is drawn entirely in ASCII characters.
+        </p>
     </footer>
 );
 

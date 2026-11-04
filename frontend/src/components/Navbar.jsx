@@ -1,43 +1,54 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { SoundToggle, ThemeToggle } from '../site/Toggles';
+import { useTheme } from '../context/ThemeContext';
 
 export const CHAPTERS = [
     { id: 'about', label: 'About' },
     { id: 'work', label: 'Work' },
-    { id: 'system', label: 'System' },
     { id: 'experience', label: 'Experience' },
-    { id: 'skills', label: 'Toolbox' },
-    { id: 'terminal', label: 'Terminal' },
-    { id: 'notes', label: 'Notes' },
+    { id: 'stack', label: 'Stack' },
     { id: 'contact', label: 'Contact' },
 ];
 
-// Desktop: a fixed chapter rail on the left with reading progress.
-// Mobile: a slim top bar and a full-screen menu.
+export const ThemeToggle = ({ className = '' }) => {
+    const { theme, toggleTheme } = useTheme();
+    const light = theme === 'light';
+    return (
+        <button
+            type="button"
+            className={`ax-theme ${className}`}
+            onClick={toggleTheme}
+            aria-label={light ? 'Switch to dark theme' : 'Switch to light theme'}
+        >
+            <span className={light ? 'is-on' : ''}>light</span>
+            <i aria-hidden="true">/</i>
+            <span className={light ? '' : 'is-on'}>dark</span>
+        </button>
+    );
+};
+
+// A fixed top bar. On the home page the current section is marked as you scroll.
 const Navbar = () => {
     const { pathname, hash } = useLocation();
     const onHome = pathname === '/';
     const [active, setActive] = useState('');
-    const [progress, setProgress] = useState(0);
     const [open, setOpen] = useState(false);
 
     useEffect(() => {
-        document.documentElement.classList.add('sp-has-rail');
-        return () => document.documentElement.classList.remove('sp-has-rail');
-    }, []);
-
-    useEffect(() => {
+        if (!onHome) return undefined;
         let raf = 0;
         const update = () => {
             raf = 0;
-            const max = document.documentElement.scrollHeight - window.innerHeight;
-            setProgress(max > 0 ? window.scrollY / max : 0);
             let cur = '';
             CHAPTERS.forEach((c) => {
                 const el = document.getElementById(c.id);
-                if (el && el.getBoundingClientRect().top < window.innerHeight * 0.45) cur = c.id;
+                if (el && el.getBoundingClientRect().top < window.innerHeight * 0.5) cur = c.id;
             });
+            const notes = document.getElementById('notes');
+            if (notes && notes.getBoundingClientRect().top < window.innerHeight * 0.5) {
+                const contact = document.getElementById('contact');
+                if (!contact || contact.getBoundingClientRect().top >= window.innerHeight * 0.5) cur = 'notes';
+            }
             setActive(cur);
         };
         const onScroll = () => {
@@ -51,80 +62,86 @@ const Navbar = () => {
             window.removeEventListener('scroll', onScroll);
             window.removeEventListener('resize', onScroll);
         };
-    }, [pathname]);
+    }, [onHome]);
 
-    useEffect(() => setOpen(false), [pathname, hash]);
+    // Close the menu whenever the location changes (adjusted during render, not in an effect).
+    const here = `${pathname}${hash}`;
+    const [lastHere, setLastHere] = useState(here);
+    if (here !== lastHere) {
+        setLastHere(here);
+        setOpen(false);
+    }
+
     useEffect(() => {
-        document.documentElement.classList.toggle('sp-menu-open', open);
-        return () => document.documentElement.classList.remove('sp-menu-open');
+        document.documentElement.classList.toggle('ax-menu-open', open);
+        if (!open) return undefined;
+        const onKey = (e) => e.key === 'Escape' && setOpen(false);
+        window.addEventListener('keydown', onKey);
+        return () => {
+            window.removeEventListener('keydown', onKey);
+            document.documentElement.classList.remove('ax-menu-open');
+        };
     }, [open]);
 
     const to = (id) => ({ pathname: '/', hash: `#${id}` });
-    const isActive = (id) => (id === 'notes' && pathname.startsWith('/blog')) || (onHome && active === id);
+    const isActive = (id) => onHome && active === id;
+    const notesActive = pathname.startsWith('/blog') || (onHome && active === 'notes');
 
     return (
         <>
-            <aside className="sp-rail" aria-label="Chapters">
-                <Link to="/" className="sp-rail__logo" data-cursor="home" aria-label="Home">
-                    S<span>P</span>
+            <a href="#main" className="ax-skip">
+                Skip to content
+            </a>
+            <header className="ax-bar">
+                <Link to="/" className="ax-bar__mark" aria-label="Shubhanshu Pandey, home">
+                    SP<span className="ax-caret" aria-hidden="true" />
                 </Link>
-                <nav className="sp-rail__nav">
-                    {CHAPTERS.map((c, i) => (
-                        <Link key={c.id} to={to(c.id)} className={isActive(c.id) ? 'is-active' : ''}>
-                            <span className="sp-rail__num">{String(i + 1).padStart(2, '0')}</span>
-                            <span className="sp-rail__label">{c.label}</span>
-                        </Link>
-                    ))}
-                </nav>
-                <div className="sp-rail__progress" aria-hidden="true">
-                    <span style={{ transform: `scaleY(${progress})` }} />
-                </div>
-                <div className="sp-rail__tools">
-                    <SoundToggle />
-                    <ThemeToggle />
-                </div>
-                <Link to="/resume" className="sp-rail__cv" data-cursor="read">
-                    Résumé
-                </Link>
-            </aside>
-
-            <header className="sp-topbar">
-                <Link to="/" className="sp-topbar__logo" aria-label="Home">
-                    S<span>P</span>
-                </Link>
-                <span className="sp-topbar__name">Shubhanshu Pandey</span>
-                <SoundToggle />
-                <ThemeToggle />
-                <button
-                    type="button"
-                    className={`sp-burger ${open ? 'is-open' : ''}`}
-                    onClick={() => setOpen((v) => !v)}
-                    aria-expanded={open}
-                    aria-label={open ? 'Close menu' : 'Open menu'}
-                >
-                    <span />
-                    <span />
-                </button>
-                <span className="sp-topbar__progress" style={{ transform: `scaleX(${progress})` }} aria-hidden="true" />
-            </header>
-
-            <Link to={to('contact')} className="sp-talk" data-cursor="say hi">
-                <span className="sp-live" /> Let’s talk
-            </Link>
-
-            <div className={`sp-menu ${open ? 'is-open' : ''}`} aria-hidden={!open}>
-                <nav>
-                    {CHAPTERS.map((c, i) => (
-                        <Link key={c.id} to={to(c.id)} tabIndex={open ? 0 : -1} style={{ '--i': i }}>
-                            <span className="sp-mono">{String(i + 1).padStart(2, '0')}</span>
+                <span className="ax-bar__who">
+                    Shubhanshu Pandey <i aria-hidden="true">/</i> backend developer
+                </span>
+                <nav className="ax-bar__nav" aria-label="Sections">
+                    {CHAPTERS.map((c) => (
+                        <Link key={c.id} to={to(c.id)} className={isActive(c.id) ? 'is-active' : ''} aria-current={isActive(c.id) ? 'true' : undefined}>
                             {c.label}
                         </Link>
                     ))}
-                    <Link to="/resume" tabIndex={open ? 0 : -1} style={{ '--i': CHAPTERS.length }}>
-                        <span className="sp-mono">CV</span>
+                    <Link to="/blog" className={notesActive ? 'is-active' : ''}>
+                        Notes
+                    </Link>
+                </nav>
+                <ThemeToggle className="ax-bar__theme" />
+                <Link to="/resume" className="ax-bar__cv">
+                    Résumé <span aria-hidden="true">↗</span>
+                </Link>
+                <button
+                    type="button"
+                    className="ax-burger"
+                    onClick={() => setOpen((v) => !v)}
+                    aria-expanded={open}
+                    aria-controls="ax-menu"
+                >
+                    {open ? '[ close ]' : '[ menu ]'}
+                </button>
+            </header>
+
+            <div id="ax-menu" className={`ax-menu ${open ? 'is-open' : ''}`} inert={!open}>
+                <nav aria-label="Menu">
+                    {CHAPTERS.map((c, i) => (
+                        <Link key={c.id} to={to(c.id)} style={{ '--i': i }}>
+                            <span>{String(i + 1).padStart(2, '0')}</span>
+                            {c.label}
+                        </Link>
+                    ))}
+                    <Link to="/blog" style={{ '--i': CHAPTERS.length }}>
+                        <span>{String(CHAPTERS.length + 1).padStart(2, '0')}</span>
+                        Notes
+                    </Link>
+                    <Link to="/resume" style={{ '--i': CHAPTERS.length + 1 }}>
+                        <span>cv</span>
                         Résumé
                     </Link>
                 </nav>
+                <ThemeToggle className="ax-menu__theme" />
             </div>
         </>
     );
