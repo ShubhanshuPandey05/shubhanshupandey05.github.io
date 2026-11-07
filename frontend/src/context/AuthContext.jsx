@@ -13,6 +13,7 @@ export const AuthProvider = ({ children }) => {
     const [token, setToken] = useState(localStorage.getItem('portfolio_admin_token'));
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [email, setEmail] = useState('');
 
     useEffect(() => {
         const verifyToken = async () => {
@@ -24,6 +25,7 @@ export const AuthProvider = ({ children }) => {
             try {
                 const { data } = await api.get('/auth/verify');
                 setIsAuthenticated(data.valid);
+                setEmail(data.email || '');
             } catch {
                 setIsAuthenticated(false);
                 localStorage.removeItem('portfolio_admin_token');
@@ -39,6 +41,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem('portfolio_admin_token', data.token);
         setToken(data.token);
         setIsAuthenticated(true);
+        setEmail(data.email || email);
         return data;
     };
 
@@ -46,10 +49,11 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem('portfolio_admin_token');
         setToken(null);
         setIsAuthenticated(false);
+        setEmail('');
     };
 
     return (
-        <AuthContext.Provider value={{ token, isAuthenticated, loading, login, logout }}>
+        <AuthContext.Provider value={{ token, isAuthenticated, loading, email, login, logout }}>
             {children}
         </AuthContext.Provider>
     );

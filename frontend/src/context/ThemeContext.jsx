@@ -27,7 +27,7 @@ export const ThemeProvider = ({ children }) => {
         } else {
             root.classList.remove('light');
         }
-        document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'light' ? '#f4f1ea' : '#0b0b0d');
+        document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'light' ? '#f4f3ef' : '#0b0b0c');
         try {
             localStorage.setItem('portfolio_theme_v4', theme);
         } catch {

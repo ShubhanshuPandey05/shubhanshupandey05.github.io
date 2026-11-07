@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { SoundToggle, ThemeToggle } from '../site/Toggles';
+import { SoundToggle, ThemeToggle } from './Toggles';
 
 export const CHAPTERS = [
     { id: 'about', label: 'About' },

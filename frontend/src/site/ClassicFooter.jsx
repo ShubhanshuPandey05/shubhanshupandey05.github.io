@@ -13,7 +13,7 @@ const Footer = () => (
         </div>
         <div className="sp-footer__row">
             <p>
-                Backend developer in Surat, India.
+                Backend engineer in Surat, India.
                 <br />
                 <span className="sp-dim">Built with React and a lot of canvas. No templates were harmed.</span>
             </p>

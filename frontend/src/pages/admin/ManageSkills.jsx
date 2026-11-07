@@ -1,191 +1,171 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { FiCpu, FiEdit2, FiPlus, FiTrash2 } from 'react-icons/fi';
 import api from '../../utils/api';
-import { FiPlus, FiEdit2, FiTrash2, FiX, FiSave } from 'react-icons/fi';
+import { Card, Drawer, EmptyState, Field, PageHeader, Skeleton, Spinner, errorText, useConfirm, useToast } from '../../components/admin/ui';
 
-const emptySkill = {
-    name: '',
-    category: 'Backend',
-    proficiency: 50,
-    order: 0,
-};
+const CATEGORIES = ['Backend', 'Database', 'DevOps', 'Tools', 'Frontend', 'Other'];
+const emptySkill = { name: '', category: 'Backend', proficiency: 50, order: 0 };
 
 const ManageSkills = () => {
-    const [skills, setSkills] = useState([]);
+    const toast = useToast();
+    const confirm = useConfirm();
+    const [skills, setSkills] = useState(null);
     const [editing, setEditing] = useState(null);
-    const [form, setForm] = useState({ ...emptySkill });
+    const [form, setForm] = useState(emptySkill);
     const [saving, setSaving] = useState(false);
 
-    const fetchSkills = async () => {
-        const { data } = await api.get('/skills');
-        setSkills(data);
-    };
+    const load = useCallback(async () => {
+        try {
+            const { data } = await api.get('/skills');
+            setSkills(data);
+        } catch (error) {
+            setSkills([]);
+            toast(`Couldn’t load skills: ${errorText(error)}`, 'err');
+        }
+    }, [toast]);
 
     useEffect(() => {
-        fetchSkills();
-    }, []);
+        document.title = 'Skills · Studio';
+        load();
+    }, [load]);
 
-    const openNew = () => {
-        setForm({ ...emptySkill });
+    const openNew = (category = 'Backend') => {
+        setForm({ ...emptySkill, category, order: skills?.length || 0 });
         setEditing('new');
     };
-
     const openEdit = (skill) => {
-        setForm({ ...skill });
+        setForm({ ...emptySkill, ...skill });
         setEditing(skill);
     };
+    const close = useCallback(() => setEditing(null), []);
+    const set = (key, number = false) => (e) => setForm((f) => ({ ...f, [key]: number ? Number(e.target.value) : e.target.value }));
 
-    const closeModal = () => {
-        setEditing(null);
-        setForm({ ...emptySkill });
-    };
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setForm((prev) => ({ ...prev, [name]: name === 'proficiency' || name === 'order' ? Number(value) : value }));
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const save = async () => {
         setSaving(true);
         try {
-            if (editing === 'new') {
-                await api.post('/skills', form);
-            } else {
-                await api.put(`/skills/${editing._id}`, form);
-            }
-            await fetchSkills();
-            closeModal();
-        } catch (err) {
-            alert('Error: ' + (err.response?.data?.message || err.message));
+            if (editing === 'new') await api.post('/skills', form);
+            else await api.put(`/skills/${editing._id}`, form);
+            await load();
+            toast(editing === 'new' ? `${form.name} added` : `${form.name} saved`);
+            close();
+        } catch (error) {
+            toast(`Couldn’t save: ${errorText(error)}`, 'err');
+        } finally {
+            setSaving(false);
         }
-        setSaving(false);
     };
 
-    const handleDelete = async (id) => {
-        if (!confirm('Delete this skill?')) return;
+    const remove = async (skill) => {
+        if (!(await confirm({ title: `Delete ${skill.name}?`, body: 'It disappears from the stack on the site.' }))) return;
         try {
-            await api.delete(`/skills/${id}`);
-            await fetchSkills();
-        } catch (err) {
-            alert('Error deleting: ' + err.message);
+            await api.delete(`/skills/${skill._id}`);
+            await load();
+            toast(`${skill.name} deleted`);
+        } catch (error) {
+            toast(`Couldn’t delete: ${errorText(error)}`, 'err');
         }
     };
 
-    // Group by category
-    const grouped = skills.reduce((acc, skill) => {
-        if (!acc[skill.category]) acc[skill.category] = [];
-        acc[skill.category].push(skill);
-        return acc;
-    }, {});
-
-    const inputClass =
-        'w-full bg-dark-700 border border-dark-500 rounded-lg py-2.5 px-4 text-text-primary text-sm focus:outline-none focus:border-primary transition-colors';
+    const groups = CATEGORIES.map((c) => ({ category: c, items: (skills || []).filter((s) => (CATEGORIES.includes(s.category) ? s.category : 'Other') === c) })).filter(
+        (g) => g.items.length
+    );
 
     return (
         <div>
-            <div className="flex items-center justify-between mb-8">
-                <div>
-                    <h1 className="text-2xl font-bold text-text-primary">Manage Skills</h1>
-                    <p className="text-text-muted text-sm mt-1">{skills.length} skills</p>
-                </div>
-                <button
-                    onClick={openNew}
-                    className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-primary to-accent text-dark-900 text-sm font-semibold rounded-lg hover:shadow-lg hover:shadow-primary/25 transition-all"
-                >
-                    <FiPlus /> Add Skill
-                </button>
-            </div>
+            <PageHeader
+                eyebrow="Content"
+                title="Skills"
+                description="Grouped by category into the stack section. Proficiency is your own rating."
+                actions={
+                    <button type="button" className="cms-btn cms-btn--primary" onClick={() => openNew()}>
+                        <FiPlus /> Add skill
+                    </button>
+                }
+            />
 
-            {/* Grouped skill list */}
-            {Object.entries(grouped).map(([category, catSkills]) => (
-                <div key={category} className="mb-8">
-                    <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wider mb-3">
-                        {category}
-                    </h2>
-                    <div className="space-y-2">
-                        {catSkills.map((skill) => (
-                            <div
-                                key={skill._id}
-                                className="glass rounded-xl p-4 flex items-center justify-between gap-4 hover:border-primary/20 transition-all"
-                            >
-                                <div className="flex-1">
-                                    <div className="flex items-center gap-3">
-                                        <span className="font-medium text-text-primary">{skill.name}</span>
-                                        <span className="text-xs font-mono text-primary">{skill.proficiency}%</span>
-                                    </div>
-                                    <div className="mt-2 h-1.5 bg-dark-600 rounded-full overflow-hidden">
-                                        <div
-                                            className="h-full bg-gradient-to-r from-primary to-accent rounded-full"
-                                            style={{ width: `${skill.proficiency}%` }}
-                                        />
-                                    </div>
-                                </div>
-                                <div className="flex gap-2 shrink-0">
-                                    <button onClick={() => openEdit(skill)} className="p-2 rounded-lg hover:bg-dark-600 text-text-muted hover:text-primary transition-colors">
-                                        <FiEdit2 />
-                                    </button>
-                                    <button onClick={() => handleDelete(skill._id)} className="p-2 rounded-lg hover:bg-red-500/10 text-text-muted hover:text-red-400 transition-colors">
-                                        <FiTrash2 />
-                                    </button>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            ))}
-
-            {/* Modal */}
-            {editing !== null && (
-                <div onClick={closeModal} className="fixed inset-0 z-50 bg-dark-900/80 backdrop-blur-sm flex items-center justify-center p-6">
-                    <div onClick={(e) => e.stopPropagation()} className="glass rounded-2xl w-full max-w-md p-8">
-                        <div className="flex items-center justify-between mb-6">
-                            <h2 className="text-lg font-semibold text-text-primary">
-                                {editing === 'new' ? 'Add Skill' : 'Edit Skill'}
-                            </h2>
-                            <button onClick={closeModal} className="text-text-muted hover:text-text-primary">
-                                <FiX className="text-xl" />
-                            </button>
-                        </div>
-
-                        <form onSubmit={handleSubmit} className="space-y-5">
-                            <div>
-                                <label className="block text-text-secondary text-xs mb-1.5">Name *</label>
-                                <input name="name" value={form.name} onChange={handleChange} required className={inputClass} />
-                            </div>
-                            <div>
-                                <label className="block text-text-secondary text-xs mb-1.5">Category</label>
-                                <select name="category" value={form.category} onChange={handleChange} className={inputClass}>
-                                    <option value="Backend">Backend</option>
-                                    <option value="Database">Database</option>
-                                    <option value="DevOps">DevOps</option>
-                                    <option value="Tools">Tools</option>
-                                    <option value="Frontend">Frontend</option>
-                                    <option value="Other">Other</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label className="block text-text-secondary text-xs mb-1.5">
-                                    Proficiency: <span className="text-primary font-mono">{form.proficiency}%</span>
-                                </label>
-                                <input type="range" name="proficiency" min="0" max="100" value={form.proficiency} onChange={handleChange} className="w-full accent-primary" />
-                            </div>
-                            <div>
-                                <label className="block text-text-secondary text-xs mb-1.5">Order</label>
-                                <input type="number" name="order" value={form.order} onChange={handleChange} className={inputClass} />
-                            </div>
-
-                            <div className="flex gap-3 pt-2">
-                                <button type="submit" disabled={saving} className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-primary to-accent text-dark-900 font-semibold rounded-lg text-sm disabled:opacity-50">
-                                    {saving ? 'Saving...' : <><FiSave /> Save</>}
+            {skills === null ? (
+                <Skeleton height={140} count={2} />
+            ) : skills.length === 0 ? (
+                <EmptyState icon={FiCpu} title="No skills yet" body="Add the tools you use." />
+            ) : (
+                <div className="cms-skillgroups">
+                    {groups.map((g) => (
+                        <Card
+                            key={g.category}
+                            title={g.category}
+                            description={`${g.items.length} skill${g.items.length === 1 ? '' : 's'}`}
+                            bodyClass=""
+                            actions={
+                                <button type="button" className="cms-btn cms-btn--ghost cms-btn--sm" onClick={() => openNew(g.category)}>
+                                    <FiPlus /> Add
                                 </button>
-                                <button type="button" onClick={closeModal} className="px-6 py-2.5 glass text-text-secondary rounded-lg text-sm hover:text-text-primary">
-                                    Cancel
-                                </button>
+                            }
+                        >
+                            <div style={{ marginTop: 10 }}>
+                                {g.items.map((s) => (
+                                    <div className="cms-skill" key={s._id}>
+                                        <span className="cms-skill__name">{s.name}</span>
+                                        <span className="cms-meter" aria-label={`${s.proficiency}%`}>
+                                            <span style={{ width: `${s.proficiency}%` }} />
+                                        </span>
+                                        <span className="cms-skill__pct">{s.proficiency}%</span>
+                                        <span className="cms-row__actions">
+                                            <button type="button" className="cms-btn cms-btn--ghost cms-btn--icon" onClick={() => openEdit(s)} aria-label={`Edit ${s.name}`}>
+                                                <FiEdit2 />
+                                            </button>
+                                            <button
+                                                type="button"
+                                                className="cms-btn cms-btn--ghost cms-btn--icon cms-btn--danger-ghost"
+                                                onClick={() => remove(s)}
+                                                aria-label={`Delete ${s.name}`}
+                                            >
+                                                <FiTrash2 />
+                                            </button>
+                                        </span>
+                                    </div>
+                                ))}
                             </div>
-                        </form>
-                    </div>
+                        </Card>
+                    ))}
                 </div>
             )}
+
+            <Drawer
+                open={editing !== null}
+                title={editing === 'new' ? 'Add skill' : 'Edit skill'}
+                onClose={close}
+                onSubmit={save}
+                footer={
+                    <>
+                        <button type="button" className="cms-btn" onClick={close}>
+                            Cancel
+                        </button>
+                        <button type="submit" className="cms-btn cms-btn--primary" disabled={saving}>
+                            {saving && <Spinner />}
+                            {editing === 'new' ? 'Add skill' : 'Save changes'}
+                        </button>
+                    </>
+                }
+            >
+                <div className="cms-grid cms-grid--2">
+                    <Field label="Name *" htmlFor="sk-name">
+                        <input id="sk-name" className="cms-input" required value={form.name} onChange={set('name')} />
+                    </Field>
+                    <Field label="Category" htmlFor="sk-category">
+                        <select id="sk-category" className="cms-select" value={form.category} onChange={set('category')}>
+                            {CATEGORIES.map((c) => (
+                                <option key={c}>{c}</option>
+                            ))}
+                        </select>
+                    </Field>
+                    <Field label={`Proficiency · ${form.proficiency}%`} htmlFor="sk-prof" className="cms-span-2">
+                        <input id="sk-prof" type="range" min="0" max="100" className="cms-range" value={form.proficiency} onChange={set('proficiency', true)} />
+                    </Field>
+                    <Field label="Order" htmlFor="sk-order" hint="Lower numbers come first.">
+                        <input id="sk-order" type="number" className="cms-input" value={form.order} onChange={set('order', true)} />
+                    </Field>
+                </div>
+            </Drawer>
         </div>
     );
 };

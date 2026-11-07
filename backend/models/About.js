@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 const aboutSchema = new mongoose.Schema(
     {
         name: { type: String, required: true, default: 'Your Name' },
-        title: { type: String, required: true, default: 'Backend Developer' },
+        title: { type: String, required: true, default: 'Backend Engineer' },
         subtitle: { type: String, default: 'Building scalable server-side solutions' },
         bio: { type: String, default: '' },
         profileImage: { type: String, default: '' },

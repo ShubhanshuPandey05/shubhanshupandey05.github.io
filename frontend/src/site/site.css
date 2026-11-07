@@ -70,8 +70,9 @@ html.light {
   --grain: 0.04;
 }
 
-html,
-body,
+/* Page-level rules apply only while this design is active (ClassicChrome adds .sp-on). */
+html.sp-on,
+html.sp-on body,
 .sp-rail,
 .sp-topbar,
 .sp-proj,
@@ -81,20 +82,20 @@ body,
   transition: background-color 0.5s var(--ease), color 0.5s var(--ease), border-color 0.5s var(--ease);
 }
 
-html {
+html.sp-on {
   background: var(--bg);
   scroll-behavior: smooth;
   overflow-x: clip;
 }
 
-body {
+html.sp-on body {
   background: var(--bg);
   color: var(--fg);
   overflow-x: clip;
 }
 
 /* Film grain over everything, very faint */
-body::after {
+html.sp-on body::after {
   content: '';
   position: fixed;
   inset: -50%;
@@ -116,7 +117,7 @@ html.sp-booting {
 }
 
 .sp ::selection,
-::selection {
+html.sp-on ::selection {
   background: var(--acc);
   color: var(--ink);
 }

@@ -6,7 +6,7 @@ export const profile = {
     name: 'Shubhanshu Pandey',
     firstName: 'Shubhanshu',
     lastName: 'Pandey',
-    title: 'Backend Developer',
+    title: 'Backend Engineer',
     location: 'Surat, India',
     email: 'shubhanshu855@gmail.com',
     resumeUrl: '/resume',
@@ -22,7 +22,7 @@ export const preface = {
     statement:
         'I build the backends nobody sees: *APIs,* *queues,* *scrapers* and *real-time* *pipes,* so the product on top can feel effortless.',
     paragraphs: [
-        "Hello. I'm Shubhanshu, a backend developer from Surat, wrapping up a B.Tech in Computer Science at Uka Tarsadia University. In the last year and a half I've shipped real-time voice and chat backends, WhatsApp automation, a face-recognition attendance system on AWS, and a map-based job search engine that scrapes and re-indexes itself twice a day.",
+        "Hello. I'm Shubhanshu, a backend engineer from Surat, wrapping up a B.Tech in Computer Science at Uka Tarsadia University. In the last year and a half I've shipped real-time voice and chat backends, WhatsApp automation, a face-recognition attendance system on AWS, and a map-based job search engine that scrapes and re-indexes itself twice a day.",
         "My home turf is Node.js and Python, Postgres and Mongo, Redis and BullMQ, and the unglamorous work in between: retries, idempotency, caching, and the Nginx config nobody else wants to touch. Lately I've been working directly with business owners too, turning paper processes into software that quietly saves them hours.",
     ],
 };
@@ -30,7 +30,7 @@ export const preface = {
 export const experience = [
     {
         company: 'Independent',
-        role: 'Freelance Software Developer',
+        role: 'Freelance Software Engineer',
         place: 'Surat, Gujarat',
         start: 'Mar 2026',
         end: 'Present',
@@ -44,7 +44,7 @@ export const experience = [
     },
     {
         company: 'Bizcompass',
-        role: 'Backend Developer Intern',
+        role: 'Backend Engineer Intern',
         place: 'Surat, Gujarat',
         start: 'Sep 2025',
         end: 'Feb 2026',
@@ -58,7 +58,7 @@ export const experience = [
     },
     {
         company: 'Delta Four Labs',
-        role: 'Backend Developer Intern',
+        role: 'Backend Engineer Intern',
         place: 'Surat, Gujarat',
         start: 'May 2025',
         end: 'Aug 2025',
@@ -78,6 +78,7 @@ export const projects = [
         key: 'geojobs',
         match: ['geo-jobs', 'geojobs'],
         title: 'GeoJobs',
+        stage: ['GEO', 'JOBS'],
         kicker: 'Map-based job discovery',
         year: '2025',
         deck: 'Every open role in a city, on a map, searchable in milliseconds.',
@@ -94,6 +95,7 @@ export const projects = [
         key: 'voice',
         match: ['ai_assistant', 'conversational'],
         title: 'Unified Conversational AI Engine',
+        stage: ['AI', 'ENGINE'],
         kicker: 'One brain, every channel',
         year: '2025',
         deck: 'Phone calls, SMS and web chat, all talking to the same assistant and remembering the same conversation.',
@@ -110,6 +112,7 @@ export const projects = [
         key: 'forms',
         match: ['formsflow', 'forms'],
         title: 'FormsFlow',
+        stage: ['FORMS', 'FLOW'],
         kicker: 'Forms management platform',
         year: '2024',
         deck: 'Point any website form at one endpoint and get tidy inboxes, email alerts and a dashboard for free.',

@@ -1,21 +1,22 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import api from '../utils/api';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
-import Hero from '../site/sections/Hero';
-import About, { Marquee } from '../site/sections/About';
-import Work from '../site/sections/Work';
-import SystemMap from '../site/sections/SystemMap';
-import Experience from '../site/sections/Experience';
-import Skills from '../site/sections/Skills';
-import Terminal from '../site/sections/Terminal';
-import Notes from '../site/sections/Notes';
-import Contact from '../site/sections/Contact';
-import SecretsTracker from '../site/SecretsTracker';
-import Preloader from '../site/Preloader';
-import { confetti, unlock } from '../site/secrets';
+import Navbar from './ClassicNavbar';
+import Footer from './ClassicFooter';
+import Hero from './sections/Hero';
+import About, { Marquee } from './sections/About';
+import Work from './sections/Work';
+import SystemMap from './sections/SystemMap';
+import Experience from './sections/Experience';
+import Skills from './sections/Skills';
+import Terminal from './sections/Terminal';
+import Notes from './sections/Notes';
+import Contact from './sections/Contact';
+import SecretsTracker from './SecretsTracker';
+import Preloader from './Preloader';
+import { confetti, unlock } from './secrets';
 import * as content from '../data/content';
+import './site.css';
 
 // Pair an API project with its curated, rewritten copy (matched by repo URL or title).
 const curate = (apiProject) => {
@@ -41,8 +42,12 @@ const curate = (apiProject) => {
     };
 };
 
-const Home = () => {
+const ClassicHome = () => {
     const location = useLocation();
+
+    useEffect(() => {
+        document.title = 'Shubhanshu Pandey · Backend Engineer';
+    }, []);
     const [remote, setRemote] = useState({ about: null, socials: [], blogs: [], projects: [], skills: [] });
 
     // Render the curated copy immediately, then layer in live data from the CMS when it arrives.
@@ -148,4 +153,4 @@ const Home = () => {
     );
 };
 
-export default Home;
+export default ClassicHome;

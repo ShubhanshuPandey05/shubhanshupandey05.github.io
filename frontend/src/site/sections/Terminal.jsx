@@ -7,7 +7,7 @@ const JOKES = [
     'I would tell you a UDP joke, but you might not get it.',
     'A SQL query walks into a bar, walks up to two tables and asks: “Can I join you?”',
     'It works on my machine. Then we’ll ship your machine.',
-    'Why did the developer go broke? He used up all his cache.',
+    'Why did the engineer go broke? He used up all his cache.',
     'Knock knock. Race condition. Who’s there?',
 ];
 

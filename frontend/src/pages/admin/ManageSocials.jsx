@@ -1,11 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { FiEdit2, FiExternalLink, FiLink, FiPlus, FiTrash2 } from 'react-icons/fi';
+import { FaDev, FaDiscord, FaGithub, FaGlobe, FaInstagram, FaLinkedin, FaTwitter, FaYoutube } from 'react-icons/fa';
 import api from '../../utils/api';
-import { FiPlus, FiEdit2, FiTrash2, FiX, FiSave } from 'react-icons/fi';
-import {
-    FaGithub, FaLinkedin, FaTwitter, FaDev, FaYoutube, FaDiscord, FaInstagram, FaGlobe,
-} from 'react-icons/fa';
+import { Card, Drawer, EmptyState, Field, PageHeader, Skeleton, Spinner, errorText, useConfirm, useToast } from '../../components/admin/ui';
 
-const iconOptions = [
+const ICONS = [
     { value: 'FaGithub', label: 'GitHub', Icon: FaGithub },
     { value: 'FaLinkedin', label: 'LinkedIn', Icon: FaLinkedin },
     { value: 'FaTwitter', label: 'Twitter', Icon: FaTwitter },
@@ -15,186 +14,168 @@ const iconOptions = [
     { value: 'FaInstagram', label: 'Instagram', Icon: FaInstagram },
     { value: 'FaGlobe', label: 'Website', Icon: FaGlobe },
 ];
-
-const iconMap = Object.fromEntries(iconOptions.map((o) => [o.value, o.Icon]));
-
+const iconFor = (value) => ICONS.find((i) => i.value === value)?.Icon || FaGlobe;
 const emptySocial = { platform: '', url: '', icon: 'FaGlobe', order: 0 };
 
 const ManageSocials = () => {
-    const [links, setLinks] = useState([]);
+    const toast = useToast();
+    const confirm = useConfirm();
+    const [links, setLinks] = useState(null);
     const [editing, setEditing] = useState(null);
-    const [form, setForm] = useState({ ...emptySocial });
+    const [form, setForm] = useState(emptySocial);
     const [saving, setSaving] = useState(false);
 
-    const fetchLinks = async () => {
-        const { data } = await api.get('/social-links');
-        setLinks(data);
-    };
+    const load = useCallback(async () => {
+        try {
+            const { data } = await api.get('/social-links');
+            setLinks(data);
+        } catch (error) {
+            setLinks([]);
+            toast(`Couldn’t load links: ${errorText(error)}`, 'err');
+        }
+    }, [toast]);
 
     useEffect(() => {
-        fetchLinks();
-    }, []);
+        document.title = 'Social links · Studio';
+        load();
+    }, [load]);
 
     const openNew = () => {
-        setForm({ ...emptySocial });
+        setForm({ ...emptySocial, order: links?.length || 0 });
         setEditing('new');
     };
-
     const openEdit = (link) => {
-        setForm({ ...link });
+        setForm({ ...emptySocial, ...link });
         setEditing(link);
     };
+    const close = useCallback(() => setEditing(null), []);
+    const set = (key, number = false) => (e) => setForm((f) => ({ ...f, [key]: number ? Number(e.target.value) : e.target.value }));
 
-    const closeModal = () => {
-        setEditing(null);
-    };
+    // Picking an icon also fills the platform name if it is still empty.
+    const pickIcon = (opt) => setForm((f) => ({ ...f, icon: opt.value, platform: f.platform || (opt.value === 'FaGlobe' ? '' : opt.label) }));
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setForm((prev) => ({ ...prev, [name]: name === 'order' ? Number(value) : value }));
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const save = async () => {
         setSaving(true);
         try {
-            if (editing === 'new') {
-                await api.post('/social-links', form);
-            } else {
-                await api.put(`/social-links/${editing._id}`, form);
-            }
-            await fetchLinks();
-            closeModal();
-        } catch (err) {
-            alert('Error: ' + (err.response?.data?.message || err.message));
+            if (editing === 'new') await api.post('/social-links', form);
+            else await api.put(`/social-links/${editing._id}`, form);
+            await load();
+            toast(editing === 'new' ? `${form.platform} added` : `${form.platform} saved`);
+            close();
+        } catch (error) {
+            toast(`Couldn’t save: ${errorText(error)}`, 'err');
+        } finally {
+            setSaving(false);
         }
-        setSaving(false);
     };
 
-    const handleDelete = async (id) => {
-        if (!confirm('Delete this social link?')) return;
+    const remove = async (link) => {
+        if (!(await confirm({ title: `Delete ${link.platform}?`, body: 'The link disappears from the site.' }))) return;
         try {
-            await api.delete(`/social-links/${id}`);
-            await fetchLinks();
-        } catch (err) {
-            alert('Error: ' + err.message);
+            await api.delete(`/social-links/${link._id}`);
+            await load();
+            toast(`${link.platform} deleted`);
+        } catch (error) {
+            toast(`Couldn’t delete: ${errorText(error)}`, 'err');
         }
     };
-
-    const inputClass =
-        'w-full bg-dark-700 border border-dark-500 rounded-lg py-2.5 px-4 text-text-primary text-sm focus:outline-none focus:border-primary transition-colors';
 
     return (
         <div>
-            <div className="flex items-center justify-between mb-8">
-                <div>
-                    <h1 className="text-2xl font-bold text-text-primary">Manage Social Links</h1>
-                    <p className="text-text-muted text-sm mt-1">{links.length} links</p>
-                </div>
-                <button
-                    onClick={openNew}
-                    className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-primary to-accent text-dark-900 text-sm font-semibold rounded-lg hover:shadow-lg hover:shadow-primary/25 transition-all"
-                >
-                    <FiPlus /> Add Link
-                </button>
-            </div>
+            <PageHeader
+                eyebrow="Content"
+                title="Social links"
+                description="Shown in the contact section and the footer, in this order."
+                actions={
+                    <button type="button" className="cms-btn cms-btn--primary" onClick={openNew}>
+                        <FiPlus /> Add link
+                    </button>
+                }
+            />
 
-            {/* List */}
-            <div className="space-y-3">
-                {links.map((link) => {
-                    const Icon = iconMap[link.icon] || FaGlobe;
-                    return (
-                        <div
-                            key={link._id}
-                            className="glass rounded-xl p-5 flex items-center justify-between gap-4 hover:border-primary/20 transition-all"
-                        >
-                            <div className="flex items-center gap-4">
-                                <div className="p-3 rounded-lg bg-primary/10 text-primary">
-                                    <Icon className="text-xl" />
-                                </div>
-                                <div>
-                                    <h3 className="font-medium text-text-primary">{link.platform}</h3>
-                                    <a
-                                        href={link.url}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        className="text-xs text-text-muted hover:text-primary transition-colors font-mono"
-                                    >
-                                        {link.url}
-                                    </a>
-                                </div>
-                            </div>
-                            <div className="flex gap-2 shrink-0">
-                                <button onClick={() => openEdit(link)} className="p-2 rounded-lg hover:bg-dark-600 text-text-muted hover:text-primary transition-colors">
-                                    <FiEdit2 />
-                                </button>
-                                <button onClick={() => handleDelete(link._id)} className="p-2 rounded-lg hover:bg-red-500/10 text-text-muted hover:text-red-400 transition-colors">
-                                    <FiTrash2 />
-                                </button>
-                            </div>
-                        </div>
-                    );
-                })}
-            </div>
-
-            {/* Modal */}
-            {editing !== null && (
-                <div onClick={closeModal} className="fixed inset-0 z-50 bg-dark-900/80 backdrop-blur-sm flex items-center justify-center p-6">
-                    <div onClick={(e) => e.stopPropagation()} className="glass rounded-2xl w-full max-w-md p-8">
-                        <div className="flex items-center justify-between mb-6">
-                            <h2 className="text-lg font-semibold text-text-primary">
-                                {editing === 'new' ? 'Add Social Link' : 'Edit Social Link'}
-                            </h2>
-                            <button onClick={closeModal} className="text-text-muted hover:text-text-primary">
-                                <FiX className="text-xl" />
-                            </button>
-                        </div>
-
-                        <form onSubmit={handleSubmit} className="space-y-5">
-                            <div>
-                                <label className="block text-text-secondary text-xs mb-1.5">Platform *</label>
-                                <input name="platform" value={form.platform} onChange={handleChange} required className={inputClass} placeholder="e.g. GitHub" />
-                            </div>
-                            <div>
-                                <label className="block text-text-secondary text-xs mb-1.5">URL *</label>
-                                <input name="url" value={form.url} onChange={handleChange} required className={inputClass} placeholder="https://..." />
-                            </div>
-                            <div>
-                                <label className="block text-text-secondary text-xs mb-1.5">Icon</label>
-                                <div className="grid grid-cols-4 gap-2">
-                                    {iconOptions.map((opt) => (
-                                        <button
-                                            key={opt.value}
-                                            type="button"
-                                            onClick={() => setForm((prev) => ({ ...prev, icon: opt.value }))}
-                                            className={`flex flex-col items-center gap-1 p-3 rounded-lg text-xs transition-all ${form.icon === opt.value
-                                                    ? 'bg-primary/10 text-primary border border-primary/30'
-                                                    : 'bg-dark-700 text-text-muted hover:text-text-secondary'
-                                                }`}
-                                        >
-                                            <opt.Icon className="text-lg" />
-                                            {opt.label}
+            {links === null ? (
+                <Skeleton />
+            ) : links.length === 0 ? (
+                <EmptyState icon={FiLink} title="No links yet" body="Add GitHub, LinkedIn or anywhere people can find you." />
+            ) : (
+                <Card bodyClass="">
+                    <ul className="cms-list">
+                        {links.map((l) => {
+                            const Icon = iconFor(l.icon);
+                            return (
+                                <li className="cms-row" key={l._id}>
+                                    <div className="cms-row__media">
+                                        <Icon />
+                                    </div>
+                                    <div className="cms-row__main">
+                                        <div className="cms-row__title">
+                                            <span>{l.platform}</span>
+                                            <span className="cms-badge">#{l.order ?? 0}</span>
+                                        </div>
+                                        <div className="cms-row__sub cms-mono">{l.url}</div>
+                                    </div>
+                                    <div className="cms-row__actions">
+                                        <a className="cms-btn cms-btn--ghost cms-btn--icon" href={l.url} target="_blank" rel="noreferrer" aria-label={`Open ${l.platform}`}>
+                                            <FiExternalLink />
+                                        </a>
+                                        <button type="button" className="cms-btn cms-btn--ghost cms-btn--icon" onClick={() => openEdit(l)} aria-label={`Edit ${l.platform}`}>
+                                            <FiEdit2 />
                                         </button>
-                                    ))}
-                                </div>
-                            </div>
-                            <div>
-                                <label className="block text-text-secondary text-xs mb-1.5">Order</label>
-                                <input type="number" name="order" value={form.order} onChange={handleChange} className={inputClass} />
-                            </div>
-
-                            <div className="flex gap-3 pt-2">
-                                <button type="submit" disabled={saving} className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-primary to-accent text-dark-900 font-semibold rounded-lg text-sm disabled:opacity-50">
-                                    {saving ? 'Saving...' : <><FiSave /> Save</>}
-                                </button>
-                                <button type="button" onClick={closeModal} className="px-6 py-2.5 glass text-text-secondary rounded-lg text-sm hover:text-text-primary">
-                                    Cancel
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+                                        <button
+                                            type="button"
+                                            className="cms-btn cms-btn--ghost cms-btn--icon cms-btn--danger-ghost"
+                                            onClick={() => remove(l)}
+                                            aria-label={`Delete ${l.platform}`}
+                                        >
+                                            <FiTrash2 />
+                                        </button>
+                                    </div>
+                                </li>
+                            );
+                        })}
+                    </ul>
+                </Card>
             )}
+
+            <Drawer
+                open={editing !== null}
+                title={editing === 'new' ? 'Add link' : 'Edit link'}
+                onClose={close}
+                onSubmit={save}
+                footer={
+                    <>
+                        <button type="button" className="cms-btn" onClick={close}>
+                            Cancel
+                        </button>
+                        <button type="submit" className="cms-btn cms-btn--primary" disabled={saving}>
+                            {saving && <Spinner />}
+                            {editing === 'new' ? 'Add link' : 'Save changes'}
+                        </button>
+                    </>
+                }
+            >
+                <div className="cms-grid">
+                    <Field label="Icon">
+                        <div className="cms-icon-grid">
+                            {ICONS.map((opt) => (
+                                <button type="button" key={opt.value} aria-pressed={form.icon === opt.value} onClick={() => pickIcon(opt)}>
+                                    <opt.Icon />
+                                    {opt.label}
+                                </button>
+                            ))}
+                        </div>
+                    </Field>
+                    <Field label="Platform *" htmlFor="so-platform">
+                        <input id="so-platform" className="cms-input" required value={form.platform} onChange={set('platform')} />
+                    </Field>
+                    <Field label="URL *" htmlFor="so-url">
+                        <input id="so-url" type="url" className="cms-input" required placeholder="https://" value={form.url} onChange={set('url')} />
+                    </Field>
+                    <Field label="Order" htmlFor="so-order" hint="Lower numbers come first.">
+                        <input id="so-order" type="number" className="cms-input" value={form.order} onChange={set('order', true)} />
+                    </Field>
+                </div>
+            </Drawer>
         </div>
     );
 };
