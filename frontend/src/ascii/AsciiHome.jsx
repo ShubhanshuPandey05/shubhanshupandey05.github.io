@@ -13,36 +13,13 @@ import Stack from './sections/Stack';
 import Notes from './sections/Notes';
 import Contact from './sections/Contact';
 import * as content from '../data/content';
+import { curate, experienceFrom, prefaceFrom } from '../data/live';
 import { useSettings } from '../context/SettingsContext';
 import { portraitUrl } from './portraits';
 
-// Pair an API project with its curated, rewritten copy (matched by repo URL or title).
-const curate = (apiProject) => {
-    const haystack = `${apiProject.githubUrl || ''} ${apiProject.title || ''}`.toLowerCase();
-    const curated = content.projects.find((c) => c.match.some((m) => haystack.includes(m)));
-    if (curated) {
-        return {
-            ...curated,
-            githubUrl: apiProject.githubUrl || curated.githubUrl,
-            liveUrl: apiProject.liveUrl || curated.liveUrl,
-        };
-    }
-    return {
-        key: null,
-        title: apiProject.title,
-        kicker: apiProject.category || 'Project',
-        year: apiProject.createdAt ? String(new Date(apiProject.createdAt).getFullYear()) : '',
-        deck: apiProject.description,
-        body: apiProject.longDescription ? [apiProject.longDescription] : [],
-        techStack: apiProject.techStack || [],
-        githubUrl: apiProject.githubUrl,
-        liveUrl: apiProject.liveUrl,
-    };
-};
-
 const AsciiHome = () => {
     const location = useLocation();
-    const [remote, setRemote] = useState({ about: null, socials: [], blogs: [], projects: [], skills: [] });
+    const [remote, setRemote] = useState({ about: null, socials: [], blogs: [], projects: [], skills: [], experience: [] });
     const [portraitChars, setPortraitChars] = useState(0);
     const { portrait } = useSettings();
 
@@ -59,7 +36,8 @@ const AsciiHome = () => {
             api.get('/blogs'),
             api.get('/projects'),
             api.get('/skills'),
-        ]).then(([about, socials, blogs, projects, skills]) => {
+            api.get('/experience'),
+        ]).then(([about, socials, blogs, projects, skills, experience]) => {
             if (!alive) return;
             const ok = (r) => (r.status === 'fulfilled' ? r.value.data : null);
             setRemote({
@@ -68,6 +46,7 @@ const AsciiHome = () => {
                 blogs: Array.isArray(ok(blogs)) ? ok(blogs) : [],
                 projects: Array.isArray(ok(projects)) ? ok(projects) : [],
                 skills: Array.isArray(ok(skills)) ? ok(skills) : [],
+                experience: Array.isArray(ok(experience)) ? ok(experience) : [],
             });
         });
         return () => {
@@ -94,16 +73,18 @@ const AsciiHome = () => {
             : content.socials;
         const blogs = remote.blogs.filter((b) => b.published !== false);
         const github = socials.find((s) => /github/i.test(s.platform))?.url || content.socials[0].url;
-        return { profile, projects, skills, socials, blogs, github };
+        const experience = experienceFrom(remote.experience);
+        const preface = prefaceFrom(remote.about);
+        return { profile, projects, skills, socials, blogs, github, experience, preface };
     }, [remote]);
 
     const scenes = useMemo(
         () =>
             buildScenes({
                 profile: data.profile,
-                preface: content.preface,
+                preface: data.preface,
                 projects: data.projects,
-                experience: content.experience,
+                experience: data.experience,
                 skills: data.skills,
                 blogs: data.blogs,
                 socials: data.socials,
@@ -137,9 +118,9 @@ const AsciiHome = () => {
             <AsciiStage scenes={scenes} portrait={portraitUrl(portrait)} onInfo={onStageInfo} />
             <main className="ax-main" id="main">
                 <Hero profile={data.profile} count={portraitChars} />
-                <About copy={content.preface} stats={data.profile.stats} education={content.education} n={n.about} />
+                <About copy={data.preface} stats={data.profile.stats} education={content.education} n={n.about} />
                 <Work projects={data.projects} githubUrl={data.github} n={n.work} />
-                <Experience experience={content.experience} n={n.experience} />
+                <Experience experience={data.experience} n={n.experience} />
                 <Stack skills={data.skills} groups={content.skillGroups} n={n.stack} />
                 {data.blogs.length > 0 && <Notes blogs={data.blogs} n={n.notes} />}
                 <Contact email={data.profile.email} socials={data.socials} n={n.contact} />

@@ -13,6 +13,8 @@ import socialLinkRoutes from './routes/socialLinks.js';
 import blogRoutes from './routes/blogs.js';
 import uploadRoutes from './routes/uploads.js';
 import settingsRoutes from './routes/settings.js';
+import experienceRoutes from './routes/experience.js';
+import resumeRoutes from './routes/resume.js';
 
 dotenv.config();
 
@@ -35,6 +37,8 @@ app.use('/api/social-links', socialLinkRoutes);
 app.use('/api/blogs', blogRoutes);
 app.use('/api/uploads', uploadRoutes);
 app.use('/api/settings', settingsRoutes);
+app.use('/api/experience', experienceRoutes);
+app.use('/api/resume', resumeRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

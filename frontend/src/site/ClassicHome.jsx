@@ -16,31 +16,8 @@ import SecretsTracker from './SecretsTracker';
 import Preloader from './Preloader';
 import { confetti, unlock } from './secrets';
 import * as content from '../data/content';
+import { curate, experienceFrom, prefaceFrom } from '../data/live';
 import './site.css';
-
-// Pair an API project with its curated, rewritten copy (matched by repo URL or title).
-const curate = (apiProject) => {
-    const haystack = `${apiProject.githubUrl || ''} ${apiProject.title || ''}`.toLowerCase();
-    const curated = content.projects.find((c) => c.match.some((m) => haystack.includes(m)));
-    if (curated) {
-        return {
-            ...curated,
-            githubUrl: apiProject.githubUrl || curated.githubUrl,
-            liveUrl: apiProject.liveUrl || curated.liveUrl,
-        };
-    }
-    return {
-        key: null,
-        title: apiProject.title,
-        kicker: apiProject.category || 'Project',
-        year: apiProject.createdAt ? String(new Date(apiProject.createdAt).getFullYear()) : '',
-        deck: apiProject.description,
-        body: apiProject.longDescription ? [apiProject.longDescription] : [],
-        techStack: apiProject.techStack || [],
-        githubUrl: apiProject.githubUrl,
-        liveUrl: apiProject.liveUrl,
-    };
-};
 
 const ClassicHome = () => {
     const location = useLocation();
@@ -48,7 +25,7 @@ const ClassicHome = () => {
     useEffect(() => {
         document.title = 'Shubhanshu Pandey · Backend Engineer';
     }, []);
-    const [remote, setRemote] = useState({ about: null, socials: [], blogs: [], projects: [], skills: [] });
+    const [remote, setRemote] = useState({ about: null, socials: [], blogs: [], projects: [], skills: [], experience: [] });
 
     // Render the curated copy immediately, then layer in live data from the CMS when it arrives.
     useEffect(() => {
@@ -59,7 +36,8 @@ const ClassicHome = () => {
             api.get('/blogs'),
             api.get('/projects'),
             api.get('/skills'),
-        ]).then(([about, socials, blogs, projects, skills]) => {
+            api.get('/experience'),
+        ]).then(([about, socials, blogs, projects, skills, experience]) => {
             if (!alive) return;
             const ok = (r) => (r.status === 'fulfilled' ? r.value.data : null);
             setRemote({
@@ -68,6 +46,7 @@ const ClassicHome = () => {
                 blogs: Array.isArray(ok(blogs)) ? ok(blogs) : [],
                 projects: Array.isArray(ok(projects)) ? ok(projects) : [],
                 skills: Array.isArray(ok(skills)) ? ok(skills) : [],
+                experience: Array.isArray(ok(experience)) ? ok(experience) : [],
             });
         });
         return () => {
@@ -94,7 +73,9 @@ const ClassicHome = () => {
             : content.socials;
         const blogs = remote.blogs.filter((b) => b.published !== false);
         const github = socials.find((s) => /github/i.test(s.platform))?.url || content.socials[0].url;
-        return { profile, projects, skills, socials, blogs, github };
+        const experience = experienceFrom(remote.experience);
+        const preface = prefaceFrom(remote.about);
+        return { profile, projects, skills, socials, blogs, github, experience, preface };
     }, [remote]);
 
     // Konami code anywhere on the page unlocks a secret.
@@ -138,12 +119,12 @@ const ClassicHome = () => {
             <main>
                 <Hero profile={data.profile} />
                 <Marquee items={tech} />
-                <About copy={content.preface} stats={data.profile.stats} education={content.education} />
+                <About copy={data.preface} stats={data.profile.stats} education={content.education} />
                 <Work projects={data.projects} githubUrl={data.github} />
                 <SystemMap />
-                <Experience experience={content.experience} />
+                <Experience experience={data.experience} />
                 <Skills skills={data.skills} groups={content.skillGroups} />
-                <Terminal data={{ ...data, experience: content.experience }} />
+                <Terminal data={data} />
                 <Notes blogs={data.blogs} index="07" />
                 <Contact email={data.profile.email} socials={data.socials} index="08" />
             </main>

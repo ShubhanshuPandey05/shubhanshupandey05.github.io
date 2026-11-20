@@ -16,6 +16,9 @@ const projectSchema = new mongoose.Schema(
             enum: ['API', 'Full-Stack', 'Backend', 'DevOps', 'CLI', 'Other'],
             default: 'Backend',
         },
+        // 'resume' once the résumé sync owns this project: the next sync updates it,
+        // and removes it if it is no longer on the résumé. 'manual' projects are never removed.
+        source: { type: String, enum: ['manual', 'resume'], default: 'manual' },
     },
     { timestamps: true }
 );
