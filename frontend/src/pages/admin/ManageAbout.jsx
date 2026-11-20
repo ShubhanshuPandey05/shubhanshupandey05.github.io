@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import api from '../../utils/api';
 import { Card, Field, FileField, PageHeader, SaveBar, Skeleton, errorText, useToast } from '../../components/admin/ui';
+import ResumeSync from '../../components/admin/ResumeSync';
 
 const STATS = [
     { key: 'yearsOfExperience', label: 'Years of experience', step: '0.5' },
@@ -25,6 +26,7 @@ const ManageAbout = () => {
     const toast = useToast();
     const [initial, setInitial] = useState(null);
     const [form, setForm] = useState(null);
+    const [server, setServer] = useState(null);
     const [saving, setSaving] = useState(false);
 
     useEffect(() => {
@@ -33,6 +35,7 @@ const ManageAbout = () => {
         api.get('/about')
             .then(({ data }) => {
                 if (!alive) return;
+                setServer(data);
                 const value = fromServer(data);
                 setInitial(value);
                 setForm(value);
@@ -48,10 +51,21 @@ const ManageAbout = () => {
     const setFile = (key) => (url) => setForm((f) => ({ ...f, [key]: url }));
     const setStat = (key) => (e) => setForm((f) => ({ ...f, stats: { ...f.stats, [key]: Number(e.target.value) } }));
 
+    // A résumé sync rewrites the bio and the résumé link on the server. Take those two
+    // fields from it and keep any other edits still in progress.
+    const onSynced = (data) => {
+        if (!data) return;
+        setServer(data);
+        const value = fromServer(data);
+        setInitial((i) => ({ ...i, bio: value.bio, resumeUrl: value.resumeUrl }));
+        setForm((f) => ({ ...f, bio: value.bio, resumeUrl: value.resumeUrl }));
+    };
+
     const save = async () => {
         setSaving(true);
         try {
             const { data } = await api.put('/about', form);
+            setServer(data);
             const value = fromServer(data);
             setInitial(value);
             setForm(value);
@@ -96,7 +110,7 @@ const ManageAbout = () => {
                     <Field label="Subtitle" htmlFor="p-subtitle" className="cms-span-2">
                         <input id="p-subtitle" className="cms-input" value={form.subtitle} onChange={set('subtitle')} />
                     </Field>
-                    <Field label="Bio" htmlFor="p-bio" className="cms-span-2">
+                    <Field label="Bio" htmlFor="p-bio" className="cms-span-2" hint="Filled in from your résumé’s summary each time it syncs.">
                         <textarea id="p-bio" className="cms-textarea" rows={4} value={form.bio} onChange={set('bio')} />
                     </Field>
                 </div>
@@ -113,11 +127,10 @@ const ManageAbout = () => {
                 </div>
             </Card>
 
-            <Card title="Files" description="Uploaded to Cloudinary. The résumé page shows the PDF.">
+            <ResumeSync about={server} onSynced={onSynced} />
+
+            <Card title="Photo" description="Uploaded to Cloudinary.">
                 <div className="cms-grid cms-grid--2">
-                    <Field label="Résumé (PDF)">
-                        <FileField value={form.resumeUrl} onChange={setFile('resumeUrl')} accept="application/pdf" folder="portfolio/about" kind="pdf" />
-                    </Field>
                     <Field label="Profile image">
                         <FileField value={form.profileImage} onChange={setFile('profileImage')} accept="image/*" folder="portfolio/about" />
                     </Field>

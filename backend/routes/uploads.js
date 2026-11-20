@@ -9,7 +9,7 @@ const upload = multer({
     limits: { fileSize: 25 * 1024 * 1024 },
 });
 
-const uploadBuffer = (buffer, options) =>
+export const uploadBuffer = (buffer, options) =>
     new Promise((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream(options, (error, result) => {
             if (error) {
