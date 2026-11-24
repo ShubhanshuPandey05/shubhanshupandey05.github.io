@@ -16,6 +16,21 @@ const aboutSchema = new mongoose.Schema(
             technologiesUsed: { type: Number, default: 0 },
             codeCommits: { type: Number, default: 0 },
         },
+        // The version of data/resume.js last applied on start-up.
+        bundledResume: { type: String, default: '' },
+        // The last résumé sync: what it read and what it changed on the site.
+        resumeSync: {
+            status: { type: String, enum: ['never', 'synced', 'failed'], default: 'never' },
+            resumeUrl: { type: String, default: '' },
+            attemptedAt: { type: Date },
+            syncedAt: { type: Date },
+            error: { type: String, default: '' },
+            counts: {
+                projects: { type: Number, default: 0 },
+                skills: { type: Number, default: 0 },
+                experience: { type: Number, default: 0 },
+            },
+        },
     },
     { timestamps: true }
 );

@@ -174,6 +174,11 @@ const ManageProjects = () => {
                                                 </span>
                                             )}
                                             <span className="cms-badge">{p.category}</span>
+                                            {p.source === 'resume' && (
+                                                <span className="cms-badge" title="Kept in step with your résumé. The next sync overwrites edits to its text.">
+                                                    From résumé
+                                                </span>
+                                            )}
                                             <span className="cms-badge">#{p.order ?? 0}</span>
                                         </div>
                                         <div className="cms-row__sub">{p.description}</div>

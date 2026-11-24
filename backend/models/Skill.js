@@ -11,6 +11,8 @@ const skillSchema = new mongoose.Schema(
         proficiency: { type: Number, min: 0, max: 100, default: 50 },
         icon: { type: String, default: '' },
         order: { type: Number, default: 0 },
+        // 'resume' once the résumé sync owns this skill (see models/Project.js).
+        source: { type: String, enum: ['manual', 'resume'], default: 'manual' },
     },
     { timestamps: true }
 );
