@@ -16,6 +16,8 @@ const aboutSchema = new mongoose.Schema(
             technologiesUsed: { type: Number, default: 0 },
             codeCommits: { type: Number, default: 0 },
         },
+        // The version of data/resume.js last applied on start-up.
+        bundledResume: { type: String, default: '' },
         // The last résumé sync: what it read and what it changed on the site.
         resumeSync: {
             status: { type: String, enum: ['never', 'synced', 'failed'], default: 'never' },

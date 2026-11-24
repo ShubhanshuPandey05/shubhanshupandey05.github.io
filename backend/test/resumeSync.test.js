@@ -122,3 +122,15 @@ test('an empty section leaves the site as it was', async () => {
 });
 
 test.after(() => mongoose.disconnect());
+
+test('the bundled résumé applies cleanly and matches GeoJobs by its repo', async () => {
+    const { resume } = await import('../data/resume.js');
+    const result = await applyResume(resume);
+    assert.equal(result.experience.count, 4);
+    assert.equal(result.projects.count, 3);
+    const titles = (await Project.find()).map((p) => p.title).sort();
+    assert.deepEqual(titles, ['Alpha Production & QC Platform', 'GeoJobs', 'Hand-made demo', 'Prime Analyst']);
+    const node = (await Skill.find()).find((s) => s.name === 'NodeJS');
+    assert.equal(node.source, 'resume', 'Node.js on the résumé took over the existing NodeJS skill');
+    assert.ok(result.summary.includes('\n\n'), 'the summary keeps its two paragraphs');
+});

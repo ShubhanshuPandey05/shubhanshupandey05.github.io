@@ -110,7 +110,7 @@ const ClassicHome = () => {
         return () => clearInterval(timer);
     }, [location.hash, location.key]);
 
-    const tech = ['Node.js', 'Python', 'PostgreSQL', 'Redis', 'BullMQ', 'WebSockets', 'Playwright', 'Docker', 'AWS', 'Nginx', 'MongoDB', 'Twilio'];
+    const tech = ['Python', 'FastAPI', 'Node.js', 'PostgreSQL', 'MongoDB', 'Redis', 'WebSockets', 'LiveKit', 'Flutter', 'Docker', 'AWS', 'GCP'];
 
     return (
         <div className="sp">
