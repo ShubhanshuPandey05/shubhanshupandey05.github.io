@@ -1,8 +1,10 @@
 import GeoDemo from '../demos/GeoDemo';
 import VoiceDemo from '../demos/VoiceDemo';
 import FormsDemo from '../demos/FormsDemo';
+import PrimeDemo from '../demos/PrimeDemo';
+import AlphaDemo from '../demos/AlphaDemo';
 
-const DEMOS = { geojobs: GeoDemo, voice: VoiceDemo, forms: FormsDemo };
+const DEMOS = { prime: PrimeDemo, alpha: AlphaDemo, geojobs: GeoDemo, voice: VoiceDemo, forms: FormsDemo };
 
 // Projects from the CMS without a hand-built demo get a tilting gradient card instead.
 const Fallback = ({ title }) => {
