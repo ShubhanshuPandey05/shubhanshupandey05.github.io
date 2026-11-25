@@ -125,8 +125,8 @@ const AlphaDemo = () => {
         <div className="sp-demo sp-demo--phone sp-demo--alpha">
             <div className="al-phone">
                 <div className="al-status">
-                    <span>14:06</span>
-                    <span>●●● ▮</span>
+                    <span>alpha plant app</span>
+                    <span>private build</span>
                 </div>
                 <div className="al-screen">
                     <header className="al-hero">

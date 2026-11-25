@@ -19,9 +19,9 @@ const PAYABLES = { total: 412300, overdue: 0.12 };
 const STOCK = { value: 1872400, low: 3, neg: 1, items: 24 };
 
 const REPORTS = [
-    ['Outstanding', '#2d5bff', [['Receivables', 'Who owes me money, and for how long'], ['Payables', 'What I owe my suppliers'], ['Ledgers', 'Closing balances across all accounts']]],
-    ['Transactions', '#7c4dff', [['Day book', 'Every voucher, day by day'], ['Sales register', 'Every sale, by month, customer and item']]],
-    ['Stock', '#e08a15', [['Stock summary', 'What I hold and what it is worth'], ['Running low', 'Items at or below reorder level']]],
+    ['Outstanding', 'var(--acc)', [['Receivables', 'Who owes me money, and for how long'], ['Payables', 'What I owe my suppliers'], ['Ledgers', 'Closing balances across all accounts']]],
+    ['Transactions', 'var(--ok)', [['Day book', 'Every voucher, day by day'], ['Sales register', 'Every sale, by month, customer and item']]],
+    ['Stock', 'var(--warn)', [['Stock summary', 'What I hold and what it is worth'], ['Running low', 'Items at or below reorder level']]],
 ];
 
 const MONTHS = [
@@ -75,7 +75,7 @@ const Tile = ({ icon, tint, label, value, meter, caption, tone }) => (
         <strong className={tone ? `is-${tone}` : ''}>{value}</strong>
         {meter != null && (
             <span className="pa-meter">
-                <i style={{ width: `${meter * 100}%`, background: tone === 'neg' ? '#c4314b' : '#b8720a' }} />
+                <i style={{ width: `${meter * 100}%`, background: tone === 'neg' ? 'var(--err)' : 'var(--warn)' }} />
             </span>
         )}
         <em>{caption}</em>
@@ -120,8 +120,8 @@ const PrimeDemo = () => {
         <div className="sp-demo sp-demo--phone">
             <div className="pa-phone">
                 <div className="pa-status">
-                    <span>9:41</span>
-                    <span>●●● ▮</span>
+                    <span>prime analyst</span>
+                    <span>android · web</span>
                 </div>
 
                 <div className="pa-screen">
@@ -185,10 +185,10 @@ const PrimeDemo = () => {
                             </div>
 
                             <div className="pa-grid">
-                                <Tile icon="↙" tint="#2d5bff" label="Receivables" value={compact(RECEIVABLES.total)} meter={RECEIVABLES.overdue} tone="caution" caption={`${Math.round(RECEIVABLES.overdue * 100)}% overdue`} />
-                                <Tile icon="↗" tint="#e0447a" label="Payables" value={compact(PAYABLES.total)} meter={PAYABLES.overdue} tone="neg" caption={`${Math.round(PAYABLES.overdue * 100)}% overdue`} />
-                                <Tile icon="▦" tint="#e08a15" label="Stock value" value={compact(STOCK.value)} meter={(STOCK.low + STOCK.neg) / STOCK.items} tone="caution" caption={`${STOCK.low} low · ${STOCK.neg} negative`} />
-                                <Tile icon="≣" tint="#7c4dff" label="Vouchers" value={String(p.vouchers)} caption={p.cap} />
+                                <Tile icon="↙" tint="var(--acc)" label="Receivables" value={compact(RECEIVABLES.total)} meter={RECEIVABLES.overdue} tone="caution" caption={`${Math.round(RECEIVABLES.overdue * 100)}% overdue`} />
+                                <Tile icon="↗" tint="var(--err)" label="Payables" value={compact(PAYABLES.total)} meter={PAYABLES.overdue} tone="neg" caption={`${Math.round(PAYABLES.overdue * 100)}% overdue`} />
+                                <Tile icon="▦" tint="var(--warn)" label="Stock value" value={compact(STOCK.value)} meter={(STOCK.low + STOCK.neg) / STOCK.items} tone="caution" caption={`${STOCK.low} low · ${STOCK.neg} negative`} />
+                                <Tile icon="≣" tint="var(--ok)" label="Vouchers" value={String(p.vouchers)} caption={p.cap} />
                             </div>
                         </div>
                     )}
