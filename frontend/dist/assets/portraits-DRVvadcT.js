@@ -1,0 +1,1 @@
+const t="/assets/portrait-sunset-DZ6fbS-B.webp",r="/assets/portrait-blazer-CkU18cUv.webp",s={sunset:{url:t,label:"Sunset",note:"Arms crossed, at dusk"},blazer:{url:r,label:"Blazer",note:"Checked blazer, in daylight"}},a=e=>(s[e]||s.sunset).url;export{s as P,a as p};
