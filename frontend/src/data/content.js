@@ -102,7 +102,7 @@ export const projects = [
         ],
         techStack: ['Python', 'FastAPI', 'Flutter', 'PostgreSQL', 'Redis', 'WebSockets', 'AWS KMS', 'Docker'],
         githubUrl: '',
-        liveUrl: '',
+        liveUrl: 'https://tallyflow.jsrprimesolution.com/',
         category: 'Full-Stack',
     },
     {
